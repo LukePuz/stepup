@@ -3,3 +3,4 @@ openai
 python-dotenv
 reportlab
 gunicorn
+flask-limiter

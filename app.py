@@ -9,11 +9,20 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, HRFlowable
 from reportlab.lib import colors
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 load_dotenv(override=True)
 
 app = Flask(__name__)
 openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=[],
+    storage_uri="memory://"
+)
 
 
 def generate_resume(data: dict) -> dict:
@@ -133,6 +142,7 @@ def index():
 
 
 @app.route("/build", methods=["GET", "POST"])
+@limiter.limit("3 per day", methods=["POST"])
 def build():
     if request.method == "POST":
         data = {
@@ -162,6 +172,11 @@ def download():
         as_attachment=True,
         download_name=f"{data.get('name', 'resume').replace(' ', '_')}_resume.pdf"
     )
+
+
+@app.errorhandler(429)
+def rate_limit_exceeded(e):
+    return render_template("limit.html"), 429
 
 
 if __name__ == "__main__":

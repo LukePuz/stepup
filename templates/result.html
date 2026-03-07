@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StepUp — Your Resume</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f0f13;
+      color: #fff;
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+    .container { max-width: 760px; margin: 0 auto; }
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .back { color: #6b7280; font-size: 14px; text-decoration: none; }
+    .back:hover { color: #9ca3af; }
+    .download-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #6366f1, #a78bfa);
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .download-btn:hover { opacity: 0.9; }
+
+    /* Resume preview */
+    .resume {
+      background: white;
+      color: #111;
+      border-radius: 12px;
+      padding: 48px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .resume-header {
+      margin-bottom: 16px;
+    }
+    .resume-name {
+      font-size: 22px;
+      font-weight: 800;
+      color: #111;
+      margin-bottom: 8px;
+      line-height: 1.3;
+      display: block;
+    }
+    .resume-sub {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 14px;
+      line-height: 1.4;
+      display: block;
+    }
+    .resume-divider {
+      border: none;
+      border-top: 2px solid #6366f1;
+      margin-bottom: 16px;
+    }
+    .resume-section-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #6366f1;
+      margin-top: 18px;
+      margin-bottom: 4px;
+    }
+    .resume-section-divider {
+      border: none;
+      border-top: 0.5px solid #d1d5db;
+      margin-bottom: 8px;
+    }
+    .resume-objective {
+      font-size: 12.5px;
+      color: #444;
+      font-style: italic;
+      line-height: 1.7;
+      margin-bottom: 4px;
+    }
+    .resume-bullet {
+      font-size: 12.5px;
+      color: #222;
+      line-height: 1.7;
+      margin-bottom: 2px;
+      padding-left: 16px;
+      position: relative;
+    }
+    .resume-bullet::before {
+      content: "▸";
+      position: absolute;
+      left: 0;
+      color: #6366f1;
+      font-size: 11px;
+    }
+    .skills-line {
+      font-size: 12.5px;
+      color: #222;
+      line-height: 1.7;
+      padding-left: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a href="/build" class="back">&#8592; Edit Info</a>
+      <form method="POST" action="/download">
+        <input type="hidden" name="data" value='{{ data | tojson }}'/>
+        <input type="hidden" name="resume" value='{{ resume | tojson }}'/>
+        <button type="submit" class="download-btn">&#8595; Download PDF</button>
+      </form>
+    </div>
+
+    <div class="resume">
+      <div class="resume-header">
+        <div class="resume-name">{{ data.name }}</div>
+        <div class="resume-sub">{{ data.school }} &nbsp;&bull;&nbsp; Grade {{ data.grade }} &nbsp;&bull;&nbsp; GPA: {{ data.gpa }}</div>
+      </div>
+      <hr class="resume-divider"/>
+
+      <div class="resume-section-title">Objective</div>
+      <hr class="resume-section-divider"/>
+      <p class="resume-objective">{{ resume.objective }}</p>
+
+      <div class="resume-section-title">Education</div>
+      <hr class="resume-section-divider"/>
+      {% for bullet in resume.education %}
+        <div class="resume-bullet">{{ bullet }}</div>
+      {% endfor %}
+
+      {% if resume.activities %}
+      <div class="resume-section-title">Activities & Leadership</div>
+      <hr class="resume-section-divider"/>
+      {% for bullet in resume.activities %}
+        <div class="resume-bullet">{{ bullet }}</div>
+      {% endfor %}
+      {% endif %}
+
+      {% if resume.experience %}
+      <div class="resume-section-title">Experience</div>
+      <hr class="resume-section-divider"/>
+      {% for bullet in resume.experience %}
+        <div class="resume-bullet">{{ bullet }}</div>
+      {% endfor %}
+      {% endif %}
+
+      {% if resume.skills %}
+      <div class="resume-section-title">Skills</div>
+      <hr class="resume-section-divider"/>
+      <div class="skills-line">{{ resume.skills | join(", ") }}</div>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

@@ -24,6 +24,21 @@ limiter = Limiter(
     storage_uri="memory://"
 )
 
+# Global daily cap across all users
+daily_count = {"date": None, "count": 0}
+DAILY_GLOBAL_LIMIT = 50
+
+def check_global_limit():
+    from datetime import date
+    today = str(date.today())
+    if daily_count["date"] != today:
+        daily_count["date"] = today
+        daily_count["count"] = 0
+    if daily_count["count"] >= DAILY_GLOBAL_LIMIT:
+        return False
+    daily_count["count"] += 1
+    return True
+
 
 def generate_resume(data: dict) -> dict:
     prompt = f"""
@@ -145,6 +160,8 @@ def index():
 @limiter.limit("3 per day", methods=["POST"])
 def build():
     if request.method == "POST":
+        if not check_global_limit():
+            return render_template("limit.html"), 429
         data = {
             "name": request.form.get("name"),
             "school": request.form.get("school"),

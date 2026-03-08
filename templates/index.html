@@ -214,10 +214,14 @@
     <p class="subtitle">StepUp uses AI to turn your activities, clubs, and skills into a polished, professional resume — even if you have zero work experience.</p>
     <a href="/build" class="hero-cta">Build My Resume</a>
     <p class="hero-note">No sign-up required &nbsp;&middot;&nbsp; Ready in under 60 seconds</p>
-    {% if count > 0 %}
-    <p class="hero-note" style="margin-top:8px; color:#6366f1;">{{ count }} resume{{ 's' if count != 1 }} generated and counting</p>
-    {% endif %}
   </div>
+
+  {% if count > 0 %}
+  <div style="text-align:center; padding: 40px 24px; border-top: 1px solid #1e1e2e; border-bottom: 1px solid #1e1e2e; background:#13131a;">
+    <div style="font-size: 48px; font-weight: 800; background: linear-gradient(135deg, #6366f1, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">{{ count }}</div>
+    <div style="font-size: 16px; color: #9ca3af; margin-top: 6px;">resumes built with StepUp</div>
+  </div>
+  {% endif %}
 
   <div class="section">
     <div class="section-label">How it works</div>

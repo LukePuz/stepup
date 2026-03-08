@@ -4,10 +4,12 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>StepUp — Your Resume</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   <style>
+    /* ── App Shell ── */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Inter', -apple-system, sans-serif;
       background: #0f0f13;
       color: #fff;
       min-height: 100vh;
@@ -15,283 +17,516 @@
     }
     .container { max-width: 760px; margin: 0 auto; }
     .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 32px;
-      flex-wrap: wrap;
-      gap: 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 32px; flex-wrap: wrap; gap: 12px;
     }
     .back { color: #6b7280; font-size: 14px; text-decoration: none; }
     .back:hover { color: #9ca3af; }
     .download-btn {
       display: inline-block;
       background: linear-gradient(135deg, #6366f1, #a78bfa);
-      color: white;
-      font-size: 14px;
-      font-weight: 700;
-      padding: 12px 24px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      text-decoration: none;
-      transition: opacity 0.2s;
+      color: white; font-size: 14px; font-weight: 700;
+      padding: 12px 24px; border-radius: 10px; border: none;
+      cursor: pointer; text-decoration: none; transition: opacity 0.2s;
     }
     .download-btn:hover { opacity: 0.9; }
 
-    /* Template picker */
+    /* ── Template Picker ── */
     .tmpl-section { margin-bottom: 28px; }
     .tmpl-label { font-size: 13px; font-weight: 700; color: #9ca3af; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
     .tmpl-cards { display: flex; gap: 12px; flex-wrap: wrap; }
     .tmpl-card {
       flex: 1; min-width: 140px; max-width: 200px;
-      background: #1a1a24;
-      border: 2px solid #2d2d3d;
-      border-radius: 12px;
-      padding: 14px;
-      cursor: pointer;
-      transition: border-color 0.2s, transform 0.15s;
+      background: #1a1a24; border: 2px solid #2d2d3d; border-radius: 12px;
+      padding: 14px; cursor: pointer; transition: border-color 0.2s, transform 0.15s;
     }
     .tmpl-card:hover { border-color: #6366f1; transform: translateY(-2px); }
     .tmpl-card.selected { border-color: #6366f1; background: rgba(99,102,241,0.08); }
     .tmpl-card-name { font-size: 13px; font-weight: 700; color: #e5e7eb; margin-bottom: 10px; }
     .tmpl-card-desc { font-size: 11px; color: #6b7280; }
 
-    /* Mini preview mockups */
-    .mock { background: white; border-radius: 6px; padding: 8px; margin-bottom: 8px; height: 80px; overflow: hidden; }
-    .mock-line { height: 4px; border-radius: 2px; margin-bottom: 3px; background: #e5e7eb; }
-    .mock-line.dark { background: #1e293b; }
-    .mock-line.accent { background: #6366f1; }
-    .mock-line.black { background: #111; }
+    /* ── Mini Mockups ── */
+    .mock { background: white; border-radius: 6px; margin-bottom: 8px; height: 80px; overflow: hidden; }
+    .mock-line { height: 3px; border-radius: 2px; margin-bottom: 3px; background: #e5e7eb; }
     .mock-line.center { margin-left: auto; margin-right: auto; }
     .mock-line.short { width: 40%; }
-    .mock-line.med { width: 65%; }
-    .mock-line.full { width: 100%; }
-    .mock-two-col { display: flex; gap: 6px; height: 100%; }
-    .mock-sidebar { width: 30%; background: #1e293b; border-radius: 3px; padding: 4px; }
-    .mock-main { flex: 1; padding: 4px; }
+    .mock-line.med   { width: 65%; }
+    .mock-line.full  { width: 100%; }
 
-    /* Resume preview shared */
+    /* ── Resume Preview Shell ── */
     .resume {
-      background: white;
-      color: #111;
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-      overflow: hidden;
+      background: white; color: #111; border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4); overflow: hidden;
     }
 
-    /* --- Classic --- */
-    .resume-classic { padding: 48px; }
-    .cl-name { font-size: 22px; font-weight: 800; color: #111; text-align: center; margin-bottom: 6px; }
-    .cl-sub { font-size: 12px; color: #666; text-align: center; margin-bottom: 12px; line-height: 1.5; }
-    .cl-divider { border: none; border-top: 2px solid #6366f1; margin-bottom: 14px; }
-    .cl-sec-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: #6366f1; margin-top: 16px; margin-bottom: 3px; }
-    .cl-sec-rule { border: none; border-top: 0.5px solid #d1d5db; margin-bottom: 7px; }
-    .cl-obj { font-size: 12px; color: #444; font-style: italic; line-height: 1.7; margin-bottom: 4px; }
-    .cl-bullet { font-size: 12px; color: #222; line-height: 1.6; margin-bottom: 2px; padding-left: 14px; position: relative; }
-    .cl-bullet::before { content: "▸"; position: absolute; left: 0; color: #6366f1; font-size: 10px; top: 2px; }
-    .cl-skills { font-size: 12px; color: #222; padding-left: 14px; line-height: 1.7; }
+    /* Shared entry spacing */
+    .entry { margin-bottom: 14px; }
+    .entry:last-child { margin-bottom: 0; }
 
-    /* --- Modern --- */
-    .resume-modern { display: flex; min-height: 480px; padding: 0; }
-    .mod-sidebar { width: 30%; background: #1e293b; padding: 28px 16px; flex-shrink: 0; }
-    .mod-main { flex: 1; padding: 28px 24px; }
-    .mod-sb-name { font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 6px; line-height: 1.3; }
-    .mod-sb-sub { font-size: 10px; color: #94a3b8; line-height: 1.6; margin-bottom: 2px; }
-    .mod-sb-rule { border: none; border-top: 0.5px solid #818cf8; margin: 12px 0 8px; }
-    .mod-sb-sec { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: #818cf8; margin-bottom: 6px; }
-    .mod-sb-skill { font-size: 10px; color: #e2e8f0; line-height: 1.6; margin-bottom: 2px; }
-    .mod-sec-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.10em; color: #4f46e5; margin-top: 14px; margin-bottom: 3px; }
-    .mod-sec-rule { border: none; border-top: 0.5px solid #d1d5db; margin-bottom: 7px; }
-    .mod-obj { font-size: 12px; color: #555; font-style: italic; line-height: 1.7; margin-bottom: 4px; }
-    .mod-bullet { font-size: 12px; color: #222; line-height: 1.6; margin-bottom: 2px; padding-left: 14px; position: relative; }
-    .mod-bullet::before { content: "▸"; position: absolute; left: 0; color: #4f46e5; font-size: 10px; top: 2px; }
+    /* ══════════════════════════════════════
+       PROFESSIONAL (classic)
+    ══════════════════════════════════════ */
+    .cl-header { background: #1B3A6B; padding: 26px 40px 18px; text-align: center; }
+    .cl-name {
+      font-family: 'Inter', sans-serif; font-size: 26px; font-weight: 800;
+      color: #fff; margin-bottom: 5px; letter-spacing: 0.02em;
+    }
+    .cl-contact {
+      font-family: 'Open Sans', sans-serif; font-size: 11px;
+      color: #bfcfe8; line-height: 1.5;
+    }
+    .cl-body { padding: 24px 40px 32px; }
+    .cl-sec-title {
+      font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em; color: #2563EB;
+      margin-top: 22px; margin-bottom: 8px;
+    }
+    .cl-body > .cl-sec-title:first-child { margin-top: 0; }
+    .cl-obj {
+      font-family: 'Open Sans', sans-serif; font-size: 11px;
+      color: #6B7280; line-height: 1.6;
+    }
+    .cl-entry-title {
+      font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 700;
+      color: #1F2937; margin-bottom: 2px;
+    }
+    .cl-entry-meta {
+      font-family: 'Open Sans', sans-serif; font-size: 10.5px;
+      color: #6B7280; margin-bottom: 5px;
+    }
+    .cl-bullet {
+      font-family: 'Open Sans', sans-serif; font-size: 11px; color: #1F2937;
+      line-height: 1.5; margin-bottom: 5px; padding-left: 14px; position: relative;
+    }
+    .cl-bullet::before { content: "•"; position: absolute; left: 0; color: #2563EB; }
+    .cl-skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
+    .cl-skill-cat {
+      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700;
+      color: #1F2937; margin-top: 8px; margin-bottom: 3px;
+    }
+    .cl-skill-cat:first-child { margin-top: 0; }
+    .cl-skill-item {
+      font-family: 'Open Sans', sans-serif; font-size: 11px;
+      color: #374151; line-height: 1.65; padding-left: 8px;
+    }
 
-    /* --- Executive --- */
-    .resume-executive { padding: 48px; }
-    .ex-name { font-size: 24px; font-weight: 800; color: #111; margin-bottom: 4px; }
-    .ex-sub { font-size: 12px; color: #555; margin-bottom: 12px; line-height: 1.5; }
-    .ex-divider { border: none; border-top: 2px solid #111; margin-bottom: 14px; }
-    .ex-sec-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #111; margin-top: 16px; margin-bottom: 3px; }
-    .ex-sec-rule { border: none; border-top: 1.5px solid #111; margin-bottom: 7px; }
-    .ex-obj { font-size: 12px; color: #333; line-height: 1.7; margin-bottom: 4px; }
-    .ex-bullet { font-size: 12px; color: #111; line-height: 1.6; margin-bottom: 2px; padding-left: 14px; position: relative; }
-    .ex-bullet::before { content: "•"; position: absolute; left: 0; color: #111; font-size: 12px; top: 0; }
-    .ex-skills { font-size: 12px; color: #111; padding-left: 14px; line-height: 1.7; }
+    /* ══════════════════════════════════════
+       MINIMAL (modern)
+    ══════════════════════════════════════ */
+    .resume-modern { padding: 40px 48px; }
+    .mn-name {
+      font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 800;
+      color: #111111; margin-bottom: 5px; letter-spacing: -0.01em;
+    }
+    .mn-contact {
+      font-family: 'Open Sans', sans-serif; font-size: 11px;
+      color: #6B7280; margin-bottom: 20px;
+    }
+    .mn-sec-title {
+      font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em; color: #111111;
+      margin-top: 22px; margin-bottom: 8px;
+    }
+    .mn-obj {
+      font-family: 'Open Sans', sans-serif; font-size: 11px;
+      color: #6B7280; line-height: 1.6;
+    }
+    .mn-entry-title {
+      font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 700;
+      color: #111111; margin-bottom: 2px;
+    }
+    .mn-entry-meta {
+      font-family: 'Open Sans', sans-serif; font-size: 10.5px;
+      color: #6B7280; margin-bottom: 5px;
+    }
+    .mn-bullet {
+      font-family: 'Open Sans', sans-serif; font-size: 11px; color: #111111;
+      line-height: 1.5; margin-bottom: 5px; padding-left: 14px; position: relative;
+    }
+    .mn-bullet::before { content: "•"; position: absolute; left: 0; color: #111111; }
+    .mn-skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
+    .mn-skill-cat {
+      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700;
+      color: #111111; margin-top: 8px; margin-bottom: 3px;
+    }
+    .mn-skill-cat:first-child { margin-top: 0; }
+    .mn-skill-item {
+      font-family: 'Open Sans', sans-serif; font-size: 11px;
+      color: #374151; line-height: 1.65; padding-left: 8px;
+    }
+
+    /* ══════════════════════════════════════
+       ELEGANT (executive)
+    ══════════════════════════════════════ */
+    .resume-executive { padding: 40px 48px; }
+    .ex-name {
+      font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 800;
+      color: #1A1A1A; text-align: center; text-transform: uppercase;
+      letter-spacing: 0.18em; margin-bottom: 5px;
+    }
+    .ex-contact {
+      font-family: 'Open Sans', sans-serif; font-size: 10.5px; color: #6B7280;
+      text-align: center; margin-bottom: 16px; letter-spacing: 0.03em;
+    }
+    .ex-divider { border: none; border-top: 1px solid #4A4A4A; margin-bottom: 18px; }
+    .ex-sec-header {
+      display: flex; align-items: center; gap: 8px;
+      margin-top: 20px; margin-bottom: 8px;
+    }
+    .ex-sec-line { flex: 1; height: 0.75px; background: #4A4A4A; }
+    .ex-sec-title {
+      font-family: 'Inter', sans-serif; font-size: 9.5px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em; color: #4A4A4A; white-space: nowrap;
+    }
+    .ex-obj {
+      font-family: 'Open Sans', sans-serif; font-size: 11px; color: #6B7280;
+      line-height: 1.6; text-align: center;
+    }
+    .ex-entry-title {
+      font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 700;
+      color: #1A1A1A; margin-bottom: 2px;
+    }
+    .ex-entry-meta {
+      font-family: 'Open Sans', sans-serif; font-size: 10.5px;
+      color: #6B7280; margin-bottom: 5px;
+    }
+    .ex-bullet {
+      font-family: 'Open Sans', sans-serif; font-size: 11px; color: #1A1A1A;
+      line-height: 1.5; margin-bottom: 5px; padding-left: 14px; position: relative;
+    }
+    .ex-bullet::before { content: "•"; position: absolute; left: 0; color: #4A4A4A; }
+    .ex-skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
+    .ex-skill-cat {
+      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700;
+      color: #1A1A1A; margin-top: 8px; margin-bottom: 3px;
+    }
+    .ex-skill-cat:first-child { margin-top: 0; }
+    .ex-skill-item {
+      font-family: 'Open Sans', sans-serif; font-size: 11px;
+      color: #374151; line-height: 1.65; padding-left: 8px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
+
+    <!-- Top Bar -->
     <div class="top-bar">
       <form method="GET" action="/build" style="display:inline;">
-        <input type="hidden" name="name" value="{{ data.name }}"/>
-        <input type="hidden" name="school" value="{{ data.school }}"/>
-        <input type="hidden" name="grade" value="{{ data.grade }}"/>
-        <input type="hidden" name="gpa" value="{{ data.gpa }}"/>
+        <input type="hidden" name="name"         value="{{ data.name }}"/>
+        <input type="hidden" name="school"       value="{{ data.school }}"/>
+        <input type="hidden" name="grade"        value="{{ data.grade }}"/>
+        <input type="hidden" name="gpa"          value="{{ data.gpa }}"/>
         <input type="hidden" name="applying_for" value="{{ data.applying_for }}"/>
-        <input type="hidden" name="activities" value="{{ data.activities }}"/>
-        <input type="hidden" name="skills" value="{{ data.skills }}"/>
-        <input type="hidden" name="experience" value="{{ data.experience }}"/>
-        <input type="hidden" name="extra" value="{{ data.extra }}"/>
+        <input type="hidden" name="activities"   value="{{ data.activities }}"/>
+        <input type="hidden" name="skills"       value="{{ data.skills }}"/>
+        <input type="hidden" name="experience"   value="{{ data.experience }}"/>
+        <input type="hidden" name="extra"        value="{{ data.extra }}"/>
         <button type="submit" class="back" style="background:none;border:none;cursor:pointer;padding:0;font-family:inherit;">&#8592; Edit Info</button>
       </form>
       <form method="POST" action="/download" id="downloadForm">
-        <input type="hidden" name="data" value='{{ data | tojson }}'/>
-        <input type="hidden" name="resume" value='{{ resume | tojson }}'/>
+        <input type="hidden" name="data"     value='{{ data | tojson }}'/>
+        <input type="hidden" name="resume"   value='{{ resume | tojson }}'/>
         <input type="hidden" name="template" id="templateInput" value="classic"/>
         <button type="submit" class="download-btn">&#8595; Download PDF</button>
       </form>
     </div>
 
+    <!-- Template Picker -->
     <div class="tmpl-section">
       <div class="tmpl-label">Choose Template</div>
       <div class="tmpl-cards">
 
         <div class="tmpl-card selected" data-tmpl="classic" onclick="selectTemplate('classic')">
-          <div class="mock">
-            <div class="mock-line accent center short" style="margin-bottom:5px;height:5px;"></div>
-            <div class="mock-line center med" style="margin-bottom:6px;"></div>
-            <div class="mock-line accent full" style="height:2px;margin-bottom:6px;"></div>
-            <div class="mock-line accent short" style="height:3px;margin-bottom:3px;"></div>
-            <div class="mock-line full"></div>
-            <div class="mock-line med"></div>
-            <div class="mock-line accent short" style="height:3px;margin-top:5px;margin-bottom:3px;"></div>
-            <div class="mock-line full"></div>
+          <div class="mock" style="padding:0;overflow:hidden;">
+            <div style="background:#1B3A6B;height:20px;display:flex;align-items:center;justify-content:center;">
+              <div style="height:4px;width:38%;background:#fff;border-radius:2px;opacity:0.9;"></div>
+            </div>
+            <div style="padding:5px 6px 0;">
+              <div class="mock-line short" style="background:#2563EB;height:3px;margin-bottom:5px;"></div>
+              <div class="mock-line full"></div>
+              <div class="mock-line med"></div>
+              <div class="mock-line short" style="background:#2563EB;height:3px;margin-top:7px;margin-bottom:5px;"></div>
+              <div class="mock-line full"></div>
+            </div>
           </div>
-          <div class="tmpl-card-name">Classic</div>
-          <div class="tmpl-card-desc">Centered header, purple accents</div>
+          <div class="tmpl-card-name">Professional</div>
+          <div class="tmpl-card-desc">Navy header, blue accents</div>
         </div>
 
         <div class="tmpl-card" data-tmpl="modern" onclick="selectTemplate('modern')">
-          <div class="mock" style="padding:0;overflow:hidden;">
-            <div class="mock-two-col">
-              <div class="mock-sidebar">
-                <div class="mock-line full" style="background:#818cf8;height:3px;margin-bottom:4px;"></div>
-                <div class="mock-line full" style="background:#94a3b8;height:2px;margin-bottom:3px;"></div>
-                <div class="mock-line full" style="background:#94a3b8;height:2px;margin-bottom:3px;"></div>
-                <div class="mock-line full" style="background:#818cf8;height:2px;margin-top:6px;margin-bottom:3px;"></div>
-                <div class="mock-line full" style="background:#94a3b8;height:2px;margin-bottom:2px;"></div>
-                <div class="mock-line full" style="background:#94a3b8;height:2px;margin-bottom:2px;"></div>
-                <div class="mock-line full" style="background:#94a3b8;height:2px;"></div>
-              </div>
-              <div class="mock-main">
-                <div class="mock-line accent short" style="height:2px;margin-bottom:3px;"></div>
-                <div class="mock-line full"></div>
-                <div class="mock-line med"></div>
-                <div class="mock-line accent short" style="height:2px;margin-top:5px;margin-bottom:3px;"></div>
-                <div class="mock-line full"></div>
-                <div class="mock-line full"></div>
-              </div>
-            </div>
+          <div class="mock" style="padding:8px;">
+            <div class="mock-line" style="width:55%;background:#111111;height:6px;margin-bottom:5px;"></div>
+            <div class="mock-line med" style="background:#9ca3af;margin-bottom:10px;"></div>
+            <div class="mock-line short" style="background:#111111;height:3px;margin-bottom:5px;"></div>
+            <div class="mock-line full"></div>
+            <div class="mock-line med"></div>
+            <div class="mock-line short" style="background:#111111;height:3px;margin-top:7px;margin-bottom:5px;"></div>
+            <div class="mock-line full"></div>
           </div>
-          <div class="tmpl-card-name">Modern</div>
-          <div class="tmpl-card-desc">Dark sidebar, two-column layout</div>
+          <div class="tmpl-card-name">Minimal</div>
+          <div class="tmpl-card-desc">Clean black, no color</div>
         </div>
 
         <div class="tmpl-card" data-tmpl="executive" onclick="selectTemplate('executive')">
-          <div class="mock">
-            <div class="mock-line black" style="width:70%;height:6px;margin-bottom:4px;border-radius:2px;"></div>
-            <div class="mock-line med" style="background:#555;margin-bottom:6px;"></div>
-            <div class="mock-line black full" style="height:2px;margin-bottom:6px;"></div>
-            <div class="mock-line black short" style="height:3px;margin-bottom:3px;"></div>
-            <div class="mock-line black full" style="height:1.5px;margin-bottom:3px;"></div>
+          <div class="mock" style="padding:8px;">
+            <div class="mock-line center short" style="background:#1a1a1a;height:5px;margin-bottom:3px;"></div>
+            <div class="mock-line center" style="width:50%;background:#9ca3af;margin-bottom:8px;"></div>
+            <div style="display:flex;align-items:center;gap:4px;margin-bottom:6px;">
+              <div style="flex:1;height:0.75px;background:#4A4A4A;"></div>
+              <div style="width:28%;height:3px;background:#4A4A4A;border-radius:2px;"></div>
+              <div style="flex:1;height:0.75px;background:#4A4A4A;"></div>
+            </div>
             <div class="mock-line full"></div>
             <div class="mock-line med"></div>
+            <div style="display:flex;align-items:center;gap:4px;margin-top:7px;margin-bottom:4px;">
+              <div style="flex:1;height:0.75px;background:#4A4A4A;"></div>
+              <div style="width:22%;height:3px;background:#4A4A4A;border-radius:2px;"></div>
+              <div style="flex:1;height:0.75px;background:#4A4A4A;"></div>
+            </div>
+            <div class="mock-line full"></div>
           </div>
-          <div class="tmpl-card-name">Executive</div>
-          <div class="tmpl-card-desc">Traditional black &amp; white</div>
+          <div class="tmpl-card-name">Elegant</div>
+          <div class="tmpl-card-desc">Centered, decorative headers</div>
         </div>
 
       </div>
     </div>
 
-    <!-- CLASSIC PREVIEW -->
-    <div id="preview-classic" class="resume resume-classic">
-      <div class="cl-name">{{ data.name }}</div>
-      <div class="cl-sub">{{ data.school }} &nbsp;&bull;&nbsp; Grade {{ data.grade }}{% if data.gpa %} &nbsp;&bull;&nbsp; GPA: {{ data.gpa }}{% endif %}</div>
-      <hr class="cl-divider"/>
-      <div class="cl-sec-title">Objective</div>
-      <hr class="cl-sec-rule"/>
-      <p class="cl-obj">{{ resume.objective }}</p>
-      <div class="cl-sec-title">Education</div>
-      <hr class="cl-sec-rule"/>
-      {% for bullet in resume.education %}<div class="cl-bullet">{{ bullet }}</div>{% endfor %}
-      {% if resume.activities %}
-      <div class="cl-sec-title">Activities &amp; Leadership</div>
-      <hr class="cl-sec-rule"/>
-      {% for bullet in resume.activities %}<div class="cl-bullet">{{ bullet }}</div>{% endfor %}
-      {% endif %}
-      {% if resume.experience %}
-      <div class="cl-sec-title">Experience</div>
-      <hr class="cl-sec-rule"/>
-      {% for bullet in resume.experience %}<div class="cl-bullet">{{ bullet }}</div>{% endfor %}
-      {% endif %}
-      {% if resume.skills %}
-      <div class="cl-sec-title">Skills</div>
-      <hr class="cl-sec-rule"/>
-      <div class="cl-skills">{{ resume.skills | join(", ") }}</div>
-      {% endif %}
-    </div>
+    <!-- ══════════════════════════════════════
+         PROFESSIONAL PREVIEW
+    ══════════════════════════════════════ -->
+    <div id="preview-classic" class="resume">
+      <div class="cl-header">
+        <div class="cl-name">{{ data.name }}</div>
+        <div class="cl-contact">
+          {{ data.school }} &nbsp;&bull;&nbsp; Grade {{ data.grade }}{% if data.gpa %} &nbsp;&bull;&nbsp; GPA: {{ data.gpa }}{% endif %}
+        </div>
+      </div>
+      <div class="cl-body">
 
-    <!-- MODERN PREVIEW -->
-    <div id="preview-modern" class="resume resume-modern" style="display:none;">
-      <div class="mod-sidebar">
-        <div class="mod-sb-name">{{ data.name }}</div>
-        <div class="mod-sb-sub">{{ data.school }}</div>
-        <div class="mod-sb-sub">Grade {{ data.grade }}{% if data.gpa %} &nbsp;&bull;&nbsp; GPA: {{ data.gpa }}{% endif %}</div>
+        {% if resume.objective %}
+        <div class="cl-sec-title">Summary</div>
+        <p class="cl-obj">{{ resume.objective }}</p>
+        {% endif %}
+
         {% if resume.skills %}
-        <hr class="mod-sb-rule"/>
-        <div class="mod-sb-sec">Skills</div>
-        {% for skill in resume.skills %}<div class="mod-sb-skill">• {{ skill }}</div>{% endfor %}
+        <div class="cl-sec-title">Skills</div>
+        <div class="cl-skills-grid">
+          {% if resume.skills is mapping %}
+            {% for cat_name, cat_skills in resume.skills.items() %}
+            <div>
+              <div class="cl-skill-cat">{{ cat_name }}</div>
+              {% for skill in cat_skills %}<div class="cl-skill-item">{{ skill }}</div>{% endfor %}
+            </div>
+            {% endfor %}
+          {% else %}
+            {% set half = ((resume.skills | length) + 1) // 2 %}
+            <div>{% for s in resume.skills[:half] %}<div class="cl-skill-item">{{ s }}</div>{% endfor %}</div>
+            <div>{% for s in resume.skills[half:] %}<div class="cl-skill-item">{{ s }}</div>{% endfor %}</div>
+          {% endif %}
+        </div>
         {% endif %}
-      </div>
-      <div class="mod-main">
-        <div class="mod-sec-title">Objective</div>
-        <hr class="mod-sec-rule"/>
-        <p class="mod-obj">{{ resume.objective }}</p>
-        <div class="mod-sec-title">Education</div>
-        <hr class="mod-sec-rule"/>
-        {% for bullet in resume.education %}<div class="mod-bullet">{{ bullet }}</div>{% endfor %}
-        {% if resume.activities %}
-        <div class="mod-sec-title">Activities &amp; Leadership</div>
-        <hr class="mod-sec-rule"/>
-        {% for bullet in resume.activities %}<div class="mod-bullet">{{ bullet }}</div>{% endfor %}
-        {% endif %}
+
         {% if resume.experience %}
-        <div class="mod-sec-title">Experience</div>
-        <hr class="mod-sec-rule"/>
-        {% for bullet in resume.experience %}<div class="mod-bullet">{{ bullet }}</div>{% endfor %}
+        <div class="cl-sec-title">Experience</div>
+        {% for entry in resume.experience %}
+        <div class="entry">
+          {% if entry is mapping %}
+            <div class="cl-entry-title">{{ entry.title }}</div>
+            {% if entry.meta %}<div class="cl-entry-meta">{{ entry.meta }}</div>{% endif %}
+            {% for b in entry.bullets %}<div class="cl-bullet">{{ b }}</div>{% endfor %}
+          {% else %}
+            <div class="cl-bullet">{{ entry }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
         {% endif %}
+
+        <div class="cl-sec-title">Education</div>
+        {% for entry in resume.education %}
+        <div class="entry">
+          {% if entry is mapping %}
+            <div class="cl-entry-title">{{ entry.title }}</div>
+            {% if entry.meta %}<div class="cl-entry-meta">{{ entry.meta }}</div>{% endif %}
+            {% for b in entry.bullets %}<div class="cl-bullet">{{ b }}</div>{% endfor %}
+          {% else %}
+            <div class="cl-bullet">{{ entry }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+
+        {% if resume.activities %}
+        <div class="cl-sec-title">Activities &amp; Leadership</div>
+        {% for entry in resume.activities %}
+        <div class="entry">
+          {% if entry is mapping %}
+            <div class="cl-entry-title">{{ entry.title }}</div>
+            {% if entry.meta %}<div class="cl-entry-meta">{{ entry.meta }}</div>{% endif %}
+            {% for b in entry.bullets %}<div class="cl-bullet">{{ b }}</div>{% endfor %}
+          {% else %}
+            <div class="cl-bullet">{{ entry }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+        {% endif %}
+
       </div>
     </div>
 
-    <!-- EXECUTIVE PREVIEW -->
+    <!-- ══════════════════════════════════════
+         MINIMAL PREVIEW
+    ══════════════════════════════════════ -->
+    <div id="preview-modern" class="resume resume-modern" style="display:none;">
+      <div class="mn-name">{{ data.name }}</div>
+      <div class="mn-contact">
+        {{ data.school }} &nbsp;&middot;&nbsp; Grade {{ data.grade }}{% if data.gpa %} &nbsp;&middot;&nbsp; GPA: {{ data.gpa }}{% endif %}
+      </div>
+
+      {% if resume.objective %}
+      <div class="mn-sec-title">Summary</div>
+      <p class="mn-obj">{{ resume.objective }}</p>
+      {% endif %}
+
+      {% if resume.skills %}
+      <div class="mn-sec-title">Skills</div>
+      <div class="mn-skills-grid">
+        {% if resume.skills is mapping %}
+          {% for cat_name, cat_skills in resume.skills.items() %}
+          <div>
+            <div class="mn-skill-cat">{{ cat_name }}</div>
+            {% for skill in cat_skills %}<div class="mn-skill-item">{{ skill }}</div>{% endfor %}
+          </div>
+          {% endfor %}
+        {% else %}
+          {% set half = ((resume.skills | length) + 1) // 2 %}
+          <div>{% for s in resume.skills[:half] %}<div class="mn-skill-item">{{ s }}</div>{% endfor %}</div>
+          <div>{% for s in resume.skills[half:] %}<div class="mn-skill-item">{{ s }}</div>{% endfor %}</div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {% if resume.experience %}
+      <div class="mn-sec-title">Experience</div>
+      {% for entry in resume.experience %}
+      <div class="entry">
+        {% if entry is mapping %}
+          <div class="mn-entry-title">{{ entry.title }}</div>
+          {% if entry.meta %}<div class="mn-entry-meta">{{ entry.meta }}</div>{% endif %}
+          {% for b in entry.bullets %}<div class="mn-bullet">{{ b }}</div>{% endfor %}
+        {% else %}
+          <div class="mn-bullet">{{ entry }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      <div class="mn-sec-title">Education</div>
+      {% for entry in resume.education %}
+      <div class="entry">
+        {% if entry is mapping %}
+          <div class="mn-entry-title">{{ entry.title }}</div>
+          {% if entry.meta %}<div class="mn-entry-meta">{{ entry.meta }}</div>{% endif %}
+          {% for b in entry.bullets %}<div class="mn-bullet">{{ b }}</div>{% endfor %}
+        {% else %}
+          <div class="mn-bullet">{{ entry }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      {% if resume.activities %}
+      <div class="mn-sec-title">Activities</div>
+      {% for entry in resume.activities %}
+      <div class="entry">
+        {% if entry is mapping %}
+          <div class="mn-entry-title">{{ entry.title }}</div>
+          {% if entry.meta %}<div class="mn-entry-meta">{{ entry.meta }}</div>{% endif %}
+          {% for b in entry.bullets %}<div class="mn-bullet">{{ b }}</div>{% endfor %}
+        {% else %}
+          <div class="mn-bullet">{{ entry }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+      {% endif %}
+    </div>
+
+    <!-- ══════════════════════════════════════
+         ELEGANT PREVIEW
+    ══════════════════════════════════════ -->
     <div id="preview-executive" class="resume resume-executive" style="display:none;">
       <div class="ex-name">{{ data.name }}</div>
-      <div class="ex-sub">{{ data.school }} &nbsp;|&nbsp; Grade {{ data.grade }}{% if data.gpa %} &nbsp;|&nbsp; GPA: {{ data.gpa }}{% endif %}</div>
+      <div class="ex-contact">
+        {{ data.school }} &nbsp;&nbsp;|&nbsp;&nbsp; Grade {{ data.grade }}{% if data.gpa %} &nbsp;&nbsp;|&nbsp;&nbsp; GPA: {{ data.gpa }}{% endif %}
+      </div>
       <hr class="ex-divider"/>
-      <div class="ex-sec-title">Objective</div>
-      <hr class="ex-sec-rule"/>
+
+      {% if resume.objective %}
+      <div class="ex-sec-header"><div class="ex-sec-line"></div><div class="ex-sec-title">Summary</div><div class="ex-sec-line"></div></div>
       <p class="ex-obj">{{ resume.objective }}</p>
-      <div class="ex-sec-title">Education</div>
-      <hr class="ex-sec-rule"/>
-      {% for bullet in resume.education %}<div class="ex-bullet">{{ bullet }}</div>{% endfor %}
-      {% if resume.activities %}
-      <div class="ex-sec-title">Activities &amp; Leadership</div>
-      <hr class="ex-sec-rule"/>
-      {% for bullet in resume.activities %}<div class="ex-bullet">{{ bullet }}</div>{% endfor %}
       {% endif %}
-      {% if resume.experience %}
-      <div class="ex-sec-title">Experience</div>
-      <hr class="ex-sec-rule"/>
-      {% for bullet in resume.experience %}<div class="ex-bullet">{{ bullet }}</div>{% endfor %}
-      {% endif %}
+
       {% if resume.skills %}
-      <div class="ex-sec-title">Skills</div>
-      <hr class="ex-sec-rule"/>
-      <div class="ex-skills">{{ resume.skills | join(", ") }}</div>
+      <div class="ex-sec-header"><div class="ex-sec-line"></div><div class="ex-sec-title">Skills</div><div class="ex-sec-line"></div></div>
+      <div class="ex-skills-grid">
+        {% if resume.skills is mapping %}
+          {% for cat_name, cat_skills in resume.skills.items() %}
+          <div>
+            <div class="ex-skill-cat">{{ cat_name }}</div>
+            {% for skill in cat_skills %}<div class="ex-skill-item">{{ skill }}</div>{% endfor %}
+          </div>
+          {% endfor %}
+        {% else %}
+          {% set half = ((resume.skills | length) + 1) // 2 %}
+          <div>{% for s in resume.skills[:half] %}<div class="ex-skill-item">{{ s }}</div>{% endfor %}</div>
+          <div>{% for s in resume.skills[half:] %}<div class="ex-skill-item">{{ s }}</div>{% endfor %}</div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {% if resume.experience %}
+      <div class="ex-sec-header"><div class="ex-sec-line"></div><div class="ex-sec-title">Experience</div><div class="ex-sec-line"></div></div>
+      {% for entry in resume.experience %}
+      <div class="entry">
+        {% if entry is mapping %}
+          <div class="ex-entry-title">{{ entry.title }}</div>
+          {% if entry.meta %}<div class="ex-entry-meta">{{ entry.meta }}</div>{% endif %}
+          {% for b in entry.bullets %}<div class="ex-bullet">{{ b }}</div>{% endfor %}
+        {% else %}
+          <div class="ex-bullet">{{ entry }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      <div class="ex-sec-header"><div class="ex-sec-line"></div><div class="ex-sec-title">Education</div><div class="ex-sec-line"></div></div>
+      {% for entry in resume.education %}
+      <div class="entry">
+        {% if entry is mapping %}
+          <div class="ex-entry-title">{{ entry.title }}</div>
+          {% if entry.meta %}<div class="ex-entry-meta">{{ entry.meta }}</div>{% endif %}
+          {% for b in entry.bullets %}<div class="ex-bullet">{{ b }}</div>{% endfor %}
+        {% else %}
+          <div class="ex-bullet">{{ entry }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      {% if resume.activities %}
+      <div class="ex-sec-header"><div class="ex-sec-line"></div><div class="ex-sec-title">Activities &amp; Leadership</div><div class="ex-sec-line"></div></div>
+      {% for entry in resume.activities %}
+      <div class="entry">
+        {% if entry is mapping %}
+          <div class="ex-entry-title">{{ entry.title }}</div>
+          {% if entry.meta %}<div class="ex-entry-meta">{{ entry.meta }}</div>{% endif %}
+          {% for b in entry.bullets %}<div class="ex-bullet">{{ b }}</div>{% endfor %}
+        {% else %}
+          <div class="ex-bullet">{{ entry }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
       {% endif %}
     </div>
+
   </div>
   <script>
     function selectTemplate(name) {
@@ -299,7 +534,7 @@
       document.querySelectorAll('.tmpl-card').forEach(c => c.classList.remove('selected'));
       document.querySelector('[data-tmpl="' + name + '"]').classList.add('selected');
       document.querySelectorAll('.resume').forEach(r => r.style.display = 'none');
-      document.getElementById('preview-' + name).style.display = name === 'modern' ? 'flex' : 'block';
+      document.getElementById('preview-' + name).style.display = 'block';
     }
   </script>
 </body>

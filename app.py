@@ -290,7 +290,21 @@ def _pdf_executive(data: dict, resume: dict) -> io.BytesIO:
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    count = 0
+    try:
+        r = http_requests.get(
+            f"{os.getenv('SUPABASE_URL')}/rest/v1/resume-generations?select=*",
+            headers={
+                "apikey": os.getenv("SUPABASE_KEY"),
+                "Authorization": f"Bearer {os.getenv('SUPABASE_KEY')}",
+                "Prefer": "count=exact"
+            }
+        )
+        content_range = r.headers.get("Content-Range", "0-0/0")
+        count = int(content_range.split("/")[-1])
+    except Exception:
+        pass
+    return render_template("index.html", count=count)
 
 
 @app.route("/build", methods=["GET", "POST"])

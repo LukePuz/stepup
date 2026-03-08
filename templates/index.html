@@ -10,12 +10,42 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: #0f0f13;
       color: #fff;
-      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      border-bottom: 1px solid #1e1e2e;
+    }
+    .nav-logo {
+      font-size: 18px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #6366f1, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-cta {
+      background: linear-gradient(135deg, #6366f1, #a78bfa);
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 22px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.9; }
+
+    /* HERO */
+    .hero {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 40px 24px;
+      text-align: center;
+      padding: 80px 24px 60px;
     }
     .badge {
       background: rgba(99,102,241,0.15);
@@ -27,14 +57,14 @@
       font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
     h1 {
-      font-size: 52px;
+      font-size: 56px;
       font-weight: 800;
-      text-align: center;
       line-height: 1.1;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
+      max-width: 700px;
     }
     h1 span {
       background: linear-gradient(135deg, #6366f1, #a78bfa);
@@ -44,69 +74,204 @@
     .subtitle {
       font-size: 18px;
       color: #9ca3af;
-      text-align: center;
       max-width: 520px;
-      line-height: 1.6;
-      margin-bottom: 36px;
+      line-height: 1.7;
+      margin-bottom: 40px;
     }
-    .cta {
+    .hero-cta {
       display: inline-block;
       background: linear-gradient(135deg, #6366f1, #a78bfa);
       color: white;
       font-size: 16px;
       font-weight: 700;
-      padding: 16px 36px;
+      padding: 16px 40px;
       border-radius: 12px;
       text-decoration: none;
       transition: opacity 0.2s, transform 0.2s;
-      box-shadow: 0 4px 24px rgba(99,102,241,0.4);
+      box-shadow: 0 4px 32px rgba(99,102,241,0.45);
     }
-    .cta:hover { opacity: 0.9; transform: translateY(-2px); }
-    .features {
-      display: flex;
-      gap: 40px;
-      margin-top: 64px;
-      flex-wrap: wrap;
-      justify-content: center;
+    .hero-cta:hover { opacity: 0.9; transform: translateY(-2px); }
+    .hero-note { font-size: 13px; color: #4b5563; margin-top: 14px; }
+
+    /* HOW IT WORKS */
+    .section {
+      padding: 80px 24px;
+      max-width: 900px;
+      margin: 0 auto;
     }
-    .feature {
+    .section-label {
       text-align: center;
-      max-width: 160px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #6366f1;
+      margin-bottom: 12px;
     }
-    .feature-icon { font-size: 28px; margin-bottom: 10px; }
-    .feature-title { font-size: 14px; font-weight: 700; color: #e5e7eb; margin-bottom: 4px; }
-    .feature-desc { font-size: 13px; color: #6b7280; }
-    .built-by {
-      margin-top: 60px;
+    .section-title {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 48px;
+      color: #f9fafb;
+    }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .step {
+      background: #1a1a24;
+      border: 1px solid #2d2d3d;
+      border-radius: 16px;
+      padding: 28px;
+    }
+    .step-number {
       font-size: 13px;
-      color: #4b5563;
+      font-weight: 800;
+      color: #6366f1;
+      margin-bottom: 14px;
+    }
+    .step-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f9fafb;
+      margin-bottom: 8px;
+    }
+    .step-desc {
+      font-size: 14px;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    /* WHO IT'S FOR */
+    .for-section {
+      background: #13131a;
+      border-top: 1px solid #1e1e2e;
+      border-bottom: 1px solid #1e1e2e;
+      padding: 80px 24px;
+    }
+    .for-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .for-card {
+      background: #1a1a24;
+      border: 1px solid #2d2d3d;
+      border-radius: 14px;
+      padding: 24px;
+    }
+    .for-icon { font-size: 26px; margin-bottom: 12px; }
+    .for-title { font-size: 15px; font-weight: 700; color: #e5e7eb; margin-bottom: 6px; }
+    .for-desc { font-size: 13px; color: #6b7280; line-height: 1.6; }
+
+    /* BOTTOM CTA */
+    .bottom-cta {
+      text-align: center;
+      padding: 80px 24px;
+    }
+    .bottom-cta h2 {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+    .bottom-cta p {
+      font-size: 16px;
+      color: #9ca3af;
+      margin-bottom: 36px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid #1e1e2e;
+      padding: 24px 40px;
+      text-align: center;
+      font-size: 13px;
+      color: #374151;
+    }
+
+    @media (max-width: 640px) {
+      h1 { font-size: 36px; }
+      nav { padding: 16px 20px; }
+      .steps, .for-grid { grid-template-columns: 1fr; }
+      .section { padding: 60px 20px; }
     }
   </style>
 </head>
 <body>
-  <div class="badge">Free for high schoolers</div>
-  <h1>Your first resume,<br><span>done right.</span></h1>
-  <p class="subtitle">StepUp turns your activities, clubs, and skills into a polished, professional resume — even if you have zero work experience.</p>
-  <a href="/build" class="cta">Build My Resume</a>
 
-  <div class="features">
-    <div class="feature">
-      <div class="feature-icon">&#9889;</div>
-      <div class="feature-title">AI-powered</div>
-      <div class="feature-desc">Transforms your raw input into strong bullet points</div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">&#127891;</div>
-      <div class="feature-title">Built for students</div>
-      <div class="feature-desc">No work experience required</div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">&#128196;</div>
-      <div class="feature-title">PDF download</div>
-      <div class="feature-desc">Ready to send in one click</div>
+  <nav>
+    <div class="nav-logo">StepUp</div>
+    <a href="/build" class="nav-cta">Get Started Free</a>
+  </nav>
+
+  <div class="hero">
+    <div class="badge">Free for high schoolers</div>
+    <h1>Your first resume,<br><span>done right.</span></h1>
+    <p class="subtitle">StepUp uses AI to turn your activities, clubs, and skills into a polished, professional resume — even if you have zero work experience.</p>
+    <a href="/build" class="hero-cta">Build My Resume</a>
+    <p class="hero-note">No sign-up required &nbsp;&middot;&nbsp; Ready in under 60 seconds</p>
+    {% if count > 0 %}
+    <p class="hero-note" style="margin-top:8px; color:#6366f1;">{{ count }} resume{{ 's' if count != 1 }} generated and counting</p>
+    {% endif %}
+  </div>
+
+  <div class="section">
+    <div class="section-label">How it works</div>
+    <div class="section-title">Three steps to a professional resume</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">Step 01</div>
+        <div class="step-title">Fill in your info</div>
+        <div class="step-desc">Tell us your school, grade, activities, and what you're applying for. No template required.</div>
+      </div>
+      <div class="step">
+        <div class="step-number">Step 02</div>
+        <div class="step-title">AI builds your resume</div>
+        <div class="step-desc">Our AI transforms your raw input into strong, action-oriented bullet points that sound professional.</div>
+      </div>
+      <div class="step">
+        <div class="step-number">Step 03</div>
+        <div class="step-title">Download your PDF</div>
+        <div class="step-desc">Get a clean, ready-to-send PDF resume in one click. No formatting headaches.</div>
+      </div>
     </div>
   </div>
 
-  <div class="built-by">Built by a high schooler, for high schoolers.</div>
+  <div class="for-section">
+    <div class="section-label" style="text-align:center;">Who it's for</div>
+    <div class="section-title">Built for every high schooler</div>
+    <div class="for-grid">
+      <div class="for-card">
+        <div class="for-icon">&#127947;</div>
+        <div class="for-title">First job or internship</div>
+        <div class="for-desc">Stand out when applying for part-time jobs, summer internships, or volunteer positions.</div>
+      </div>
+      <div class="for-card">
+        <div class="for-icon">&#127979;</div>
+        <div class="for-title">College applications</div>
+        <div class="for-desc">Show admissions officers what you've done outside the classroom in a clean, organized format.</div>
+      </div>
+      <div class="for-card">
+        <div class="for-icon">&#127942;</div>
+        <div class="for-title">Scholarships & programs</div>
+        <div class="for-desc">Many scholarships and competitive programs ask for a resume. Now you'll have one ready.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-cta">
+    <h2>Ready to stand out?</h2>
+    <p>It's free. It takes a minute. Your resume will thank you.</p>
+    <a href="/build" class="hero-cta">Build My Resume</a>
+  </div>
+
+  <footer>
+    Built by a high schooler, for high schoolers. &nbsp;&middot;&nbsp; StepUp &copy; 2025
+  </footer>
+
 </body>
 </html>

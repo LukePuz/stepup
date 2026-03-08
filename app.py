@@ -15,6 +15,7 @@ from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+import requests as http_requests
 
 load_dotenv(override=True)
 
@@ -319,6 +320,18 @@ def download():
     data = json.loads(request.form.get("data"))
     resume = json.loads(request.form.get("resume"))
     template = request.form.get("template", "classic")
+    try:
+        http_requests.post(
+            f"{os.getenv('SUPABASE_URL')}/rest/v1/resume-generations",
+            json={"template": template},
+            headers={
+                "apikey": os.getenv("SUPABASE_KEY"),
+                "Authorization": f"Bearer {os.getenv('SUPABASE_KEY')}",
+                "Content-Type": "application/json"
+            }
+        )
+    except Exception:
+        pass
     pdf = build_pdf(data, resume, template)
     return send_file(
         pdf,

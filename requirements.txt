@@ -4,3 +4,4 @@ python-dotenv
 reportlab
 gunicorn
 flask-limiter
+requests

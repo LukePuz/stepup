@@ -321,7 +321,7 @@ def download():
     resume = json.loads(request.form.get("resume"))
     template = request.form.get("template", "classic")
     try:
-        http_requests.post(
+        r = http_requests.post(
             f"{os.getenv('SUPABASE_URL')}/rest/v1/resume-generations",
             json={"template": template},
             headers={
@@ -330,8 +330,9 @@ def download():
                 "Content-Type": "application/json"
             }
         )
-    except Exception:
-        pass
+        print(f"Supabase: {r.status_code} {r.text}")
+    except Exception as e:
+        print(f"Supabase error: {e}")
     pdf = build_pdf(data, resume, template)
     return send_file(
         pdf,

@@ -89,31 +89,32 @@
         <div class="row">
           <div class="field">
             <label>Full Name</label>
-            <input type="text" name="name" placeholder="Luke Puzenski" required/>
+            <input type="text" name="name" placeholder="Luke Puzenski" value="{{ prefill.get('name', '') }}" required/>
           </div>
           <div class="field">
             <label>School Name</label>
-            <input type="text" name="school" placeholder="Lincoln High School" required/>
+            <input type="text" name="school" placeholder="Lincoln High School" value="{{ prefill.get('school', '') }}" required/>
           </div>
         </div>
         <div class="row">
           <div class="field">
             <label>Grade</label>
             <select name="grade">
-              <option>9th</option>
-              <option>10th</option>
-              <option>11th</option>
-              <option>12th</option>
+              {% set g = prefill.get('grade', '9th') %}
+              <option {% if g == '9th' %}selected{% endif %}>9th</option>
+              <option {% if g == '10th' %}selected{% endif %}>10th</option>
+              <option {% if g == '11th' %}selected{% endif %}>11th</option>
+              <option {% if g == '12th' %}selected{% endif %}>12th</option>
             </select>
           </div>
           <div class="field">
             <label>GPA (if you want to include it)</label>
-            <input type="text" name="gpa" placeholder="3.8 / 4.0"/>
+            <input type="text" name="gpa" placeholder="3.8 / 4.0" value="{{ prefill.get('gpa', '') }}"/>
           </div>
         </div>
         <div class="field">
           <label>What are you applying for?</label>
-          <input type="text" name="applying_for" placeholder="Summer internship at a tech company, part-time job, college program..." required/>
+          <input type="text" name="applying_for" placeholder="Summer internship at a tech company, part-time job, college program..." value="{{ prefill.get('applying_for', '') }}" required/>
         </div>
       </div>
 
@@ -121,7 +122,7 @@
         <div class="card-title">Activities & Involvement</div>
         <div class="field">
           <label>Activities, Clubs & Sports</label>
-          <textarea name="activities" placeholder="Varsity soccer captain, robotics club (built an autonomous robot), student council treasurer, volunteered at food bank every Saturday..." required></textarea>
+          <textarea name="activities" placeholder="Varsity soccer captain, robotics club (built an autonomous robot), student council treasurer, volunteered at food bank every Saturday..." required>{{ prefill.get('activities', '') }}</textarea>
           <div class="hint">Be specific — include your role, what you did, and any achievements.</div>
         </div>
       </div>
@@ -130,15 +131,15 @@
         <div class="card-title">Skills & Experience</div>
         <div class="field">
           <label>Skills</label>
-          <input type="text" name="skills" placeholder="Python, public speaking, Microsoft Office, video editing, Spanish..." required/>
+          <input type="text" name="skills" placeholder="Python, public speaking, Microsoft Office, video editing, Spanish..." value="{{ prefill.get('skills', '') }}" required/>
         </div>
         <div class="field">
           <label>Work or Volunteer Experience <span style="color:#4b5563;font-weight:400">(optional)</span></label>
-          <textarea name="experience" placeholder="Mowed lawns for neighbors ($200/month), babysat for 3 families, helped coach youth soccer..."></textarea>
+          <textarea name="experience" placeholder="Mowed lawns for neighbors ($200/month), babysat for 3 families, helped coach youth soccer...">{{ prefill.get('experience', '') }}</textarea>
         </div>
         <div class="field">
           <label>Anything else to include? <span style="color:#4b5563;font-weight:400">(optional)</span></label>
-          <textarea name="extra" placeholder="Awards, honors, projects, languages spoken..."></textarea>
+          <textarea name="extra" placeholder="Awards, honors, projects, languages spoken...">{{ prefill.get('extra', '') }}</textarea>
         </div>
       </div>
 

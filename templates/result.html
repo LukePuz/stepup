@@ -39,131 +39,268 @@
     }
     .download-btn:hover { opacity: 0.9; }
 
-    /* Resume preview */
+    /* Template picker */
+    .tmpl-section { margin-bottom: 28px; }
+    .tmpl-label { font-size: 13px; font-weight: 700; color: #9ca3af; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .tmpl-cards { display: flex; gap: 12px; flex-wrap: wrap; }
+    .tmpl-card {
+      flex: 1; min-width: 140px; max-width: 200px;
+      background: #1a1a24;
+      border: 2px solid #2d2d3d;
+      border-radius: 12px;
+      padding: 14px;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .tmpl-card:hover { border-color: #6366f1; transform: translateY(-2px); }
+    .tmpl-card.selected { border-color: #6366f1; background: rgba(99,102,241,0.08); }
+    .tmpl-card-name { font-size: 13px; font-weight: 700; color: #e5e7eb; margin-bottom: 10px; }
+    .tmpl-card-desc { font-size: 11px; color: #6b7280; }
+
+    /* Mini preview mockups */
+    .mock { background: white; border-radius: 6px; padding: 8px; margin-bottom: 8px; height: 80px; overflow: hidden; }
+    .mock-line { height: 4px; border-radius: 2px; margin-bottom: 3px; background: #e5e7eb; }
+    .mock-line.dark { background: #1e293b; }
+    .mock-line.accent { background: #6366f1; }
+    .mock-line.black { background: #111; }
+    .mock-line.center { margin-left: auto; margin-right: auto; }
+    .mock-line.short { width: 40%; }
+    .mock-line.med { width: 65%; }
+    .mock-line.full { width: 100%; }
+    .mock-two-col { display: flex; gap: 6px; height: 100%; }
+    .mock-sidebar { width: 30%; background: #1e293b; border-radius: 3px; padding: 4px; }
+    .mock-main { flex: 1; padding: 4px; }
+
+    /* Resume preview shared */
     .resume {
       background: white;
       color: #111;
       border-radius: 12px;
-      padding: 48px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      overflow: hidden;
     }
-    .resume-header {
-      margin-bottom: 16px;
-    }
-    .resume-name {
-      font-size: 22px;
-      font-weight: 800;
-      color: #111;
-      margin-bottom: 8px;
-      line-height: 1.3;
-      display: block;
-    }
-    .resume-sub {
-      font-size: 12px;
-      color: #666;
-      margin-bottom: 14px;
-      line-height: 1.4;
-      display: block;
-    }
-    .resume-divider {
-      border: none;
-      border-top: 2px solid #6366f1;
-      margin-bottom: 16px;
-    }
-    .resume-section-title {
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: #6366f1;
-      margin-top: 18px;
-      margin-bottom: 4px;
-    }
-    .resume-section-divider {
-      border: none;
-      border-top: 0.5px solid #d1d5db;
-      margin-bottom: 8px;
-    }
-    .resume-objective {
-      font-size: 12.5px;
-      color: #444;
-      font-style: italic;
-      line-height: 1.7;
-      margin-bottom: 4px;
-    }
-    .resume-bullet {
-      font-size: 12.5px;
-      color: #222;
-      line-height: 1.7;
-      margin-bottom: 2px;
-      padding-left: 16px;
-      position: relative;
-    }
-    .resume-bullet::before {
-      content: "▸";
-      position: absolute;
-      left: 0;
-      color: #6366f1;
-      font-size: 11px;
-    }
-    .skills-line {
-      font-size: 12.5px;
-      color: #222;
-      line-height: 1.7;
-      padding-left: 16px;
-    }
+
+    /* --- Classic --- */
+    .resume-classic { padding: 48px; }
+    .cl-name { font-size: 22px; font-weight: 800; color: #111; text-align: center; margin-bottom: 6px; }
+    .cl-sub { font-size: 12px; color: #666; text-align: center; margin-bottom: 12px; line-height: 1.5; }
+    .cl-divider { border: none; border-top: 2px solid #6366f1; margin-bottom: 14px; }
+    .cl-sec-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: #6366f1; margin-top: 16px; margin-bottom: 3px; }
+    .cl-sec-rule { border: none; border-top: 0.5px solid #d1d5db; margin-bottom: 7px; }
+    .cl-obj { font-size: 12px; color: #444; font-style: italic; line-height: 1.7; margin-bottom: 4px; }
+    .cl-bullet { font-size: 12px; color: #222; line-height: 1.6; margin-bottom: 2px; padding-left: 14px; position: relative; }
+    .cl-bullet::before { content: "▸"; position: absolute; left: 0; color: #6366f1; font-size: 10px; top: 2px; }
+    .cl-skills { font-size: 12px; color: #222; padding-left: 14px; line-height: 1.7; }
+
+    /* --- Modern --- */
+    .resume-modern { display: flex; min-height: 480px; padding: 0; }
+    .mod-sidebar { width: 30%; background: #1e293b; padding: 28px 16px; flex-shrink: 0; }
+    .mod-main { flex: 1; padding: 28px 24px; }
+    .mod-sb-name { font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 6px; line-height: 1.3; }
+    .mod-sb-sub { font-size: 10px; color: #94a3b8; line-height: 1.6; margin-bottom: 2px; }
+    .mod-sb-rule { border: none; border-top: 0.5px solid #818cf8; margin: 12px 0 8px; }
+    .mod-sb-sec { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: #818cf8; margin-bottom: 6px; }
+    .mod-sb-skill { font-size: 10px; color: #e2e8f0; line-height: 1.6; margin-bottom: 2px; }
+    .mod-sec-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.10em; color: #4f46e5; margin-top: 14px; margin-bottom: 3px; }
+    .mod-sec-rule { border: none; border-top: 0.5px solid #d1d5db; margin-bottom: 7px; }
+    .mod-obj { font-size: 12px; color: #555; font-style: italic; line-height: 1.7; margin-bottom: 4px; }
+    .mod-bullet { font-size: 12px; color: #222; line-height: 1.6; margin-bottom: 2px; padding-left: 14px; position: relative; }
+    .mod-bullet::before { content: "▸"; position: absolute; left: 0; color: #4f46e5; font-size: 10px; top: 2px; }
+
+    /* --- Executive --- */
+    .resume-executive { padding: 48px; }
+    .ex-name { font-size: 24px; font-weight: 800; color: #111; margin-bottom: 4px; }
+    .ex-sub { font-size: 12px; color: #555; margin-bottom: 12px; line-height: 1.5; }
+    .ex-divider { border: none; border-top: 2px solid #111; margin-bottom: 14px; }
+    .ex-sec-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #111; margin-top: 16px; margin-bottom: 3px; }
+    .ex-sec-rule { border: none; border-top: 1.5px solid #111; margin-bottom: 7px; }
+    .ex-obj { font-size: 12px; color: #333; line-height: 1.7; margin-bottom: 4px; }
+    .ex-bullet { font-size: 12px; color: #111; line-height: 1.6; margin-bottom: 2px; padding-left: 14px; position: relative; }
+    .ex-bullet::before { content: "•"; position: absolute; left: 0; color: #111; font-size: 12px; top: 0; }
+    .ex-skills { font-size: 12px; color: #111; padding-left: 14px; line-height: 1.7; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="top-bar">
-      <a href="/build" class="back">&#8592; Edit Info</a>
-      <form method="POST" action="/download">
+      <form method="GET" action="/build" style="display:inline;">
+        <input type="hidden" name="name" value="{{ data.name }}"/>
+        <input type="hidden" name="school" value="{{ data.school }}"/>
+        <input type="hidden" name="grade" value="{{ data.grade }}"/>
+        <input type="hidden" name="gpa" value="{{ data.gpa }}"/>
+        <input type="hidden" name="applying_for" value="{{ data.applying_for }}"/>
+        <input type="hidden" name="activities" value="{{ data.activities }}"/>
+        <input type="hidden" name="skills" value="{{ data.skills }}"/>
+        <input type="hidden" name="experience" value="{{ data.experience }}"/>
+        <input type="hidden" name="extra" value="{{ data.extra }}"/>
+        <button type="submit" class="back" style="background:none;border:none;cursor:pointer;padding:0;font-family:inherit;">&#8592; Edit Info</button>
+      </form>
+      <form method="POST" action="/download" id="downloadForm">
         <input type="hidden" name="data" value='{{ data | tojson }}'/>
         <input type="hidden" name="resume" value='{{ resume | tojson }}'/>
+        <input type="hidden" name="template" id="templateInput" value="classic"/>
         <button type="submit" class="download-btn">&#8595; Download PDF</button>
       </form>
     </div>
 
-    <div class="resume">
-      <div class="resume-header">
-        <div class="resume-name">{{ data.name }}</div>
-        <div class="resume-sub">{{ data.school }} &nbsp;&bull;&nbsp; Grade {{ data.grade }} &nbsp;&bull;&nbsp; GPA: {{ data.gpa }}</div>
+    <div class="tmpl-section">
+      <div class="tmpl-label">Choose Template</div>
+      <div class="tmpl-cards">
+
+        <div class="tmpl-card selected" data-tmpl="classic" onclick="selectTemplate('classic')">
+          <div class="mock">
+            <div class="mock-line accent center short" style="margin-bottom:5px;height:5px;"></div>
+            <div class="mock-line center med" style="margin-bottom:6px;"></div>
+            <div class="mock-line accent full" style="height:2px;margin-bottom:6px;"></div>
+            <div class="mock-line accent short" style="height:3px;margin-bottom:3px;"></div>
+            <div class="mock-line full"></div>
+            <div class="mock-line med"></div>
+            <div class="mock-line accent short" style="height:3px;margin-top:5px;margin-bottom:3px;"></div>
+            <div class="mock-line full"></div>
+          </div>
+          <div class="tmpl-card-name">Classic</div>
+          <div class="tmpl-card-desc">Centered header, purple accents</div>
+        </div>
+
+        <div class="tmpl-card" data-tmpl="modern" onclick="selectTemplate('modern')">
+          <div class="mock" style="padding:0;overflow:hidden;">
+            <div class="mock-two-col">
+              <div class="mock-sidebar">
+                <div class="mock-line full" style="background:#818cf8;height:3px;margin-bottom:4px;"></div>
+                <div class="mock-line full" style="background:#94a3b8;height:2px;margin-bottom:3px;"></div>
+                <div class="mock-line full" style="background:#94a3b8;height:2px;margin-bottom:3px;"></div>
+                <div class="mock-line full" style="background:#818cf8;height:2px;margin-top:6px;margin-bottom:3px;"></div>
+                <div class="mock-line full" style="background:#94a3b8;height:2px;margin-bottom:2px;"></div>
+                <div class="mock-line full" style="background:#94a3b8;height:2px;margin-bottom:2px;"></div>
+                <div class="mock-line full" style="background:#94a3b8;height:2px;"></div>
+              </div>
+              <div class="mock-main">
+                <div class="mock-line accent short" style="height:2px;margin-bottom:3px;"></div>
+                <div class="mock-line full"></div>
+                <div class="mock-line med"></div>
+                <div class="mock-line accent short" style="height:2px;margin-top:5px;margin-bottom:3px;"></div>
+                <div class="mock-line full"></div>
+                <div class="mock-line full"></div>
+              </div>
+            </div>
+          </div>
+          <div class="tmpl-card-name">Modern</div>
+          <div class="tmpl-card-desc">Dark sidebar, two-column layout</div>
+        </div>
+
+        <div class="tmpl-card" data-tmpl="executive" onclick="selectTemplate('executive')">
+          <div class="mock">
+            <div class="mock-line black" style="width:70%;height:6px;margin-bottom:4px;border-radius:2px;"></div>
+            <div class="mock-line med" style="background:#555;margin-bottom:6px;"></div>
+            <div class="mock-line black full" style="height:2px;margin-bottom:6px;"></div>
+            <div class="mock-line black short" style="height:3px;margin-bottom:3px;"></div>
+            <div class="mock-line black full" style="height:1.5px;margin-bottom:3px;"></div>
+            <div class="mock-line full"></div>
+            <div class="mock-line med"></div>
+          </div>
+          <div class="tmpl-card-name">Executive</div>
+          <div class="tmpl-card-desc">Traditional black &amp; white</div>
+        </div>
+
       </div>
-      <hr class="resume-divider"/>
+    </div>
 
-      <div class="resume-section-title">Objective</div>
-      <hr class="resume-section-divider"/>
-      <p class="resume-objective">{{ resume.objective }}</p>
-
-      <div class="resume-section-title">Education</div>
-      <hr class="resume-section-divider"/>
-      {% for bullet in resume.education %}
-        <div class="resume-bullet">{{ bullet }}</div>
-      {% endfor %}
-
+    <!-- CLASSIC PREVIEW -->
+    <div id="preview-classic" class="resume resume-classic">
+      <div class="cl-name">{{ data.name }}</div>
+      <div class="cl-sub">{{ data.school }} &nbsp;&bull;&nbsp; Grade {{ data.grade }}{% if data.gpa %} &nbsp;&bull;&nbsp; GPA: {{ data.gpa }}{% endif %}</div>
+      <hr class="cl-divider"/>
+      <div class="cl-sec-title">Objective</div>
+      <hr class="cl-sec-rule"/>
+      <p class="cl-obj">{{ resume.objective }}</p>
+      <div class="cl-sec-title">Education</div>
+      <hr class="cl-sec-rule"/>
+      {% for bullet in resume.education %}<div class="cl-bullet">{{ bullet }}</div>{% endfor %}
       {% if resume.activities %}
-      <div class="resume-section-title">Activities & Leadership</div>
-      <hr class="resume-section-divider"/>
-      {% for bullet in resume.activities %}
-        <div class="resume-bullet">{{ bullet }}</div>
-      {% endfor %}
+      <div class="cl-sec-title">Activities &amp; Leadership</div>
+      <hr class="cl-sec-rule"/>
+      {% for bullet in resume.activities %}<div class="cl-bullet">{{ bullet }}</div>{% endfor %}
       {% endif %}
-
       {% if resume.experience %}
-      <div class="resume-section-title">Experience</div>
-      <hr class="resume-section-divider"/>
-      {% for bullet in resume.experience %}
-        <div class="resume-bullet">{{ bullet }}</div>
-      {% endfor %}
+      <div class="cl-sec-title">Experience</div>
+      <hr class="cl-sec-rule"/>
+      {% for bullet in resume.experience %}<div class="cl-bullet">{{ bullet }}</div>{% endfor %}
       {% endif %}
-
       {% if resume.skills %}
-      <div class="resume-section-title">Skills</div>
-      <hr class="resume-section-divider"/>
-      <div class="skills-line">{{ resume.skills | join(", ") }}</div>
+      <div class="cl-sec-title">Skills</div>
+      <hr class="cl-sec-rule"/>
+      <div class="cl-skills">{{ resume.skills | join(", ") }}</div>
+      {% endif %}
+    </div>
+
+    <!-- MODERN PREVIEW -->
+    <div id="preview-modern" class="resume resume-modern" style="display:none;">
+      <div class="mod-sidebar">
+        <div class="mod-sb-name">{{ data.name }}</div>
+        <div class="mod-sb-sub">{{ data.school }}</div>
+        <div class="mod-sb-sub">Grade {{ data.grade }}{% if data.gpa %} &nbsp;&bull;&nbsp; GPA: {{ data.gpa }}{% endif %}</div>
+        {% if resume.skills %}
+        <hr class="mod-sb-rule"/>
+        <div class="mod-sb-sec">Skills</div>
+        {% for skill in resume.skills %}<div class="mod-sb-skill">• {{ skill }}</div>{% endfor %}
+        {% endif %}
+      </div>
+      <div class="mod-main">
+        <div class="mod-sec-title">Objective</div>
+        <hr class="mod-sec-rule"/>
+        <p class="mod-obj">{{ resume.objective }}</p>
+        <div class="mod-sec-title">Education</div>
+        <hr class="mod-sec-rule"/>
+        {% for bullet in resume.education %}<div class="mod-bullet">{{ bullet }}</div>{% endfor %}
+        {% if resume.activities %}
+        <div class="mod-sec-title">Activities &amp; Leadership</div>
+        <hr class="mod-sec-rule"/>
+        {% for bullet in resume.activities %}<div class="mod-bullet">{{ bullet }}</div>{% endfor %}
+        {% endif %}
+        {% if resume.experience %}
+        <div class="mod-sec-title">Experience</div>
+        <hr class="mod-sec-rule"/>
+        {% for bullet in resume.experience %}<div class="mod-bullet">{{ bullet }}</div>{% endfor %}
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- EXECUTIVE PREVIEW -->
+    <div id="preview-executive" class="resume resume-executive" style="display:none;">
+      <div class="ex-name">{{ data.name }}</div>
+      <div class="ex-sub">{{ data.school }} &nbsp;|&nbsp; Grade {{ data.grade }}{% if data.gpa %} &nbsp;|&nbsp; GPA: {{ data.gpa }}{% endif %}</div>
+      <hr class="ex-divider"/>
+      <div class="ex-sec-title">Objective</div>
+      <hr class="ex-sec-rule"/>
+      <p class="ex-obj">{{ resume.objective }}</p>
+      <div class="ex-sec-title">Education</div>
+      <hr class="ex-sec-rule"/>
+      {% for bullet in resume.education %}<div class="ex-bullet">{{ bullet }}</div>{% endfor %}
+      {% if resume.activities %}
+      <div class="ex-sec-title">Activities &amp; Leadership</div>
+      <hr class="ex-sec-rule"/>
+      {% for bullet in resume.activities %}<div class="ex-bullet">{{ bullet }}</div>{% endfor %}
+      {% endif %}
+      {% if resume.experience %}
+      <div class="ex-sec-title">Experience</div>
+      <hr class="ex-sec-rule"/>
+      {% for bullet in resume.experience %}<div class="ex-bullet">{{ bullet }}</div>{% endfor %}
+      {% endif %}
+      {% if resume.skills %}
+      <div class="ex-sec-title">Skills</div>
+      <hr class="ex-sec-rule"/>
+      <div class="ex-skills">{{ resume.skills | join(", ") }}</div>
       {% endif %}
     </div>
   </div>
+  <script>
+    function selectTemplate(name) {
+      document.getElementById('templateInput').value = name;
+      document.querySelectorAll('.tmpl-card').forEach(c => c.classList.remove('selected'));
+      document.querySelector('[data-tmpl="' + name + '"]').classList.add('selected');
+      document.querySelectorAll('.resume').forEach(r => r.style.display = 'none');
+      document.getElementById('preview-' + name).style.display = name === 'modern' ? 'flex' : 'block';
+    }
+  </script>
 </body>
 </html>

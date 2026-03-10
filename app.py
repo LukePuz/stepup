@@ -45,6 +45,17 @@ def check_global_limit():
     return True
 
 
+def _fmt_phone(phone: str) -> str:
+    digits = ''.join(c for c in (phone or '') if c.isdigit())
+    if len(digits) == 10:
+        return f"({digits[:3]}) {digits[3:6]}-{digits[6:]}"
+    if len(digits) == 11 and digits[0] == '1':
+        return f"({digits[1:4]}) {digits[4:7]}-{digits[7:]}"
+    return phone or ''
+
+app.jinja_env.filters['fmt_phone'] = _fmt_phone
+
+
 def generate_resume(data: dict) -> dict:
     prompt = f"""You are an expert resume writer for high school students with little or no work experience.
 Transform the student's raw input into a polished, professional resume.
@@ -199,16 +210,24 @@ def _pdf_classic(data: dict, resume: dict) -> io.BytesIO:
         contact_parts.append(f"GPA: {data['gpa']}")
     name_text    = data.get("name", "")
     contact_text = "  \u2022  ".join(contact_parts)
+    contact2_parts = []
+    if data.get("email"):
+        contact2_parts.append(data["email"])
+    if data.get("phone"):
+        contact2_parts.append(_fmt_phone(data["phone"]))
+    contact2_text = "  \u2022  ".join(contact2_parts)
 
     def draw_header(canvas, doc):
         canvas.saveState()
         canvas.setFillColor(NAVY)
         canvas.rect(0, PAGE_H - HEADER_H, PAGE_W, HEADER_H, fill=1, stroke=0)
         canvas.setFillColor(WHITE)
-        canvas.setFont("Helvetica-Bold", 26)
-        canvas.drawCentredString(PAGE_W / 2, PAGE_H - 0.56 * inch, name_text)
+        canvas.setFont("Helvetica-Bold", 24)
+        canvas.drawCentredString(PAGE_W / 2, PAGE_H - 0.50 * inch, name_text)
         canvas.setFont("Helvetica", 9)
-        canvas.drawCentredString(PAGE_W / 2, PAGE_H - 0.82 * inch, contact_text)
+        canvas.drawCentredString(PAGE_W / 2, PAGE_H - 0.72 * inch, contact_text)
+        if contact2_text:
+            canvas.drawCentredString(PAGE_W / 2, PAGE_H - 0.90 * inch, contact2_text)
         canvas.restoreState()
 
     doc = SimpleDocTemplate(
@@ -257,151 +276,260 @@ def _pdf_classic(data: dict, resume: dict) -> io.BytesIO:
 
 
 def _pdf_modern(data: dict, resume: dict) -> io.BytesIO:
-    """Minimal: large left-aligned black name, no color accents, entry hierarchy."""
+    """Meridian: navy banner, two-column body, right-aligned dates, full-page fill."""
+    from reportlab.platypus import Flowable as _Flowable
+
     buffer = io.BytesIO()
-    PAGE_W, _ = letter
-    DARK = colors.HexColor("#111111")
-    GRAY = colors.HexColor("#555555")
-    LM = RM = 0.75 * inch
-    usable_w = PAGE_W - LM - RM
-
-    doc = SimpleDocTemplate(
-        buffer, pagesize=letter,
-        rightMargin=RM, leftMargin=LM,
-        topMargin=0.75 * inch, bottomMargin=0.75 * inch
-    )
-
-    S_NAME  = ParagraphStyle("mName",  fontSize=28, fontName="Helvetica-Bold", textColor=DARK,
-                              spaceAfter=4, leading=32)
-    S_CON   = ParagraphStyle("mCon",   fontSize=9.5, fontName="Helvetica", textColor=GRAY,
-                              spaceAfter=16, leading=13)
-    S_SEC   = ParagraphStyle("mSec",   fontSize=10, fontName="Helvetica-Bold", textColor=DARK,
-                              spaceBefore=18, spaceAfter=6, leading=12)
-    S_ETIT  = ParagraphStyle("mETit",  fontSize=11, fontName="Helvetica-Bold", textColor=DARK,
-                              spaceAfter=1, leading=14)
-    S_EMETA = ParagraphStyle("mEMeta", fontSize=9,  fontName="Helvetica", textColor=GRAY,
-                              spaceAfter=3, leading=12)
-    S_BUL   = ParagraphStyle("mBul",   fontSize=9.5, fontName="Helvetica", textColor=DARK,
-                              spaceAfter=4, leading=13, leftIndent=12, firstLineIndent=-8)
-    S_OBJ   = ParagraphStyle("mObj",   fontSize=9.5, fontName="Helvetica", textColor=GRAY,
-                              spaceAfter=6, leading=14)
-    S_SCAT  = ParagraphStyle("mScat",  fontSize=9.5, fontName="Helvetica-Bold", textColor=DARK,
-                              spaceAfter=2, spaceBefore=4, leading=13)
-    S_SITEM = ParagraphStyle("mSitem", fontSize=9.5, fontName="Helvetica", textColor=DARK,
-                              spaceAfter=2, leading=12, leftIndent=8)
-
-    def sec(title):
-        return [Paragraph(title.upper(), S_SEC)]
+    PAGE_W, PAGE_H = letter
+    HEADER_H = 1.1 * inch
+    NAVY    = colors.HexColor("#1B2A4A")
+    DARK    = colors.HexColor("#2D2D2D")
+    GRAY    = colors.HexColor("#888888")
+    LGRAY   = colors.HexColor("#94A9C4")
+    SBARBG  = colors.HexColor("#F4F5F7")
+    DIVIDER = colors.HexColor("#D8DCE4")
+    LM = RM = 0.68 * inch
+    usable_w  = PAGE_W - LM - RM
+    sidebar_w = usable_w * 0.32 - 8
+    main_w    = usable_w * 0.68 - 8
 
     contact_parts = [data.get("school", ""), f"Grade {data.get('grade', '')}"]
     if data.get("gpa"):
         contact_parts.append(f"GPA: {data['gpa']}")
+    contact2_parts = []
+    if data.get("email"):
+        contact2_parts.append(data["email"])
+    if data.get("phone"):
+        contact2_parts.append(_fmt_phone(data["phone"]))
+    name_text     = data.get("name", "")
+    contact_text  = "   |   ".join(contact_parts)
+    contact2_text = "   |   ".join(contact2_parts)
 
-    content = []
-    content.append(Paragraph(data.get("name", ""), S_NAME))
-    content.append(Paragraph("  \u2022  ".join(contact_parts), S_CON))
-    if resume.get("objective"):
-        content += sec("Summary")
-        content.append(Paragraph(resume["objective"], S_OBJ))
-    if resume.get("skills"):
-        content += sec("Skills")
-        content += _pdf_skills_grid(resume["skills"], S_SCAT, S_SITEM, usable_w / 2)
-    if resume.get("experience"):
-        content += sec("Experience")
-        content += _pdf_entries(resume["experience"], S_ETIT, S_EMETA, S_BUL)
-    content += sec("Education")
-    content += _pdf_entries(resume.get("education", []), S_ETIT, S_EMETA, S_BUL)
+    def draw_header(canvas, doc):
+        canvas.saveState()
+        canvas.setFillColor(NAVY)
+        canvas.rect(0, PAGE_H - HEADER_H, PAGE_W, HEADER_H, fill=1, stroke=0)
+        canvas.setFillColor(colors.white)
+        canvas.setFont("Helvetica-Bold", 24)
+        canvas.drawCentredString(PAGE_W / 2, PAGE_H - 0.46 * inch, name_text)
+        canvas.setFillColor(LGRAY)
+        canvas.setFont("Helvetica", 9)
+        canvas.drawCentredString(PAGE_W / 2, PAGE_H - 0.72 * inch, contact_text)
+        if contact2_text:
+            canvas.drawCentredString(PAGE_W / 2, PAGE_H - 0.91 * inch, contact2_text)
+        canvas.restoreState()
+
+    doc = SimpleDocTemplate(
+        buffer, pagesize=letter,
+        rightMargin=RM, leftMargin=LM,
+        topMargin=HEADER_H + 0.20 * inch, bottomMargin=0.68 * inch
+    )
+
+    S_ETIT  = ParagraphStyle("mETit",  fontSize=11,   fontName="Helvetica-Bold", textColor=NAVY,
+                              spaceAfter=2,  leading=14)
+    S_EDATE = ParagraphStyle("mEDate", fontSize=9,    fontName="Helvetica",      textColor=GRAY,
+                              alignment=2,  leading=14)   # TA_RIGHT = 2
+    S_EMETA = ParagraphStyle("mEMeta", fontSize=9.5,  fontName="Helvetica",      textColor=GRAY,
+                              spaceAfter=4, leading=13)
+    S_BUL   = ParagraphStyle("mBul",   fontSize=10,   fontName="Helvetica",      textColor=DARK,
+                              spaceAfter=5, leading=15, leftIndent=13, firstLineIndent=-9)
+    S_OBJ   = ParagraphStyle("mObj",   fontSize=10,   fontName="Helvetica",      textColor=DARK,
+                              spaceAfter=8, leading=16)
+    S_SCAT  = ParagraphStyle("mScat",  fontSize=9.5,  fontName="Helvetica-Bold", textColor=DARK,
+                              spaceAfter=3, spaceBefore=10, leading=13)
+    S_SITEM = ParagraphStyle("mSitem", fontSize=9.5,  fontName="Helvetica",      textColor=DARK,
+                              spaceAfter=3, leading=13)
+
+    class AccentTitle(_Flowable):
+        """Section title with a left navy accent bar."""
+        def __init__(self, title, col_w, first=False):
+            _Flowable.__init__(self)
+            self.title = title.upper()
+            self.col_w = col_w
+            self._pad  = 0 if first else 18
+            self._h    = 20
+
+        def wrap(self, aw, ah):
+            return (self.col_w, self._h + self._pad)
+
+        def draw(self):
+            c = self.canv
+            c.saveState()
+            c.translate(0, self._pad)
+            c.setFillColor(NAVY)
+            c.rect(0, 3, 3, 13, fill=1, stroke=0)
+            c.setFont("Helvetica-Bold", 9)
+            c.drawString(10, 5, self.title)
+            c.restoreState()
+
+    DATE_COL = 0.9 * inch
+
+    def _meridian_main_entries(entries):
+        """Entries for main column: entry title + right-aligned date on one row."""
+        out = []
+        entries = entries if isinstance(entries, list) else []
+        for i, e in enumerate(entries):
+            if isinstance(e, str):
+                out.append(Paragraph(f"\u2022\u2002{e}", S_BUL))
+                continue
+            title = e.get("title", "")
+            meta  = e.get("meta", "")
+            date_str = ""
+            role_str = meta
+            if " | " in meta:
+                parts    = meta.split(" | ")
+                date_str = parts[-1].strip()
+                role_str = " | ".join(parts[:-1]).strip()
+            title_w = main_w - DATE_COL
+            if date_str:
+                row = Table(
+                    [[Paragraph(title, S_ETIT), Paragraph(date_str, S_EDATE)]],
+                    colWidths=[title_w, DATE_COL]
+                )
+                row.setStyle(TableStyle([
+                    ("VALIGN",        (0, 0), (-1, -1), "BOTTOM"),
+                    ("LEFTPADDING",   (0, 0), (-1, -1), 0),
+                    ("RIGHTPADDING",  (0, 0), (-1, -1), 0),
+                    ("TOPPADDING",    (0, 0), (-1, -1), 0),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+                ]))
+                out.append(row)
+            else:
+                out.append(Paragraph(title, S_ETIT))
+            if role_str:
+                out.append(Paragraph(role_str, S_EMETA))
+            for b in e.get("bullets", []):
+                out.append(Paragraph(f"\u2022\u2002{b}", S_BUL))
+            if i < len(entries) - 1:
+                out.append(Spacer(1, 12))
+        return out
+
+    def sidebar_skills(skills_raw, first):
+        skills = _normalize_skills(skills_raw)
+        out = []
+        for i, (cat_name, items) in enumerate(skills.items()):
+            if i == 0:
+                out.append(AccentTitle("Skills", sidebar_w, first=first))
+            out.append(Paragraph(cat_name, S_SCAT))
+            for item in (items or []):
+                out.append(Paragraph(item, S_SITEM))
+        return out
+
+    # Sidebar: Skills + Education
+    has_skills = bool(resume.get("skills"))
+    sidebar = []
+    if has_skills:
+        sidebar += sidebar_skills(resume["skills"], first=True)
+    sidebar.append(AccentTitle("Education", sidebar_w, first=not has_skills))
+    sidebar += _pdf_entries(resume.get("education", []), S_ETIT, S_EMETA, S_BUL)
+
+    # Main: Summary + Experience + Activities
+    has_obj = bool(resume.get("objective"))
+    has_exp = bool(resume.get("experience"))
+    main = []
+    if has_obj:
+        main.append(AccentTitle("Summary", main_w, first=True))
+        main.append(Paragraph(resume["objective"], S_OBJ))
+    if has_exp:
+        main.append(AccentTitle("Experience", main_w, first=not has_obj))
+        main += _meridian_main_entries(resume["experience"])
     if resume.get("activities"):
-        content += sec("Activities & Leadership")
-        content += _pdf_entries(resume["activities"], S_ETIT, S_EMETA, S_BUL)
+        first_main = not has_obj and not has_exp
+        main.append(AccentTitle("Activities & Leadership", main_w, first=first_main))
+        main += _meridian_main_entries(resume["activities"])
 
-    doc.build(content)
+    body = Table(
+        [[sidebar, main]],
+        colWidths=[sidebar_w, main_w]
+    )
+    body.setStyle(TableStyle([
+        ("VALIGN",        (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING",   (0, 0), (0, -1),  0),
+        ("RIGHTPADDING",  (0, 0), (0, -1),  14),
+        ("LEFTPADDING",   (1, 0), (1, -1),  14),
+        ("RIGHTPADDING",  (1, 0), (-1, -1), 0),
+        ("TOPPADDING",    (0, 0), (-1, -1), 0),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+        ("BACKGROUND",    (0, 0), (0, -1),  SBARBG),
+        ("LINEBEFORE",    (1, 0), (1, -1),  0.5, DIVIDER),
+    ]))
+
+    doc.build([body], onFirstPage=draw_header, onLaterPages=draw_header)
     buffer.seek(0)
     return buffer
 
 
 def _pdf_executive(data: dict, resume: dict) -> io.BytesIO:
-    """Elegant: centered uppercase name, decorative section headers, entry hierarchy."""
-    from reportlab.platypus import Flowable as _Flowable
-
+    """Elegant: centered header, clean uppercase section titles, single-column skills."""
     buffer = io.BytesIO()
-    PAGE_W, _ = letter
-    DARK = colors.HexColor("#1A1A1A")
-    GRAY = colors.HexColor("#666666")
-    LINE = colors.HexColor("#4A4A4A")
-    LM = RM = 0.75 * inch
-    usable_w = PAGE_W - LM - RM
+    DARK  = colors.HexColor("#1A1A1A")
+    GRAY  = colors.HexColor("#6B7280")
+    LGRAY = colors.HexColor("#9CA3AF")
+    SECT  = colors.HexColor("#374151")
+    LM = RM = 0.8 * inch
+    usable_w = letter[0] - LM - RM
 
     doc = SimpleDocTemplate(
         buffer, pagesize=letter,
         rightMargin=RM, leftMargin=LM,
-        topMargin=0.75 * inch, bottomMargin=0.75 * inch
+        topMargin=0.8 * inch, bottomMargin=0.8 * inch
     )
 
-    S_NAME  = ParagraphStyle("eName",  fontSize=24, fontName="Helvetica-Bold", textColor=DARK,
-                              alignment=TA_CENTER, spaceAfter=4, leading=28, letterSpacing=3.0)
-    S_CON   = ParagraphStyle("eCon",   fontSize=9,  fontName="Helvetica", textColor=GRAY,
-                              alignment=TA_CENTER, spaceAfter=14, leading=13)
+    S_NAME  = ParagraphStyle("eName",  fontSize=22, fontName="Helvetica-Bold", textColor=DARK,
+                              alignment=TA_CENTER, spaceAfter=4, leading=26)
+    S_CON1  = ParagraphStyle("eCon1",  fontSize=10, fontName="Helvetica", textColor=GRAY,
+                              alignment=TA_CENTER, spaceAfter=3, leading=13)
+    S_CON2  = ParagraphStyle("eCon2",  fontSize=9,  fontName="Helvetica", textColor=LGRAY,
+                              alignment=TA_CENTER, spaceAfter=12, leading=13)
+    S_SEC   = ParagraphStyle("eSec",   fontSize=10.5, fontName="Helvetica-Bold", textColor=SECT,
+                              spaceBefore=18, spaceAfter=7, leading=13)
     S_ETIT  = ParagraphStyle("eETit",  fontSize=11, fontName="Helvetica-Bold", textColor=DARK,
-                              spaceAfter=1, leading=14)
-    S_EMETA = ParagraphStyle("eEMeta", fontSize=9,  fontName="Helvetica", textColor=GRAY,
-                              spaceAfter=3, leading=12)
+                              spaceAfter=3, leading=14)
+    S_EMETA = ParagraphStyle("eEMeta", fontSize=9.5, fontName="Helvetica", textColor=GRAY,
+                              spaceAfter=4, leading=13)
     S_BUL   = ParagraphStyle("eBul",   fontSize=9.5, fontName="Helvetica", textColor=DARK,
-                              spaceAfter=4, leading=13, leftIndent=12, firstLineIndent=-8)
+                              spaceAfter=4, leading=13, leftIndent=14, firstLineIndent=-10)
     S_OBJ   = ParagraphStyle("eObj",   fontSize=9.5, fontName="Helvetica", textColor=GRAY,
-                              alignment=TA_CENTER, spaceAfter=6, leading=15)
-    S_SCAT  = ParagraphStyle("eScat",  fontSize=9.5, fontName="Helvetica-Bold", textColor=DARK,
-                              spaceAfter=2, spaceBefore=4, leading=13)
+                              spaceAfter=6, leading=15)
+    S_SCAT  = ParagraphStyle("eScat",  fontSize=10, fontName="Helvetica-Bold", textColor=DARK,
+                              spaceAfter=3, spaceBefore=8, leading=13)
     S_SITEM = ParagraphStyle("eSitem", fontSize=9.5, fontName="Helvetica", textColor=DARK,
-                              spaceAfter=2, leading=12, leftIndent=8)
-
-    class DecorativeHeader(_Flowable):
-        def __init__(self, title, width, color):
-            _Flowable.__init__(self)
-            self.title = title.upper()
-            self.avail_w = width
-            self.color = color
-            self.height = 22
-
-        def draw(self):
-            c = self.canv
-            c.saveState()
-            fs = 9
-            text_w = c.stringWidth(self.title, "Helvetica-Bold", fs)
-            cx = self.avail_w / 2
-            tx = cx - text_w / 2
-            ty = 5
-            ly = ty + fs * 0.5
-            c.setFillColor(self.color)
-            c.setFont("Helvetica-Bold", fs)
-            c.drawString(tx, ty, self.title)
-            c.setStrokeColor(self.color)
-            c.setLineWidth(0.5)
-            pad = 8
-            if tx > pad:
-                c.line(0, ly, tx - pad, ly)
-                c.line(tx + text_w + pad, ly, self.avail_w, ly)
-            c.restoreState()
-
-        def wrap(self, availWidth, availHeight):
-            return (self.avail_w, self.height)
+                              spaceAfter=2, leading=13)
 
     def sec(title):
-        return [Spacer(1, 6), DecorativeHeader(title, usable_w, LINE), Spacer(1, 6)]
+        return [Paragraph(title.upper(), S_SEC)]
+
+    def skills_single_col(skills_raw):
+        skills = _normalize_skills(skills_raw)
+        out = []
+        for i, (cat_name, items) in enumerate(skills.items()):
+            out.append(Paragraph(cat_name, S_SCAT))
+            for item in (items or []):
+                out.append(Paragraph(item, S_SITEM))
+        return out
 
     contact_parts = [data.get("school", ""), f"Grade {data.get('grade', '')}"]
     if data.get("gpa"):
         contact_parts.append(f"GPA: {data['gpa']}")
+    contact2_parts = []
+    if data.get("email"):
+        contact2_parts.append(data["email"])
+    if data.get("phone"):
+        contact2_parts.append(_fmt_phone(data["phone"]))
 
     content = []
-    content.append(Paragraph(data.get("name", "").upper(), S_NAME))
-    content.append(Paragraph("  |  ".join(contact_parts), S_CON))
+    content.append(Paragraph(data.get("name", ""), S_NAME))
+    if contact2_parts:
+        content.append(Paragraph("  |  ".join(contact_parts), S_CON1))
+        content.append(Paragraph("  |  ".join(contact2_parts), S_CON2))
+    else:
+        content.append(Paragraph("  |  ".join(contact_parts), S_CON2))
     if resume.get("objective"):
         content += sec("Summary")
         content.append(Paragraph(resume["objective"], S_OBJ))
     if resume.get("skills"):
         content += sec("Skills")
-        content += _pdf_skills_grid(resume["skills"], S_SCAT, S_SITEM, usable_w / 2)
+        content += skills_single_col(resume["skills"])
     if resume.get("experience"):
         content += sec("Experience")
         content += _pdf_entries(resume["experience"], S_ETIT, S_EMETA, S_BUL)
@@ -443,6 +571,8 @@ def build():
             return render_template("limit.html"), 429
         data = {
             "name": request.form.get("name"),
+            "email": request.form.get("email"),
+            "phone": request.form.get("phone"),
             "school": request.form.get("school"),
             "grade": request.form.get("grade"),
             "gpa": request.form.get("gpa"),

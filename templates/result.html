@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>StepUp — Your Resume</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;1,400&family=EB+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;1,400&family=EB+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     /* ── App Shell ── */
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -69,49 +69,46 @@
     /* ══════════════════════════════════════
        PROFESSIONAL (classic)
     ══════════════════════════════════════ */
-    .cl-header { background: #1B3A6B; padding: 26px 40px 18px; text-align: center; }
-    .cl-name {
-      font-family: 'Inter', sans-serif; font-size: 26px; font-weight: 800;
-      color: #fff; margin-bottom: 5px; letter-spacing: 0.02em;
-    }
-    .cl-contact {
-      font-family: 'Open Sans', sans-serif; font-size: 11px;
-      color: #bfcfe8; line-height: 1.5;
-    }
-    .cl-body { padding: 24px 40px 32px; }
-    .cl-sec-title {
-      font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.07em; color: #2563EB;
-      margin-top: 22px; margin-bottom: 8px;
-    }
-    .cl-body > .cl-sec-title:first-child { margin-top: 0; }
-    .cl-obj {
-      font-family: 'Open Sans', sans-serif; font-size: 11px;
-      color: #6B7280; line-height: 1.6;
-    }
-    .cl-entry-title {
-      font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 700;
-      color: #1F2937; margin-bottom: 2px;
-    }
-    .cl-entry-meta {
-      font-family: 'Open Sans', sans-serif; font-size: 10.5px;
-      color: #6B7280; margin-bottom: 5px;
-    }
-    .cl-bullet {
-      font-family: 'Open Sans', sans-serif; font-size: 11px; color: #1F2937;
-      line-height: 1.5; margin-bottom: 5px; padding-left: 14px; position: relative;
-    }
-    .cl-bullet::before { content: "•"; position: absolute; left: 0; color: #2563EB; }
-    .cl-skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
-    .cl-skill-cat {
-      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700;
-      color: #1F2937; margin-top: 8px; margin-bottom: 3px;
-    }
-    .cl-skill-cat:first-child { margin-top: 0; }
-    .cl-skill-item {
-      font-family: 'Open Sans', sans-serif; font-size: 11px;
-      color: #374151; line-height: 1.65; padding-left: 8px;
-    }
+    .resume-classic { display: grid; grid-template-columns: 220px 1fr; font-family: 'Jost', sans-serif; }
+    .pf-sidebar { background: #F7F7F7; padding: 38px 20px 38px 24px; border-right: 1px solid #E8E8E8; display: flex; flex-direction: column; gap: 26px; min-height: 820px; }
+    .pf-sb-section { display: flex; flex-direction: column; }
+    .pf-sb-section.hidden { display: none; }
+    .pf-sb-label { font-size: 9px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: #111; margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid #CCC; }
+    .pf-contact-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .pf-contact-list li { font-size: 11.5px; color: #555; font-weight: 300; line-height: 1.5; display: flex; align-items: center; gap: 6px; }
+    .pf-contact-list li svg { flex-shrink: 0; opacity: 0.5; }
+    .pf-contact-list li.hidden { display: none; }
+    .pf-edu-school { font-size: 12.5px; font-weight: 600; color: #222; margin-bottom: 2px; }
+    .pf-edu-grade { font-size: 11px; color: #555; font-weight: 300; margin-bottom: 5px; }
+    .pf-edu-gpa { font-size: 11px; font-weight: 500; color: #222; letter-spacing: 0.3px; }
+    .pf-edu-gpa.hidden { display: none; }
+    .pf-skill-group { margin-bottom: 12px; }
+    .pf-skill-group:last-child { margin-bottom: 0; }
+    .pf-skill-group-name { font-size: 10.5px; font-weight: 600; color: #222; margin-bottom: 4px; letter-spacing: 0.3px; }
+    .pf-skill-list { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+    .pf-skill-list li { font-size: 11.5px; color: #555; font-weight: 300; line-height: 1.5; }
+    .pf-main { padding: 38px 38px 38px 34px; display: flex; flex-direction: column; gap: 24px; }
+    .pf-name-block { padding-bottom: 18px; border-bottom: 2px solid #111; }
+    .pf-name { font-family: 'Cormorant Garamond', serif; font-size: 46px; font-weight: 600; color: #111; line-height: 1; letter-spacing: -1px; margin-bottom: 6px; }
+    .pf-tagline { font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: #888; }
+    .pf-tagline-applying { font-size: 10px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; color: #888; opacity: 0.65; margin-top: 4px; }
+    .pf-tagline-applying.hidden { display: none; }
+    .pf-section { display: flex; flex-direction: column; }
+    .pf-section.hidden { display: none; }
+    .pf-m-label { font-size: 9px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: #111; margin-bottom: 11px; padding-bottom: 6px; border-bottom: 1px solid #CCC; }
+    .pf-summary { font-size: 12.5px; color: #555; line-height: 1.8; font-weight: 300; }
+    .pf-entry { margin-bottom: 16px; }
+    .pf-entry:last-child { margin-bottom: 0; }
+    .pf-entry-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1px; }
+    .pf-entry-title { font-size: 13.5px; font-weight: 600; color: #222; letter-spacing: 0.1px; }
+    .pf-entry-duration { font-size: 11px; color: #888; font-weight: 300; white-space: nowrap; margin-left: 12px; }
+    .pf-entry-duration.hidden { display: none; }
+    .pf-entry-subtitle { font-size: 11.5px; color: #555; font-weight: 300; font-style: italic; margin-bottom: 7px; }
+    .pf-entry-subtitle.hidden { display: none; }
+    .pf-bullets { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+    .pf-bullets li { font-size: 12px; color: #555; line-height: 1.65; padding-left: 13px; position: relative; font-weight: 300; }
+    .pf-bullets li::before { content: '·'; position: absolute; left: 2px; color: #888; font-size: 16px; line-height: 1.2; }
+    .pf-additional { font-size: 12px; color: #555; line-height: 1.75; font-weight: 300; }
 
     /* ══════════════════════════════════════
        MERIDIAN (modern)
@@ -399,20 +396,26 @@
         </div>
 
         <div class="tmpl-card" data-tmpl="classic" onclick="selectTemplate('classic')">
-          <div class="mock" style="padding:0;overflow:hidden;">
-            <div style="background:#1B3A6B;height:20px;display:flex;align-items:center;justify-content:center;">
-              <div style="height:4px;width:38%;background:#fff;border-radius:2px;opacity:0.9;"></div>
+          <div class="mock" style="padding:0;overflow:hidden;display:flex;">
+            <div style="width:32%;background:#F7F7F7;padding:5px 4px 0;border-right:1px solid #E8E8E8;">
+              <div style="height:1.5px;background:#CCC;margin-bottom:4px;width:60%;"></div>
+              <div style="height:2px;background:#ddd;margin-bottom:2px;"></div>
+              <div style="height:2px;width:70%;background:#ddd;margin-bottom:6px;"></div>
+              <div style="height:1.5px;background:#CCC;margin-bottom:4px;width:55%;"></div>
+              <div style="height:2px;background:#ddd;margin-bottom:2px;"></div>
+              <div style="height:2px;width:80%;background:#ddd;"></div>
             </div>
-            <div style="padding:5px 6px 0;">
-              <div class="mock-line short" style="background:#2563EB;height:3px;margin-bottom:5px;"></div>
-              <div class="mock-line full"></div>
-              <div class="mock-line med"></div>
-              <div class="mock-line short" style="background:#2563EB;height:3px;margin-top:7px;margin-bottom:5px;"></div>
-              <div class="mock-line full"></div>
+            <div style="flex:1;padding:5px 5px 0;">
+              <div style="height:7px;width:68%;background:#111;border-radius:1px;margin-bottom:3px;"></div>
+              <div style="height:1.5px;width:45%;background:#bbb;margin-bottom:3px;"></div>
+              <div style="height:1.5px;background:#111;width:100%;margin-bottom:6px;"></div>
+              <div style="height:1.5px;width:40%;background:#CCC;margin-bottom:4px;"></div>
+              <div style="height:2px;background:#e5e7eb;margin-bottom:2px;"></div>
+              <div style="height:2px;width:80%;background:#e5e7eb;"></div>
             </div>
           </div>
           <div class="tmpl-card-name">Professional</div>
-          <div class="tmpl-card-desc">Navy header, blue accents</div>
+          <div class="tmpl-card-desc">Serif name, minimal gray</div>
         </div>
 
         <div class="tmpl-card" data-tmpl="modern" onclick="selectTemplate('modern')">
@@ -506,83 +509,104 @@
     <!-- ══════════════════════════════════════
          PROFESSIONAL PREVIEW
     ══════════════════════════════════════ -->
-    <div id="preview-classic" class="resume" style="display:none;">
-      <div class="cl-header">
-        <div class="cl-name">{{ data.name }}</div>
-        <div class="cl-contact">{{ data.school }} &nbsp;&bull;&nbsp; Grade {{ data.grade }}{% if data.gpa %} &nbsp;&bull;&nbsp; GPA: {{ data.gpa }}{% endif %}</div>
-        {% if data.email or data.phone %}
-        <div class="cl-contact" style="margin-top:3px;">{% if data.email %}{{ data.email }}{% endif %}{% if data.email and data.phone %} &nbsp;&bull;&nbsp; {% endif %}{% if data.phone %}{{ data.phone | fmt_phone }}{% endif %}</div>
-        {% endif %}
-      </div>
-      <div class="cl-body">
+    <div id="preview-classic" class="resume resume-classic" style="display:none;">
 
-        {% if resume.objective %}
-        <div class="cl-sec-title">Summary</div>
-        <p class="cl-obj">{{ resume.objective }}</p>
-        {% endif %}
+      <aside class="pf-sidebar">
 
-        {% if resume.skills %}
-        <div class="cl-sec-title">Skills</div>
-        <div class="cl-skills-grid">
+        <div class="pf-sb-section">
+          <div class="pf-sb-label">Contact</div>
+          <ul class="pf-contact-list">
+            <li>
+              <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+              {{ data.email }}
+            </li>
+            <li class="{% if not data.phone %}hidden{% endif %}">
+              <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 013.09 4.18 2 2 0 015.07 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L9.09 9.91a16 16 0 006.99 6.99l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+              {{ data.phone | fmt_phone }}
+            </li>
+          </ul>
+        </div>
+
+        <div class="pf-sb-section">
+          <div class="pf-sb-label">Education</div>
+          <div class="pf-edu-school">{{ data.school }}</div>
+          <div class="pf-edu-grade">Grade {{ data.grade }} &nbsp;·&nbsp; Current</div>
+          <div class="pf-edu-gpa{% if not data.gpa %} hidden{% endif %}">GPA: {{ data.gpa }}</div>
+        </div>
+
+        <div class="pf-sb-section{% if not resume.skills %} hidden{% endif %}">
+          <div class="pf-sb-label">Skills</div>
           {% if resume.skills is mapping %}
             {% for cat_name, cat_skills in resume.skills.items() %}
-            <div>
-              <div class="cl-skill-cat">{{ cat_name }}</div>
-              {% for skill in cat_skills %}<div class="cl-skill-item">{{ skill }}</div>{% endfor %}
+            <div class="pf-skill-group">
+              <div class="pf-skill-group-name">{{ cat_name }}</div>
+              <ul class="pf-skill-list">{% for s in cat_skills %}<li>{{ s }}</li>{% endfor %}</ul>
             </div>
             {% endfor %}
           {% else %}
-            {% set half = ((resume.skills | length) + 1) // 2 %}
-            <div>{% for s in resume.skills[:half] %}<div class="cl-skill-item">{{ s }}</div>{% endfor %}</div>
-            <div>{% for s in resume.skills[half:] %}<div class="cl-skill-item">{{ s }}</div>{% endfor %}</div>
+            <div class="pf-skill-group">
+              <ul class="pf-skill-list">{% for s in resume.skills %}<li>{{ s }}</li>{% endfor %}</ul>
+            </div>
           {% endif %}
+        </div>
+
+      </aside>
+
+      <main class="pf-main">
+
+        <div class="pf-name-block">
+          <div class="pf-name">{{ data.name }}</div>
+          <div class="pf-tagline">{{ data.school }} &nbsp;·&nbsp; Grade {{ data.grade }}</div>
+          <div class="pf-tagline-applying{% if not data.applying_for %} hidden{% endif %}">{{ data.applying_for }}</div>
+        </div>
+
+        {% if resume.objective %}
+        <div class="pf-section">
+          <div class="pf-m-label">Summary</div>
+          <p class="pf-summary">{{ resume.objective }}</p>
         </div>
         {% endif %}
 
-        {% if resume.experience %}
-        <div class="cl-sec-title">Experience</div>
-        {% for entry in resume.experience %}
-        <div class="entry">
-          {% if entry is mapping %}
-            <div class="cl-entry-title">{{ entry.title }}</div>
-            {% if entry.meta %}<div class="cl-entry-meta">{{ entry.meta }}</div>{% endif %}
-            {% for b in entry.bullets %}<div class="cl-bullet">{{ b }}</div>{% endfor %}
-          {% else %}
-            <div class="cl-bullet">{{ entry }}</div>
-          {% endif %}
+        <div class="pf-section{% if not resume.activities %} hidden{% endif %}">
+          <div class="pf-m-label">Activities &amp; Involvement</div>
+          {% for entry in resume.activities or [] %}{% if entry is mapping %}
+            {% set mparts = entry.meta.split(' | ') if entry.meta else [] %}
+            {% set duration = mparts[-1] if mparts|length > 0 else '' %}
+            {% set subtitle_parts = mparts[:-1] if mparts|length > 1 else [] %}
+          <div class="pf-entry">
+            <div class="pf-entry-header">
+              <div class="pf-entry-title">{{ entry.title }}</div>
+              <div class="pf-entry-duration{% if not duration %} hidden{% endif %}">{{ duration }}</div>
+            </div>
+            <div class="pf-entry-subtitle{% if not subtitle_parts %} hidden{% endif %}">{{ subtitle_parts | join(' · ') }}</div>
+            {% if entry.bullets %}<ul class="pf-bullets">{% for b in entry.bullets %}<li>{{ b }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          {% endif %}{% endfor %}
         </div>
-        {% endfor %}
-        {% endif %}
 
-        <div class="cl-sec-title">Education</div>
-        {% for entry in resume.education %}
-        <div class="entry">
-          {% if entry is mapping %}
-            <div class="cl-entry-title">{{ entry.title }}</div>
-            {% if entry.meta %}<div class="cl-entry-meta">{{ entry.meta }}</div>{% endif %}
-            {% for b in entry.bullets %}<div class="cl-bullet">{{ b }}</div>{% endfor %}
-          {% else %}
-            <div class="cl-bullet">{{ entry }}</div>
-          {% endif %}
+        <div class="pf-section{% if not resume.experience %} hidden{% endif %}">
+          <div class="pf-m-label">Work &amp; Volunteer Experience</div>
+          {% for entry in resume.experience or [] %}{% if entry is mapping %}
+            {% set mparts = entry.meta.split(' | ') if entry.meta else [] %}
+            {% set duration = mparts[-1] if mparts|length > 0 else '' %}
+            {% set subtitle_parts = mparts[:-1] if mparts|length > 1 else [] %}
+          <div class="pf-entry">
+            <div class="pf-entry-header">
+              <div class="pf-entry-title">{{ entry.title }}</div>
+              <div class="pf-entry-duration{% if not duration %} hidden{% endif %}">{{ duration }}</div>
+            </div>
+            <div class="pf-entry-subtitle{% if not subtitle_parts %} hidden{% endif %}">{{ subtitle_parts | join(' · ') }}</div>
+            {% if entry.bullets %}<ul class="pf-bullets">{% for b in entry.bullets %}<li>{{ b }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          {% endif %}{% endfor %}
         </div>
-        {% endfor %}
 
-        {% if resume.activities %}
-        <div class="cl-sec-title">Activities &amp; Leadership</div>
-        {% for entry in resume.activities %}
-        <div class="entry">
-          {% if entry is mapping %}
-            <div class="cl-entry-title">{{ entry.title }}</div>
-            {% if entry.meta %}<div class="cl-entry-meta">{{ entry.meta }}</div>{% endif %}
-            {% for b in entry.bullets %}<div class="cl-bullet">{{ b }}</div>{% endfor %}
-          {% else %}
-            <div class="cl-bullet">{{ entry }}</div>
-          {% endif %}
+        <div class="pf-section{% if not data.extra %} hidden{% endif %}">
+          <div class="pf-m-label">Additional Information</div>
+          <p class="pf-additional">{{ data.extra }}</p>
         </div>
-        {% endfor %}
-        {% endif %}
 
-      </div>
+      </main>
     </div>
 
     <!-- ══════════════════════════════════════

@@ -197,84 +197,169 @@ def _pdf_skills_grid(skills_raw, s_cat, s_item, col_w):
 # ── PDF Templates ─────────────────────────────────────────────────────────────
 
 def _pdf_classic(data: dict, resume: dict) -> io.BytesIO:
-    """Professional: navy banner header, blue section titles, entry hierarchy."""
+    """Professional: left sidebar (light gray) + main column (large serif name, gray-only palette)."""
     buffer = io.BytesIO()
     PAGE_W, PAGE_H = letter
-    HEADER_H = 1.1 * inch
-    NAVY   = colors.HexColor("#1B3A6B")
-    ACCENT = colors.HexColor("#2563EB")
-    DARK   = colors.HexColor("#1F2937")
-    GRAY   = colors.HexColor("#6B7280")
-    WHITE  = colors.white
-    LM = RM = 0.75 * inch
+    BLACK  = colors.HexColor("#111111")
+    DARK   = colors.HexColor("#222222")
+    MID    = colors.HexColor("#555555")
+    LIGHT  = colors.HexColor("#888888")
+    RULE   = colors.HexColor("#CCCCCC")
+    RULE_L = colors.HexColor("#E8E8E8")
+    SBARBG = colors.HexColor("#F7F7F7")
+    LM = RM = 0.58 * inch
     usable_w = PAGE_W - LM - RM
-
-    contact_parts = [data.get("school", ""), f"Grade {data.get('grade', '')}"]
-    if data.get("gpa"):
-        contact_parts.append(f"GPA: {data['gpa']}")
-    name_text    = data.get("name", "")
-    contact_text = "  \u2022  ".join(contact_parts)
-    contact2_parts = []
-    if data.get("email"):
-        contact2_parts.append(data["email"])
-    if data.get("phone"):
-        contact2_parts.append(_fmt_phone(data["phone"]))
-    contact2_text = "  \u2022  ".join(contact2_parts)
-
-    def draw_header(canvas, doc):
-        canvas.saveState()
-        canvas.setFillColor(NAVY)
-        canvas.rect(0, PAGE_H - HEADER_H, PAGE_W, HEADER_H, fill=1, stroke=0)
-        canvas.setFillColor(WHITE)
-        canvas.setFont("Helvetica-Bold", 24)
-        canvas.drawCentredString(PAGE_W / 2, PAGE_H - 0.50 * inch, name_text)
-        canvas.setFont("Helvetica", 9)
-        canvas.drawCentredString(PAGE_W / 2, PAGE_H - 0.72 * inch, contact_text)
-        if contact2_text:
-            canvas.drawCentredString(PAGE_W / 2, PAGE_H - 0.90 * inch, contact2_text)
-        canvas.restoreState()
+    side_w   = usable_w * 0.30 - 8
+    main_w   = usable_w * 0.70 - 8
 
     doc = SimpleDocTemplate(
         buffer, pagesize=letter,
         rightMargin=RM, leftMargin=LM,
-        topMargin=HEADER_H + 0.25 * inch, bottomMargin=0.75 * inch
+        topMargin=0.62 * inch, bottomMargin=0.62 * inch
     )
 
-    S_SEC   = ParagraphStyle("cSec",   fontSize=10, fontName="Helvetica-Bold", textColor=ACCENT,
-                              spaceBefore=18, spaceAfter=6, leading=12)
-    S_ETIT  = ParagraphStyle("cETit",  fontSize=11, fontName="Helvetica-Bold", textColor=DARK,
-                              spaceAfter=1, leading=14)
-    S_EMETA = ParagraphStyle("cEMeta", fontSize=9,  fontName="Helvetica", textColor=GRAY,
-                              spaceAfter=3, leading=12)
-    S_BUL   = ParagraphStyle("cBul",   fontSize=9.5, fontName="Helvetica", textColor=DARK,
-                              spaceAfter=4, leading=13, leftIndent=12, firstLineIndent=-8)
-    S_OBJ   = ParagraphStyle("cObj",   fontSize=9.5, fontName="Helvetica", textColor=GRAY,
-                              spaceAfter=6, leading=14)
-    S_SCAT  = ParagraphStyle("cScat",  fontSize=9.5, fontName="Helvetica-Bold", textColor=DARK,
-                              spaceAfter=2, spaceBefore=4, leading=13)
-    S_SITEM = ParagraphStyle("cSitem", fontSize=9.5, fontName="Helvetica", textColor=DARK,
-                              spaceAfter=2, leading=12, leftIndent=8)
+    S_SLBL  = ParagraphStyle("pfSLbl",  fontSize=7.5, fontName="Helvetica-Bold",
+                              textColor=BLACK, spaceAfter=4, spaceBefore=18, leading=10)
+    S_SLBL_F= ParagraphStyle("pfSLblF", fontSize=7.5, fontName="Helvetica-Bold",
+                              textColor=BLACK, spaceAfter=4, leading=10)
+    S_CITEM = ParagraphStyle("pfCItm",  fontSize=9.5, fontName="Helvetica",
+                              textColor=MID,  spaceAfter=4, leading=13)
+    S_ESCH  = ParagraphStyle("pfESch",  fontSize=11,  fontName="Helvetica-Bold",
+                              textColor=DARK, spaceAfter=2, leading=14)
+    S_EGRD  = ParagraphStyle("pfEGrd",  fontSize=9.5, fontName="Helvetica",
+                              textColor=MID,  spaceAfter=4, leading=13)
+    S_EGPA  = ParagraphStyle("pfEGpa",  fontSize=9.5, fontName="Helvetica-Bold",
+                              textColor=DARK, spaceAfter=0, leading=13)
+    S_SGNAME= ParagraphStyle("pfSGNm",  fontSize=9,   fontName="Helvetica-Bold",
+                              textColor=DARK, spaceAfter=3, spaceBefore=8, leading=12)
+    S_SGITM = ParagraphStyle("pfSGItm", fontSize=9.5, fontName="Helvetica",
+                              textColor=MID,  spaceAfter=2, leading=13)
+    S_NAME  = ParagraphStyle("pfName",  fontSize=26,  fontName="Helvetica-Bold",
+                              textColor=BLACK, spaceAfter=3, leading=30)
+    S_TAGL  = ParagraphStyle("pfTagl",  fontSize=8,   fontName="Helvetica",
+                              textColor=LIGHT, spaceAfter=2, leading=12)
+    S_MLBL  = ParagraphStyle("pfMLbl",  fontSize=7.5, fontName="Helvetica-Bold",
+                              textColor=BLACK, spaceAfter=7, spaceBefore=18, leading=10)
+    S_MLBL_F= ParagraphStyle("pfMLblF", fontSize=7.5, fontName="Helvetica-Bold",
+                              textColor=BLACK, spaceAfter=7, leading=10)
+    S_SUM   = ParagraphStyle("pfSum",   fontSize=10,  fontName="Helvetica",
+                              textColor=MID,  spaceAfter=0, leading=16)
+    S_ETIT  = ParagraphStyle("pfETit",  fontSize=11.5,fontName="Helvetica-Bold",
+                              textColor=DARK, spaceAfter=1, leading=14)
+    S_EDATE = ParagraphStyle("pfEDt",   fontSize=9.5, fontName="Helvetica",
+                              textColor=LIGHT, alignment=2, leading=14)
+    S_ESUB  = ParagraphStyle("pfESub",  fontSize=9.5, fontName="Helvetica-Oblique",
+                              textColor=MID,  spaceAfter=4, leading=13)
+    S_BUL   = ParagraphStyle("pfBul",   fontSize=10,  fontName="Helvetica",
+                              textColor=MID,  spaceAfter=3, leading=14,
+                              leftIndent=12, firstLineIndent=-10)
+    S_ADDL  = ParagraphStyle("pfAddl",  fontSize=10,  fontName="Helvetica",
+                              textColor=MID,  spaceAfter=0, leading=16)
 
-    def sec(title):
-        return [Paragraph(title.upper(), S_SEC)]
+    def _sb_rule():
+        return HRFlowable(width=side_w, thickness=0.75, color=RULE, spaceAfter=7, spaceBefore=0)
 
-    content = []
+    def _main_rule():
+        return HRFlowable(width=main_w, thickness=0.75, color=RULE, spaceAfter=8, spaceBefore=0)
+
+    def _sb_label(text, first=False):
+        s = S_SLBL_F if first else S_SLBL
+        return [Paragraph(text.upper(), s), _sb_rule()]
+
+    def _main_label(text, first=False):
+        s = S_MLBL_F if first else S_MLBL
+        return [Paragraph(text.upper(), s), _main_rule()]
+
+    DATE_COL = 0.85 * inch
+
+    def _pf_entries(entries):
+        out = []
+        for e in (entries or []):
+            if isinstance(e, str):
+                out.append(Paragraph(f"\u00b7\u2002{e}", S_BUL))
+                continue
+            meta  = e.get("meta", "")
+            parts = meta.split(" | ") if meta else []
+            dur   = parts[-1].strip() if parts else ""
+            sub   = " · ".join(p.strip() for p in parts[:-1]) if len(parts) > 1 else ""
+            title_w = main_w - DATE_COL
+            if dur:
+                row = Table([[Paragraph(e.get("title", ""), S_ETIT), Paragraph(dur, S_EDATE)]],
+                            colWidths=[title_w, DATE_COL])
+                row.setStyle(TableStyle([
+                    ("VALIGN",        (0, 0), (-1, -1), "BOTTOM"),
+                    ("LEFTPADDING",   (0, 0), (-1, -1), 0),
+                    ("RIGHTPADDING",  (0, 0), (-1, -1), 0),
+                    ("TOPPADDING",    (0, 0), (-1, -1), 0),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+                ]))
+                out.append(row)
+            else:
+                out.append(Paragraph(e.get("title", ""), S_ETIT))
+            if sub:
+                out.append(Paragraph(sub, S_ESUB))
+            for b in e.get("bullets", []):
+                out.append(Paragraph(f"\u00b7\u2002{b}", S_BUL))
+            out.append(Spacer(1, 10))
+        return out
+
+    # ── Sidebar ──
+    side = []
+    side += _sb_label("Contact", first=True)
+    if data.get("email"):
+        side.append(Paragraph(data["email"], S_CITEM))
+    if data.get("phone"):
+        side.append(Paragraph(_fmt_phone(data["phone"]), S_CITEM))
+    side += _sb_label("Education")
+    side.append(Paragraph(data.get("school", ""), S_ESCH))
+    side.append(Paragraph(f"Grade {data.get('grade', '')}  ·  Current", S_EGRD))
+    if data.get("gpa"):
+        side.append(Paragraph(f"GPA: {data['gpa']}", S_EGPA))
+    skills = _normalize_skills(resume.get("skills", {}))
+    if skills:
+        side += _sb_label("Skills")
+        for cat_name, items in skills.items():
+            side.append(Paragraph(cat_name, S_SGNAME))
+            for item in (items or []):
+                side.append(Paragraph(item, S_SGITM))
+
+    # ── Main ──
+    main = []
+    main.append(Paragraph(data.get("name", ""), S_NAME))
+    tagline = f"{data.get('school', '').upper()}   ·   GRADE {data.get('grade', '')}"
+    main.append(Paragraph(tagline, S_TAGL))
+    if data.get("applying_for"):
+        main.append(Paragraph(data["applying_for"].upper(), S_TAGL))
+    main.append(HRFlowable(width=main_w, thickness=1.5, color=BLACK, spaceAfter=14, spaceBefore=6))
+
+    first_sec = True
     if resume.get("objective"):
-        content += sec("Summary")
-        content.append(Paragraph(resume["objective"], S_OBJ))
-    if resume.get("skills"):
-        content += sec("Skills")
-        content += _pdf_skills_grid(resume["skills"], S_SCAT, S_SITEM, usable_w / 2)
-    if resume.get("experience"):
-        content += sec("Experience")
-        content += _pdf_entries(resume["experience"], S_ETIT, S_EMETA, S_BUL)
-    content += sec("Education")
-    content += _pdf_entries(resume.get("education", []), S_ETIT, S_EMETA, S_BUL)
+        main += _main_label("Summary", first=first_sec); first_sec = False
+        main.append(Paragraph(resume["objective"], S_SUM))
     if resume.get("activities"):
-        content += sec("Activities & Leadership")
-        content += _pdf_entries(resume["activities"], S_ETIT, S_EMETA, S_BUL)
+        main += _main_label("Activities & Involvement", first=first_sec); first_sec = False
+        main += _pf_entries(resume["activities"])
+    if resume.get("experience"):
+        main += _main_label("Work & Volunteer Experience", first=first_sec); first_sec = False
+        main += _pf_entries(resume["experience"])
+    if data.get("extra"):
+        main += _main_label("Additional Information", first=first_sec)
+        main.append(Paragraph(data["extra"], S_ADDL))
 
-    doc.build(content, onFirstPage=draw_header, onLaterPages=draw_header)
+    body = Table([[side, main]], colWidths=[side_w, main_w])
+    body.setStyle(TableStyle([
+        ("VALIGN",        (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING",   (0, 0), (0, -1),  0),
+        ("RIGHTPADDING",  (0, 0), (0, -1),  14),
+        ("LEFTPADDING",   (1, 0), (1, -1),  16),
+        ("RIGHTPADDING",  (1, 0), (-1, -1), 0),
+        ("TOPPADDING",    (0, 0), (-1, -1), 0),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+        ("BACKGROUND",    (0, 0), (0, -1),  SBARBG),
+        ("LINEBEFORE",    (1, 0), (1, -1),  0.5, RULE_L),
+    ]))
+
+    doc.build([body])
     buffer.seek(0)
     return buffer
 

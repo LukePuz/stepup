@@ -242,6 +242,57 @@
       font-family: 'Open Sans', sans-serif; font-size: 11px;
       color: #374151; line-height: 1.5; margin-bottom: 3px;
     }
+
+    /* ══════════════════════════════════════
+       CHRONICLE (lateral/timeline)
+    ══════════════════════════════════════ */
+    .resume-lateral { display: flex; font-family: 'Open Sans', sans-serif; color: #333; min-height: 820px; }
+    .lt-main { flex: 1; padding: 32px 26px 44px; background: #fff; }
+    .lt-sidebar { width: 200px; background: #444; padding: 28px 16px 44px; flex-shrink: 0; }
+    .lt-name { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 800; color: #111; margin-bottom: 3px; }
+    .lt-subtitle { font-size: 11.5px; color: #777; margin-bottom: 26px; }
+    .lt-section { margin-bottom: 20px; }
+    .lt-section:last-child { margin-bottom: 0; }
+    .lt-sec-title {
+      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em; color: #555;
+      border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 14px;
+    }
+    .lt-block { display: flex; margin-bottom: 16px; }
+    .lt-block:last-child { margin-bottom: 0; }
+    .lt-date { width: 52px; flex-shrink: 0; text-align: right; padding-right: 10px; padding-top: 3px; }
+    .lt-date span { display: block; font-size: 9.5px; color: #aaa; line-height: 1.5; }
+    .lt-decorator { width: 14px; flex-shrink: 0; position: relative; }
+    .lt-decorator::before {
+      content: ''; position: absolute; top: 5px; left: 50%; transform: translateX(-50%);
+      width: 8px; height: 8px; border-radius: 50%; background: #bbb;
+    }
+    .lt-decorator::after {
+      content: ''; position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+      width: 1px; bottom: -16px; background: #e0e0e0;
+    }
+    .lt-block:last-child .lt-decorator::after { display: none; }
+    .lt-details { flex: 1; padding-left: 10px; }
+    .lt-details h3 { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: #1a1a1a; margin-bottom: 1px; }
+    .lt-place { font-size: 11px; color: #444; font-weight: 600; }
+    .lt-loc { font-size: 10.5px; color: #999; margin-left: 4px; }
+    .lt-bullets { margin: 6px 0 0 14px; }
+    .lt-bullets li { font-size: 10.5px; line-height: 1.6; color: #333; margin-bottom: 4px; }
+    /* Sidebar */
+    .lt-sb-section { margin-bottom: 20px; }
+    .lt-sb-section:last-child { margin-bottom: 0; }
+    .lt-sb-title {
+      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em; color: #fff;
+      border-bottom: 1px solid #666; padding-bottom: 5px; margin-bottom: 10px;
+    }
+    .lt-contact-list { list-style: none; padding: 0; }
+    .lt-contact-list li { font-size: 10.5px; color: #bbb; margin-bottom: 7px; display: flex; gap: 6px; align-items: flex-start; }
+    .lt-icon { color: #888; font-size: 11px; flex-shrink: 0; margin-top: 1px; }
+    .lt-skill-cat { font-size: 11px; font-weight: 700; color: #ddd; margin-top: 10px; margin-bottom: 4px; font-family: 'Inter', sans-serif; }
+    .lt-skill-cat:first-child { margin-top: 0; }
+    .lt-skill-item { font-size: 10.5px; color: #bbb; margin-bottom: 4px; padding-left: 10px; position: relative; }
+    .lt-skill-item::before { content: '–'; position: absolute; left: 0; color: #777; }
   </style>
 </head>
 <body>
@@ -338,6 +389,31 @@
           </div>
           <div class="tmpl-card-name">Meridian</div>
           <div class="tmpl-card-desc">Navy header, two-column</div>
+        </div>
+
+        <div class="tmpl-card" data-tmpl="lateral" onclick="selectTemplate('lateral')">
+          <div class="mock" style="padding:0;overflow:hidden;display:flex;">
+            <div style="flex:1;padding:6px 5px 0;">
+              <div style="height:5px;width:55%;background:#111;border-radius:1px;margin-bottom:3px;"></div>
+              <div style="height:2px;width:40%;background:#bbb;border-radius:1px;margin-bottom:7px;"></div>
+              <div style="height:2px;background:#ddd;margin-bottom:5px;"></div>
+              <div style="display:flex;gap:3px;margin-bottom:3px;">
+                <div style="width:10px;height:2px;background:#ccc;flex-shrink:0;margin-top:3px;"></div>
+                <div style="flex:1;height:2px;background:#e5e7eb;border-radius:1px;"></div>
+              </div>
+              <div style="display:flex;gap:3px;margin-bottom:3px;">
+                <div style="width:10px;height:2px;background:#ccc;flex-shrink:0;margin-top:3px;"></div>
+                <div style="flex:1;height:2px;background:#e5e7eb;border-radius:1px;"></div>
+              </div>
+            </div>
+            <div style="width:34%;background:#444;padding:6px 5px 0;">
+              <div style="height:2px;width:70%;background:#666;border-radius:1px;margin-bottom:5px;"></div>
+              <div style="height:2px;width:85%;background:#666;border-radius:1px;margin-bottom:3px;"></div>
+              <div style="height:2px;width:65%;background:#666;border-radius:1px;"></div>
+            </div>
+          </div>
+          <div class="tmpl-card-name">Chronicle</div>
+          <div class="tmpl-card-desc">Timeline layout, dark sidebar</div>
         </div>
 
       </div>
@@ -622,6 +698,136 @@
       </div>
       {% endfor %}
       {% endif %}
+    </div>
+
+    <!-- ══════════════════════════════════════
+         CHRONICLE PREVIEW
+    ══════════════════════════════════════ -->
+    <div id="preview-lateral" class="resume resume-lateral" style="display:none;">
+
+      <!-- Main column -->
+      <div class="lt-main">
+        <div class="lt-name">{{ data.name }}</div>
+        <div class="lt-subtitle">{{ data.school }} &nbsp;&bull;&nbsp; Grade {{ data.grade }}{% if data.gpa %} &nbsp;&bull;&nbsp; GPA: {{ data.gpa }}{% endif %}</div>
+
+        {% if resume.objective %}
+        <div class="lt-section">
+          <div class="lt-sec-title">Summary</div>
+          <div style="font-size:10.5px;color:#333;line-height:1.65;">{{ resume.objective }}</div>
+        </div>
+        {% endif %}
+
+        {% if resume.experience %}
+        <div class="lt-section">
+          <div class="lt-sec-title">Experience</div>
+          {% for entry in resume.experience %}
+          <div class="lt-block">
+            {% if entry is mapping %}
+              {% set mparts = entry.meta.split(' | ') if entry.meta else [] %}
+              {% set date_str = mparts[-1] if mparts|length > 0 else '' %}
+              {% set place_parts = mparts[:-1] if mparts|length > 1 else [] %}
+              <div class="lt-date"><span>{{ date_str }}</span></div>
+              <div class="lt-decorator"></div>
+              <div class="lt-details">
+                <h3>{{ entry.title }}</h3>
+                {% if place_parts %}<span class="lt-place">{{ place_parts | join(' · ') }}</span>{% endif %}
+                {% if entry.bullets %}
+                <ul class="lt-bullets">{% for b in entry.bullets %}<li>{{ b }}</li>{% endfor %}</ul>
+                {% endif %}
+              </div>
+            {% else %}
+              <div class="lt-date"></div>
+              <div class="lt-decorator"></div>
+              <div class="lt-details"><div style="font-size:10.5px;">{{ entry }}</div></div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if resume.activities %}
+        <div class="lt-section">
+          <div class="lt-sec-title">Activities &amp; Leadership</div>
+          {% for entry in resume.activities %}
+          <div class="lt-block">
+            {% if entry is mapping %}
+              {% set mparts = entry.meta.split(' | ') if entry.meta else [] %}
+              {% set date_str = mparts[-1] if mparts|length > 0 else '' %}
+              {% set place_parts = mparts[:-1] if mparts|length > 1 else [] %}
+              <div class="lt-date"><span>{{ date_str }}</span></div>
+              <div class="lt-decorator"></div>
+              <div class="lt-details">
+                <h3>{{ entry.title }}</h3>
+                {% if place_parts %}<span class="lt-place">{{ place_parts | join(' · ') }}</span>{% endif %}
+                {% if entry.bullets %}
+                <ul class="lt-bullets">{% for b in entry.bullets %}<li>{{ b }}</li>{% endfor %}</ul>
+                {% endif %}
+              </div>
+            {% else %}
+              <div class="lt-date"></div>
+              <div class="lt-decorator"></div>
+              <div class="lt-details"><div style="font-size:10.5px;">{{ entry }}</div></div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if resume.education %}
+        <div class="lt-section">
+          <div class="lt-sec-title">Education</div>
+          {% for entry in resume.education %}
+          <div class="lt-block">
+            {% if entry is mapping %}
+              {% set mparts = entry.meta.split(' | ') if entry.meta else [] %}
+              {% set date_str = mparts[-1] if mparts|length > 0 else '' %}
+              {% set place_parts = mparts[:-1] if mparts|length > 1 else [] %}
+              <div class="lt-date"><span>{{ date_str }}</span></div>
+              <div class="lt-decorator"></div>
+              <div class="lt-details">
+                <h3>{{ entry.title }}</h3>
+                {% if place_parts %}<span class="lt-place">{{ place_parts | join(' · ') }}</span>{% endif %}
+                {% if entry.bullets %}
+                <ul class="lt-bullets">{% for b in entry.bullets %}<li>{{ b }}</li>{% endfor %}</ul>
+                {% endif %}
+              </div>
+            {% else %}
+              <div class="lt-date"></div>
+              <div class="lt-decorator"></div>
+              <div class="lt-details"><div style="font-size:10.5px;">{{ entry }}</div></div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Dark sidebar -->
+      <div class="lt-sidebar">
+        <div class="lt-sb-section">
+          <div class="lt-sb-title">Contact</div>
+          <ul class="lt-contact-list">
+            <li><span class="lt-icon">✉</span> {{ data.email }}</li>
+            {% if data.phone %}<li><span class="lt-icon">✆</span> {{ data.phone | fmt_phone }}</li>{% endif %}
+            <li><span class="lt-icon">◎</span> {{ data.school }}</li>
+          </ul>
+        </div>
+
+        {% if resume.skills %}
+        <div class="lt-sb-section">
+          <div class="lt-sb-title">Skills</div>
+          {% if resume.skills is mapping %}
+            {% for cat_name, cat_skills in resume.skills.items() %}
+              <div class="lt-skill-cat">{{ cat_name }}</div>
+              {% for skill in cat_skills %}<div class="lt-skill-item">{{ skill }}</div>{% endfor %}
+            {% endfor %}
+          {% else %}
+            {% for s in resume.skills %}<div class="lt-skill-item">{{ s }}</div>{% endfor %}
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+
     </div>
 
     </div> <!-- /resume-area -->

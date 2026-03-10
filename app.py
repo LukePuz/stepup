@@ -128,6 +128,8 @@ def build_pdf(data: dict, resume: dict, template: str = "classic") -> io.BytesIO
         return _pdf_modern(data, resume)
     elif template == "executive":
         return _pdf_executive(data, resume)
+    elif template == "lateral":
+        return _pdf_lateral(data, resume)
     else:
         return _pdf_classic(data, resume)
 
@@ -540,6 +542,148 @@ def _pdf_executive(data: dict, resume: dict) -> io.BytesIO:
         content += _pdf_entries(resume["activities"], S_ETIT, S_EMETA, S_BUL)
 
     doc.build(content)
+    buffer.seek(0)
+    return buffer
+
+
+def _pdf_lateral(data: dict, resume: dict) -> io.BytesIO:
+    """Chronicle: timeline main column + dark right sidebar."""
+    buffer = io.BytesIO()
+    PAGE_W, PAGE_H = letter
+    DARK   = colors.HexColor("#1A1A1A")
+    MED    = colors.HexColor("#444444")
+    GRAY   = colors.HexColor("#888888")
+    LGRAY  = colors.HexColor("#AAAAAA")
+    SBARBG = colors.HexColor("#444444")
+    SBARTX = colors.HexColor("#BBBBBB")
+    SBARTITLE = colors.white
+    LM = RM = 0.6 * inch
+    usable_w = PAGE_W - LM - RM
+    main_w   = usable_w * 0.68 - 10
+    side_w   = usable_w * 0.32 - 10
+
+    doc = SimpleDocTemplate(
+        buffer, pagesize=letter,
+        rightMargin=RM, leftMargin=LM,
+        topMargin=0.65 * inch, bottomMargin=0.65 * inch
+    )
+
+    S_NAME  = ParagraphStyle("ltName", fontSize=20, fontName="Helvetica-Bold",
+                              textColor=DARK, spaceAfter=3, leading=24)
+    S_SUB   = ParagraphStyle("ltSub",  fontSize=10, fontName="Helvetica",
+                              textColor=GRAY, spaceAfter=16, leading=14)
+    S_SEC   = ParagraphStyle("ltSec",  fontSize=9,  fontName="Helvetica-Bold",
+                              textColor=MED, spaceAfter=6, spaceBefore=14, leading=13,
+                              borderPadding=(0, 0, 3, 0))
+    S_ETIT  = ParagraphStyle("ltETit", fontSize=10.5, fontName="Helvetica-Bold",
+                              textColor=DARK, spaceAfter=1, leading=14)
+    S_META  = ParagraphStyle("ltMeta", fontSize=9,  fontName="Helvetica",
+                              textColor=GRAY, spaceAfter=3, leading=13)
+    S_DATE  = ParagraphStyle("ltDate", fontSize=8.5, fontName="Helvetica",
+                              textColor=LGRAY, spaceAfter=0, leading=12)
+    S_BUL   = ParagraphStyle("ltBul",  fontSize=9.5, fontName="Helvetica",
+                              textColor=DARK, spaceAfter=3, leading=14,
+                              leftIndent=10, firstLineIndent=-7)
+    S_OBJ   = ParagraphStyle("ltObj",  fontSize=9.5, fontName="Helvetica",
+                              textColor=DARK, spaceAfter=8, leading=14)
+    S_STIT  = ParagraphStyle("ltSTit", fontSize=9,  fontName="Helvetica-Bold",
+                              textColor=SBARTITLE, spaceAfter=6, spaceBefore=14, leading=13)
+    S_SCON  = ParagraphStyle("ltSCon", fontSize=9,  fontName="Helvetica",
+                              textColor=SBARTX, spaceAfter=5, leading=13)
+    S_SCAT  = ParagraphStyle("ltSCat", fontSize=9,  fontName="Helvetica-Bold",
+                              textColor=colors.HexColor("#DDDDDD"), spaceAfter=3,
+                              spaceBefore=8, leading=13)
+    S_SITEM = ParagraphStyle("ltSItm", fontSize=9,  fontName="Helvetica",
+                              textColor=SBARTX, spaceAfter=3, leading=13,
+                              leftIndent=8, firstLineIndent=-6)
+
+    def _sec_rule():
+        return HRFlowable(width=main_w, thickness=0.5, color=colors.HexColor("#DDDDDD"),
+                          spaceAfter=8, spaceBefore=2)
+
+    def _lateral_entries(entries):
+        out = []
+        for e in (entries or []):
+            if isinstance(e, str):
+                out.append(Paragraph(f"\u2022\u2002{e}", S_BUL))
+                continue
+            meta = e.get("meta", "")
+            parts = meta.split(" | ") if meta else []
+            date_str  = parts[-1].strip() if parts else ""
+            place_str = " · ".join(p.strip() for p in parts[:-1]) if len(parts) > 1 else ""
+            out.append(Paragraph(e.get("title", ""), S_ETIT))
+            if date_str or place_str:
+                combined = place_str
+                if date_str and place_str:
+                    combined = f"{place_str}   {date_str}"
+                elif date_str:
+                    combined = date_str
+                out.append(Paragraph(combined, S_META))
+            for b in e.get("bullets", []):
+                out.append(Paragraph(f"\u2022\u2002{b}", S_BUL))
+            out.append(Spacer(1, 8))
+        return out
+
+    # ── Main column ──
+    main = []
+    main.append(Paragraph(data.get("name", ""), S_NAME))
+    sub_parts = [data.get("school", ""), f"Grade {data.get('grade', '')}"]
+    if data.get("gpa"):
+        sub_parts.append(f"GPA: {data['gpa']}")
+    main.append(Paragraph("   |   ".join(sub_parts), S_SUB))
+
+    if resume.get("objective"):
+        main.append(Paragraph("SUMMARY", S_SEC))
+        main.append(_sec_rule())
+        main.append(Paragraph(resume["objective"], S_OBJ))
+    if resume.get("experience"):
+        main.append(Paragraph("EXPERIENCE", S_SEC))
+        main.append(_sec_rule())
+        main += _lateral_entries(resume["experience"])
+    if resume.get("activities"):
+        main.append(Paragraph("ACTIVITIES & LEADERSHIP", S_SEC))
+        main.append(_sec_rule())
+        main += _lateral_entries(resume["activities"])
+    if resume.get("education"):
+        main.append(Paragraph("EDUCATION", S_SEC))
+        main.append(_sec_rule())
+        main += _lateral_entries(resume["education"])
+
+    # ── Sidebar ──
+    side = []
+    side.append(Paragraph("CONTACT", S_STIT))
+    if data.get("email"):
+        side.append(Paragraph(data["email"], S_SCON))
+    if data.get("phone"):
+        side.append(Paragraph(_fmt_phone(data["phone"]), S_SCON))
+    if data.get("school"):
+        side.append(Paragraph(data["school"], S_SCON))
+
+    skills = _normalize_skills(resume.get("skills", {}))
+    if skills:
+        side.append(Spacer(1, 10))
+        side.append(Paragraph("SKILLS", S_STIT))
+        for cat_name, items in skills.items():
+            side.append(Paragraph(cat_name, S_SCAT))
+            for item in (items or []):
+                side.append(Paragraph(f"\u2013\u2002{item}", S_SITEM))
+
+    body = Table(
+        [[main, side]],
+        colWidths=[main_w, side_w]
+    )
+    body.setStyle(TableStyle([
+        ("VALIGN",        (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING",   (0, 0), (0, -1),  0),
+        ("RIGHTPADDING",  (0, 0), (0, -1),  14),
+        ("LEFTPADDING",   (1, 0), (1, -1),  14),
+        ("RIGHTPADDING",  (1, 0), (-1, -1), 0),
+        ("TOPPADDING",    (0, 0), (-1, -1), 12),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 12),
+        ("BACKGROUND",    (1, 0), (1, -1),  SBARBG),
+    ]))
+
+    doc.build([body])
     buffer.seek(0)
     return buffer
 

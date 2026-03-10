@@ -130,6 +130,8 @@ def build_pdf(data: dict, resume: dict, template: str = "classic") -> io.BytesIO
         return _pdf_executive(data, resume)
     elif template == "lateral":
         return _pdf_lateral(data, resume)
+    elif template == "lumina":
+        return _pdf_lumina(data, resume)
     else:
         return _pdf_classic(data, resume)
 
@@ -684,6 +686,245 @@ def _pdf_lateral(data: dict, resume: dict) -> io.BytesIO:
     ]))
 
     doc.build([body])
+    buffer.seek(0)
+    return buffer
+
+
+def _pdf_lumina(data: dict, resume: dict) -> io.BytesIO:
+    """Lumina: serif name, navy header, light sidebar, blue accents."""
+    from reportlab.platypus import Flowable as _Flowable
+
+    buffer = io.BytesIO()
+    PAGE_W, PAGE_H = letter
+    NAVY    = colors.HexColor("#1B2A45")
+    ACCENT  = colors.HexColor("#2E5FA3")
+    ACCL    = colors.HexColor("#EAF0FA")
+    DARK    = colors.HexColor("#1A1A1A")
+    MEDGRAY = colors.HexColor("#4A4A4A")
+    GRAY    = colors.HexColor("#888888")
+    SBARBG  = colors.HexColor("#F4F6FA")
+    DIVIDER = colors.HexColor("#D4D9E2")
+    LM = RM = 0.65 * inch
+    usable_w = PAGE_W - LM - RM
+    side_w   = usable_w * 0.30 - 8
+    main_w   = usable_w * 0.70 - 8
+
+    applying = (data.get("applying_for") or "").strip()
+    HEADER_H = (1.65 if applying else 1.4) * inch
+
+    name_text    = data.get("name", "")
+    school_text  = data.get("school", "")
+    grade_text   = f"Grade {data.get('grade', '')}"
+    gpa_text     = f"GPA {data['gpa']}" if data.get("gpa") else ""
+    meta_right   = "  ·  ".join(filter(None, [grade_text, gpa_text]))
+    email_text   = data.get("email", "")
+    phone_text   = _fmt_phone(data.get("phone", "") or "")
+
+    def draw_header(canvas, doc):
+        canvas.saveState()
+        canvas.setFillColor(NAVY)
+        canvas.rect(0, PAGE_H - HEADER_H, PAGE_W, HEADER_H, fill=1, stroke=0)
+        # Name (large, serif-ish → Helvetica-BoldOblique as closest available)
+        canvas.setFillColor(colors.white)
+        canvas.setFont("Helvetica-Bold", 26)
+        canvas.drawString(LM, PAGE_H - 0.52 * inch, name_text)
+        # School + grade on right
+        canvas.setFont("Helvetica-Bold", 11)
+        canvas.setFillColor(colors.HexColor("#E0E6F0"))
+        canvas.drawRightString(PAGE_W - RM, PAGE_H - 0.47 * inch, school_text)
+        canvas.setFont("Helvetica", 10)
+        canvas.setFillColor(colors.HexColor("#94A9C4"))
+        canvas.drawRightString(PAGE_W - RM, PAGE_H - 0.63 * inch, meta_right)
+        # Applying-for strip
+        y_after_name = PAGE_H - 0.75 * inch
+        if applying:
+            canvas.setFillColor(colors.HexColor("#263D60"))
+            canvas.roundRect(LM, y_after_name - 0.18 * inch, 2.8 * inch, 0.20 * inch, 3, fill=1, stroke=0)
+            canvas.setFillColor(colors.HexColor("#94A9C4"))
+            canvas.setFont("Helvetica", 8.5)
+            canvas.drawString(LM + 9, y_after_name - 0.13 * inch, "Applying for: ")
+            canvas.setFillColor(colors.white)
+            canvas.setFont("Helvetica-Bold", 8.5)
+            canvas.drawString(LM + 72, y_after_name - 0.13 * inch, applying)
+            y_after_name -= 0.24 * inch
+        # Contact bar separator
+        sep_y = y_after_name - 0.08 * inch
+        canvas.setStrokeColor(colors.HexColor("#2E3F5E"))
+        canvas.setLineWidth(0.5)
+        canvas.line(LM, sep_y, PAGE_W - RM, sep_y)
+        # Email + phone
+        canvas.setFont("Helvetica", 9.5)
+        canvas.setFillColor(colors.HexColor("#94A9C4"))
+        contact_y = sep_y - 0.20 * inch
+        x = LM
+        if email_text:
+            canvas.drawString(x, contact_y, email_text)
+            x += canvas.stringWidth(email_text, "Helvetica", 9.5) + 24
+        if phone_text:
+            canvas.drawString(x, contact_y, phone_text)
+        canvas.restoreState()
+
+    doc = SimpleDocTemplate(
+        buffer, pagesize=letter,
+        rightMargin=RM, leftMargin=LM,
+        topMargin=HEADER_H + 0.22 * inch, bottomMargin=0.65 * inch
+    )
+
+    # Styles
+    S_SBLABEL = ParagraphStyle("lmSBLbl", fontSize=8, fontName="Helvetica-Bold",
+                                textColor=ACCENT, spaceAfter=6, spaceBefore=20,
+                                leading=11, wordWrap='LTR')
+    S_SBLABEL_FIRST = ParagraphStyle("lmSBLbl1", fontSize=8, fontName="Helvetica-Bold",
+                                      textColor=ACCENT, spaceAfter=6,
+                                      leading=11, wordWrap='LTR')
+    S_SCHOOL  = ParagraphStyle("lmSch",  fontSize=11, fontName="Helvetica-Bold",
+                                textColor=DARK, spaceAfter=2, leading=14)
+    S_EDUMETA = ParagraphStyle("lmEduM", fontSize=9.5, fontName="Helvetica",
+                                textColor=GRAY, spaceAfter=5, leading=13)
+    S_GPABADGE= ParagraphStyle("lmGPA",  fontSize=9,  fontName="Helvetica-Bold",
+                                textColor=colors.white, spaceAfter=0, leading=12,
+                                backColor=NAVY, borderPadding=(2, 6, 2, 6))
+    S_SGCAT   = ParagraphStyle("lmSGCat",fontSize=9,  fontName="Helvetica-Bold",
+                                textColor=DARK, spaceAfter=3, spaceBefore=8, leading=13)
+    S_SGITEM  = ParagraphStyle("lmSGItm",fontSize=9.5, fontName="Helvetica",
+                                textColor=MEDGRAY, spaceAfter=2, leading=13,
+                                leftIndent=8, firstLineIndent=-6)
+    S_SECTIT  = ParagraphStyle("lmSecT", fontSize=8,  fontName="Helvetica-Bold",
+                                textColor=ACCENT, spaceAfter=8, spaceBefore=20,
+                                leading=11, wordWrap='LTR')
+    S_SECTIT_FIRST = ParagraphStyle("lmSecT1", fontSize=8, fontName="Helvetica-Bold",
+                                     textColor=ACCENT, spaceAfter=8,
+                                     leading=11, wordWrap='LTR')
+    S_SUMMARY = ParagraphStyle("lmSum",  fontSize=10.5, fontName="Helvetica",
+                                textColor=MEDGRAY, spaceAfter=0, leading=17)
+    S_ETIT    = ParagraphStyle("lmETit", fontSize=12,  fontName="Helvetica-Bold",
+                                textColor=DARK, spaceAfter=1, leading=15)
+    S_EDATE   = ParagraphStyle("lmEDt",  fontSize=9.5, fontName="Helvetica",
+                                textColor=GRAY, alignment=2, leading=15)
+    S_ESUB    = ParagraphStyle("lmESub", fontSize=10,  fontName="Helvetica",
+                                textColor=ACCENT, spaceAfter=5, leading=13)
+    S_BUL     = ParagraphStyle("lmBul",  fontSize=10,  fontName="Helvetica",
+                                textColor=MEDGRAY, spaceAfter=3, leading=15,
+                                leftIndent=12, firstLineIndent=-9)
+
+    class SectionTitle(_Flowable):
+        """Blue left-bar accent + uppercase label, similar to Lumina design."""
+        def __init__(self, text, col_w, first=False):
+            _Flowable.__init__(self)
+            self.text  = text.upper()
+            self.col_w = col_w
+            self._pad  = 0 if first else 18
+            self._h    = 22
+
+        def wrap(self, aw, ah):
+            return (self.col_w, self._h + self._pad)
+
+        def draw(self):
+            c = self.canv
+            c.saveState()
+            c.translate(0, self._pad)
+            # Blue left bar
+            c.setFillColor(ACCENT)
+            c.rect(0, 4, 3, 12, fill=1, stroke=0)
+            # Text
+            c.setFont("Helvetica-Bold", 8)
+            c.setFillColor(ACCENT)
+            c.drawString(10, 7, self.text)
+            # Rule below
+            c.setStrokeColor(ACCL)
+            c.setLineWidth(1.2)
+            c.line(0, 2, self.col_w, 2)
+            c.restoreState()
+
+    def _sb_section_title(text, first=False):
+        s = S_SBLABEL_FIRST if first else S_SBLABEL
+        out = [Paragraph(text.upper(), s)]
+        out.append(HRFlowable(width=side_w, thickness=1.2, color=ACCL, spaceAfter=6, spaceBefore=0))
+        return out
+
+    DATE_COL = 0.85 * inch
+
+    def _lm_entries(entries, first_sec=False):
+        out = []
+        entries = entries if isinstance(entries, list) else []
+        for i, e in enumerate(entries):
+            if isinstance(e, str):
+                out.append(Paragraph(f"\u2022\u2002{e}", S_BUL))
+                continue
+            meta   = e.get("meta", "")
+            parts  = meta.split(" | ") if meta else []
+            dur    = parts[-1].strip() if parts else ""
+            sub    = " · ".join(p.strip() for p in parts[:-1]) if len(parts) > 1 else ""
+            title_w = main_w - DATE_COL
+            if dur:
+                row = Table([[Paragraph(e.get("title", ""), S_ETIT), Paragraph(dur, S_EDATE)]],
+                            colWidths=[title_w, DATE_COL])
+                row.setStyle(TableStyle([
+                    ("VALIGN",        (0,0),(-1,-1),"BOTTOM"),
+                    ("LEFTPADDING",   (0,0),(-1,-1),0),
+                    ("RIGHTPADDING",  (0,0),(-1,-1),0),
+                    ("TOPPADDING",    (0,0),(-1,-1),0),
+                    ("BOTTOMPADDING", (0,0),(-1,-1),2),
+                ]))
+                out.append(row)
+            else:
+                out.append(Paragraph(e.get("title", ""), S_ETIT))
+            if sub:
+                out.append(Paragraph(sub, S_ESUB))
+            for b in e.get("bullets", []):
+                out.append(Paragraph(f"\u2022\u2002{b}", S_BUL))
+            if i < len(entries) - 1:
+                out.append(HRFlowable(width=main_w, thickness=0.5, color=colors.HexColor("#ECEEF2"),
+                                      spaceAfter=10, spaceBefore=10))
+        return out
+
+    # ── Sidebar ──
+    side = []
+    side += _sb_section_title("Education", first=True)
+    side.append(Paragraph(data.get("school", ""), S_SCHOOL))
+    grade_meta = f"Grade {data.get('grade', '')}  ·  Current"
+    side.append(Paragraph(grade_meta, S_EDUMETA))
+    if data.get("gpa"):
+        side.append(Paragraph(f"GPA: {data['gpa']}", S_GPABADGE))
+
+    skills = _normalize_skills(resume.get("skills", {}))
+    if skills:
+        side += _sb_section_title("Skills")
+        for cat_name, items in skills.items():
+            side.append(Paragraph(cat_name, S_SGCAT))
+            for item in (items or []):
+                side.append(Paragraph(f"\u2013\u2002{item}", S_SGITEM))
+
+    # ── Main ──
+    main = []
+    first = True
+    if resume.get("objective"):
+        main.append(SectionTitle("Summary", main_w, first=first)); first = False
+        main.append(Paragraph(resume["objective"], S_SUMMARY))
+    if resume.get("activities"):
+        main.append(SectionTitle("Activities & Involvement", main_w, first=first)); first = False
+        main += _lm_entries(resume["activities"])
+    if resume.get("experience"):
+        main.append(SectionTitle("Work & Volunteer Experience", main_w, first=first)); first = False
+        main += _lm_entries(resume["experience"])
+    if data.get("extra"):
+        main.append(SectionTitle("Additional Information", main_w, first=first))
+        main.append(Paragraph(data["extra"], S_SUMMARY))
+
+    body = Table([[side, main]], colWidths=[side_w, main_w])
+    body.setStyle(TableStyle([
+        ("VALIGN",        (0,0),(-1,-1),"TOP"),
+        ("LEFTPADDING",   (0,0),(0,-1), 0),
+        ("RIGHTPADDING",  (0,0),(0,-1), 14),
+        ("LEFTPADDING",   (1,0),(1,-1), 16),
+        ("RIGHTPADDING",  (1,0),(-1,-1),0),
+        ("TOPPADDING",    (0,0),(-1,-1),0),
+        ("BOTTOMPADDING", (0,0),(-1,-1),0),
+        ("BACKGROUND",    (0,0),(0,-1), SBARBG),
+        ("LINEBEFORE",    (1,0),(1,-1), 0.5, DIVIDER),
+    ]))
+
+    doc.build([body], onFirstPage=draw_header, onLaterPages=draw_header)
     buffer.seek(0)
     return buffer
 

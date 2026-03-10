@@ -54,9 +54,12 @@
     .mock-line.full  { width: 100%; }
 
     /* ── Resume Preview Shell ── */
+    .resume-area {
+      background: #dde0e6; padding: 28px; margin-top: 4px;
+    }
     .resume {
-      background: white; color: #111; border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4); overflow: hidden;
+      background: white; color: #111; border-radius: 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2); overflow: hidden;
     }
 
     /* Shared entry spacing */
@@ -115,74 +118,78 @@
     ══════════════════════════════════════ */
     .resume-modern { overflow: hidden; }
     .mn-header {
-      background: #1B2A4A; padding: 24px 44px 20px; text-align: center;
+      background: #1B2A4A; padding: 32px 44px 26px; text-align: center;
     }
     .mn-name {
-      font-family: 'Inter', sans-serif; font-size: 36px; font-weight: 700;
-      color: #ffffff; letter-spacing: 0.02em; margin-bottom: 10px;
+      font-family: 'Inter', sans-serif; font-size: 40px; font-weight: 800;
+      color: #ffffff; letter-spacing: 0.02em; margin-bottom: 12px;
     }
     .mn-contact-bar {
       display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
-      font-family: 'Open Sans', sans-serif; font-size: 10.5px; color: #94a9c4;
-      line-height: 1.8;
+      font-family: 'Open Sans', sans-serif; font-size: 11.5px; color: #94a9c4;
+      line-height: 1.8; gap: 0 4px;
     }
-    .mn-contact-item { padding: 0 7px; }
+    .mn-contact-item { padding: 0 10px; }
     .mn-contact-sep { color: #3d567a; }
-    .mn-body { display: flex; align-items: stretch; min-height: 680px; }
+    .mn-body { display: flex; align-items: stretch; min-height: 820px; }
     .mn-sidebar {
-      width: 32%; background: #F4F5F7; padding: 26px 18px 48px;
+      width: 32%; background: #F4F5F7; padding: 30px 20px 60px;
       border-right: 1px solid #D8DCE4; flex-shrink: 0;
+      align-self: stretch;
     }
-    .mn-main { flex: 1; background: #fff; padding: 26px 32px 48px; }
+    .mn-main { flex: 1; background: #fff; padding: 30px 36px 60px; }
     .mn-sec-title {
-      font-family: 'Inter', sans-serif; font-size: 10.5px; font-weight: 700;
+      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700;
       text-transform: uppercase; letter-spacing: 0.15em; color: #1B2A4A;
-      border-left: 3px solid #1B2A4A; padding-left: 9px;
-      margin-top: 22px; margin-bottom: 10px;
+      border-left: 2px solid #1B2A4A; padding-left: 9px;
+      margin-top: 28px; margin-bottom: 14px;
     }
     .mn-sidebar .mn-sec-title:first-child,
     .mn-main   .mn-sec-title:first-child { margin-top: 0; }
     .mn-obj {
-      font-family: 'Open Sans', sans-serif; font-size: 11px;
-      color: #2D2D2D; line-height: 1.75; margin-bottom: 4px;
+      font-family: 'Open Sans', sans-serif; font-size: 11.5px;
+      color: #2D2D2D; line-height: 1.8; margin-bottom: 8px;
     }
     .mn-entry-title-row {
       display: flex; justify-content: space-between; align-items: baseline;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
     .mn-entry-title {
-      font-family: 'Inter', sans-serif; font-size: 11.5px; font-weight: 700;
+      font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700;
       color: #1B2A4A;
     }
     .mn-entry-date {
-      font-family: 'Open Sans', sans-serif; font-size: 10px; color: #888888;
+      font-family: 'Open Sans', sans-serif; font-size: 10.5px; color: #888888;
       white-space: nowrap; margin-left: 8px; flex-shrink: 0;
     }
     .mn-entry-meta {
-      font-family: 'Open Sans', sans-serif; font-size: 10.5px;
-      color: #888888; margin-bottom: 6px;
+      font-family: 'Open Sans', sans-serif; font-size: 11px;
+      color: #888888; margin-bottom: 8px; margin-top: 2px;
     }
     .mn-bullet {
-      font-family: 'Open Sans', sans-serif; font-size: 10.5px; color: #2D2D2D;
-      line-height: 1.6; margin-bottom: 6px; padding-left: 15px; position: relative;
+      font-family: 'Open Sans', sans-serif; font-size: 11px; color: #2D2D2D;
+      line-height: 1.65; margin-bottom: 9px; padding-left: 20px; position: relative;
     }
     .mn-bullet::before {
-      content: "•"; position: absolute; left: 0; color: #1B2A4A;
-      font-size: 11px; line-height: 1.6;
+      content: "•"; position: absolute; left: 4px; color: #1B2A4A;
+      font-size: 12px; line-height: 1.65;
     }
-    .mn-entry { margin-bottom: 18px; }
+    .mn-entry { margin-bottom: 22px; }
     .mn-entry:last-child { margin-bottom: 0; }
-    .mn-skills-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+    .mn-skills-wrap { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 6px; }
     .mn-skill-pill {
-      font-family: 'Open Sans', sans-serif; font-size: 10px; color: #2D2D2D;
-      background: #E2E5EC; border-radius: 4px; padding: 4px 10px;
+      font-family: 'Open Sans', sans-serif; font-size: 10.5px; color: #2D2D2D;
+      background: #E2E5EC; border-radius: 4px; padding: 5px 11px;
     }
     .mn-skill-cat {
-      font-family: 'Inter', sans-serif; font-size: 10.5px; font-weight: 700;
-      color: #2D2D2D; margin-top: 12px; margin-bottom: 5px;
+      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700;
+      color: #2D2D2D; margin-top: 16px; margin-bottom: 6px;
     }
     .mn-skill-cat:first-child { margin-top: 0; }
-    .mn-sidebar .mn-entry-title { font-size: 11px; color: #2D2D2D; }
+    .mn-sidebar .mn-entry-title { font-size: 11.5px; color: #2D2D2D; }
+    .mn-sidebar .mn-entry-meta { font-size: 11.5px; }
+    .mn-summary-block { margin-bottom: 26px; }
+    .mn-entry-meta-gap { margin-top: 6px; }
 
     /* ══════════════════════════════════════
        ELEGANT (executive)
@@ -336,6 +343,8 @@
       </div>
     </div>
 
+    <div class="resume-area">
+
     <!-- ══════════════════════════════════════
          PROFESSIONAL PREVIEW
     ══════════════════════════════════════ -->
@@ -483,8 +492,10 @@
         <!-- Right main: Summary, Experience, Activities -->
         <div class="mn-main">
           {% if resume.objective %}
-          <div class="mn-sec-title">Summary</div>
-          <p class="mn-obj">{{ resume.objective }}</p>
+          <div class="mn-summary-block">
+            <div class="mn-sec-title">Summary</div>
+            <p class="mn-obj">{{ resume.objective }}</p>
+          </div>
           {% endif %}
 
           {% if resume.experience %}
@@ -612,6 +623,8 @@
       {% endfor %}
       {% endif %}
     </div>
+
+    </div> <!-- /resume-area -->
 
   </div>
   <script>

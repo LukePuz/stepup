@@ -112,6 +112,16 @@
             <input type="text" name="gpa" placeholder="3.8 / 4.0" value="{{ prefill.get('gpa', '') }}"/>
           </div>
         </div>
+        <div class="row">
+          <div class="field">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="jane@email.com" value="{{ prefill.get('email', '') }}"/>
+          </div>
+          <div class="field">
+            <label>Phone <span style="color:#4b5563;font-weight:400">(optional)</span></label>
+            <input type="tel" name="phone" placeholder="(555) 555-5555" value="{{ prefill.get('phone', '') }}"/>
+          </div>
+        </div>
         <div class="field">
           <label>What are you applying for?</label>
           <input type="text" name="applying_for" placeholder="Summer internship at a tech company, part-time job, college program..." value="{{ prefill.get('applying_for', '') }}" required/>

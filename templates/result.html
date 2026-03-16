@@ -459,6 +459,20 @@
       </div>
       <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
         <button type="button" class="secondary-btn" onclick="document.getElementById('coverLetterSection').scrollIntoView({behavior:'smooth'})">Cover Letter</button>
+        <form method="POST" action="/build" id="regenerateForm">
+          <input type="hidden" name="name"         value="{{ data.name }}"/>
+          <input type="hidden" name="email"        value="{{ data.email }}"/>
+          <input type="hidden" name="phone"        value="{{ data.phone }}"/>
+          <input type="hidden" name="school"       value="{{ data.school }}"/>
+          <input type="hidden" name="grade"        value="{{ data.grade }}"/>
+          <input type="hidden" name="gpa"          value="{{ data.gpa }}"/>
+          <input type="hidden" name="applying_for" value="{{ data.applying_for }}"/>
+          <input type="hidden" name="activities"   value="{{ data.activities }}"/>
+          <input type="hidden" name="skills"       value="{{ data.skills }}"/>
+          <input type="hidden" name="experience"   value="{{ data.experience }}"/>
+          <input type="hidden" name="extra"        value="{{ data.extra }}"/>
+          <button type="submit" class="secondary-btn" id="regenBtn" onclick="this.textContent='Regenerating...'">&#8635; Regenerate</button>
+        </form>
         <form method="POST" action="/download" id="downloadForm">
           <input type="hidden" name="data"     value='{{ data | tojson }}'/>
           <input type="hidden" name="resume"   id="dlResumeInput" value='{{ resume | tojson }}'/>

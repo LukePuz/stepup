@@ -13,11 +13,38 @@ from reportlab.platypus import (
 )
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import requests as http_requests
 
 load_dotenv(override=True)
+
+# ── Embed custom fonts ──────────────────────────────────────────────────────
+def _register_pdf_fonts():
+    base = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "fonts")
+    _families = [
+        ("Inter",             "Inter-Regular.ttf",             "Inter-Bold.ttf",             "Inter-Italic.ttf",             "Inter-BoldItalic.ttf"),
+        ("OpenSans",          "OpenSans-Regular.ttf",          "OpenSans-Bold.ttf",          "OpenSans-Italic.ttf",          "OpenSans-BoldItalic.ttf"),
+        ("EBGaramond",        "EBGaramond-Regular.ttf",        "EBGaramond-Bold.ttf",        "EBGaramond-Italic.ttf",        None),
+        ("DMSans",            "DMSans-Regular.ttf",            "DMSans-Bold.ttf",            "DMSans-Italic.ttf",            None),
+        ("CormorantGaramond", "CormorantGaramond-Regular.ttf", "CormorantGaramond-Bold.ttf", "CormorantGaramond-Italic.ttf", None),
+        ("Jost",              "Jost-Regular.ttf",              "Jost-Bold.ttf",              "Jost-Italic.ttf",              None),
+    ]
+    for name, regular, bold, italic, bold_italic in _families:
+        try:
+            pdfmetrics.registerFont(TTFont(name,                  os.path.join(base, regular)))
+            pdfmetrics.registerFont(TTFont(f"{name}-Bold",        os.path.join(base, bold)))
+            pdfmetrics.registerFont(TTFont(f"{name}-Italic",      os.path.join(base, italic)))
+            bi = bold_italic or italic
+            pdfmetrics.registerFont(TTFont(f"{name}-BoldItalic",  os.path.join(base, bi)))
+            pdfmetrics.registerFontFamily(name, normal=name, bold=f"{name}-Bold",
+                                          italic=f"{name}-Italic", boldItalic=f"{name}-BoldItalic")
+        except Exception as _e:
+            print(f"[fonts] Warning: could not register {name}: {_e}")
+
+_register_pdf_fonts()
 
 app = Flask(__name__)
 openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -123,6 +150,50 @@ Rules:
     return json.loads(response.choices[0].message.content)
 
 
+def generate_cover_letter(data: dict, resume: dict) -> str:
+    activities_text = ""
+    for a in resume.get("activities", []):
+        if isinstance(a, dict):
+            bullets = "; ".join(a.get("bullets", []))
+            activities_text += f"- {a.get('title', '')} ({a.get('meta', '')}): {bullets}\n"
+
+    experience_text = ""
+    for e in resume.get("experience", []):
+        if isinstance(e, dict):
+            bullets = "; ".join(e.get("bullets", []))
+            experience_text += f"- {e.get('title', '')} ({e.get('meta', '')}): {bullets}\n"
+
+    prompt = f"""Write a concise, professional cover letter for a high school student.
+
+Student:
+- Name: {data.get('name')}
+- School: {data.get('school')}, Grade {data.get('grade')}
+- Applying for: {data.get('applying_for')}
+- Summary: {resume.get('objective', '')}
+- Activities:
+{activities_text or 'None'}
+- Experience:
+{experience_text or 'None'}
+
+Write exactly 3 short paragraphs (~200 words total):
+1. Opening: State what they are applying for and why they are interested
+2. Body: Highlight 2 specific activities or experiences with concrete details
+3. Closing: Thank the reader and express enthusiasm
+
+Use professional but warm language suitable for a high schooler.
+Do not include a date, address block, salutation, or sign-off — return only the 3 paragraph body."""
+
+    response = openai_client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are an expert cover letter writer for high school students. Return only the letter body paragraphs."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.5
+    )
+    return response.choices[0].message.content.strip()
+
+
 def build_pdf(data: dict, resume: dict, template: str = "classic") -> io.BytesIO:
     if template == "modern":
         return _pdf_modern(data, resume)
@@ -197,70 +268,75 @@ def _pdf_skills_grid(skills_raw, s_cat, s_item, col_w):
 # ── PDF Templates ─────────────────────────────────────────────────────────────
 
 def _pdf_classic(data: dict, resume: dict) -> io.BytesIO:
-    """Professional: left sidebar (light gray) + main column (large serif name, gray-only palette)."""
+    """Professional: warm sidebar, serif name on canvas, full-width name divider."""
     buffer = io.BytesIO()
     PAGE_W, PAGE_H = letter
-    BLACK  = colors.HexColor("#111111")
-    DARK   = colors.HexColor("#222222")
-    MID    = colors.HexColor("#555555")
-    LIGHT  = colors.HexColor("#888888")
-    RULE   = colors.HexColor("#CCCCCC")
-    RULE_L = colors.HexColor("#E8E8E8")
-    SBARBG = colors.HexColor("#F7F7F7")
-    LM = RM = 0.58 * inch
+
+    # ── Palette ──────────────────────────────────────────────────────────────
+    BLACK    = colors.HexColor("#111111")
+    DARK     = colors.HexColor("#1A1A1A")
+    MID      = colors.HexColor("#4D4D4D")
+    MUTED    = colors.HexColor("#888888")
+    RULE     = colors.HexColor("#C9C6C2")
+    SBARBG   = colors.HexColor("#F4F2EF")
+    SBAREDGE = colors.HexColor("#D8D5D1")
+
+    # ── Layout ───────────────────────────────────────────────────────────────
+    LM = RM = 0.55 * inch
     usable_w = PAGE_W - LM - RM
-    side_w   = usable_w * 0.30 - 8
-    main_w   = usable_w * 0.70 - 8
+    side_w   = usable_w * 0.305
+    main_w   = usable_w - side_w
+
+    applying = (data.get("applying_for") or "").strip()
+    HDR_H    = (1.38 if applying else 1.14) * inch
 
     doc = SimpleDocTemplate(
         buffer, pagesize=letter,
         rightMargin=RM, leftMargin=LM,
-        topMargin=0.62 * inch, bottomMargin=0.62 * inch
+        topMargin=HDR_H, bottomMargin=0.55 * inch
     )
 
-    S_SLBL  = ParagraphStyle("pfSLbl",  fontSize=7.5, fontName="Helvetica-Bold",
-                              textColor=BLACK, spaceAfter=4, spaceBefore=18, leading=10)
-    S_SLBL_F= ParagraphStyle("pfSLblF", fontSize=7.5, fontName="Helvetica-Bold",
-                              textColor=BLACK, spaceAfter=4, leading=10)
-    S_CITEM = ParagraphStyle("pfCItm",  fontSize=9.5, fontName="Helvetica",
-                              textColor=MID,  spaceAfter=4, leading=13)
-    S_ESCH  = ParagraphStyle("pfESch",  fontSize=11,  fontName="Helvetica-Bold",
-                              textColor=DARK, spaceAfter=2, leading=14)
-    S_EGRD  = ParagraphStyle("pfEGrd",  fontSize=9.5, fontName="Helvetica",
-                              textColor=MID,  spaceAfter=4, leading=13)
-    S_EGPA  = ParagraphStyle("pfEGpa",  fontSize=9.5, fontName="Helvetica-Bold",
-                              textColor=DARK, spaceAfter=0, leading=13)
-    S_SGNAME= ParagraphStyle("pfSGNm",  fontSize=9,   fontName="Helvetica-Bold",
-                              textColor=DARK, spaceAfter=3, spaceBefore=8, leading=12)
-    S_SGITM = ParagraphStyle("pfSGItm", fontSize=9.5, fontName="Helvetica",
-                              textColor=MID,  spaceAfter=2, leading=13)
-    S_NAME  = ParagraphStyle("pfName",  fontSize=26,  fontName="Helvetica-Bold",
-                              textColor=BLACK, spaceAfter=3, leading=30)
-    S_TAGL  = ParagraphStyle("pfTagl",  fontSize=8,   fontName="Helvetica",
-                              textColor=LIGHT, spaceAfter=2, leading=12)
-    S_MLBL  = ParagraphStyle("pfMLbl",  fontSize=7.5, fontName="Helvetica-Bold",
-                              textColor=BLACK, spaceAfter=7, spaceBefore=18, leading=10)
-    S_MLBL_F= ParagraphStyle("pfMLblF", fontSize=7.5, fontName="Helvetica-Bold",
-                              textColor=BLACK, spaceAfter=7, leading=10)
-    S_SUM   = ParagraphStyle("pfSum",   fontSize=10,  fontName="Helvetica",
-                              textColor=MID,  spaceAfter=0, leading=16)
-    S_ETIT  = ParagraphStyle("pfETit",  fontSize=11.5,fontName="Helvetica-Bold",
-                              textColor=DARK, spaceAfter=1, leading=14)
-    S_EDATE = ParagraphStyle("pfEDt",   fontSize=9.5, fontName="Helvetica",
-                              textColor=LIGHT, alignment=2, leading=14)
-    S_ESUB  = ParagraphStyle("pfESub",  fontSize=9.5, fontName="Helvetica-Oblique",
-                              textColor=MID,  spaceAfter=4, leading=13)
-    S_BUL   = ParagraphStyle("pfBul",   fontSize=10,  fontName="Helvetica",
-                              textColor=MID,  spaceAfter=3, leading=14,
-                              leftIndent=12, firstLineIndent=-10)
-    S_ADDL  = ParagraphStyle("pfAddl",  fontSize=10,  fontName="Helvetica",
-                              textColor=MID,  spaceAfter=0, leading=16)
+    # ── Styles ───────────────────────────────────────────────────────────────
+    S_SLBL  = ParagraphStyle("pfSLbl",  fontSize=7,   fontName="Jost-Bold",
+                              textColor=DARK,  spaceAfter=5, spaceBefore=18, leading=9)
+    S_SLBL_F= ParagraphStyle("pfSLblF", fontSize=7,   fontName="Jost-Bold",
+                              textColor=DARK,  spaceAfter=5, leading=9)
+    S_CITEM = ParagraphStyle("pfCItm",  fontSize=9,   fontName="Jost",
+                              textColor=MID,   spaceAfter=5, leading=13)
+    S_ESCH  = ParagraphStyle("pfESch",  fontSize=10,  fontName="Jost-Bold",
+                              textColor=DARK,  spaceAfter=2, leading=14)
+    S_EGRD  = ParagraphStyle("pfEGrd",  fontSize=9,   fontName="Jost",
+                              textColor=MID,   spaceAfter=3, leading=13)
+    S_EGPA  = ParagraphStyle("pfEGpa",  fontSize=9,   fontName="Jost-Bold",
+                              textColor=DARK,  spaceAfter=0, leading=12)
+    S_SGNAME= ParagraphStyle("pfSGNm",  fontSize=8.5, fontName="Jost-Bold",
+                              textColor=DARK,  spaceAfter=4, spaceBefore=14, leading=12)
+    S_SGITM = ParagraphStyle("pfSGItm", fontSize=9,   fontName="Jost",
+                              textColor=MID,   spaceAfter=3, leading=13, leftIndent=8)
+    S_MLBL  = ParagraphStyle("pfMLbl",  fontSize=7,   fontName="Jost-Bold",
+                              textColor=DARK,  spaceAfter=6, spaceBefore=20, leading=9)
+    S_MLBL_F= ParagraphStyle("pfMLblF", fontSize=7,   fontName="Jost-Bold",
+                              textColor=DARK,  spaceAfter=6, leading=9)
+    S_SUM   = ParagraphStyle("pfSum",   fontSize=9.5, fontName="Jost",
+                              textColor=MID,   spaceAfter=0, leading=16)
+    S_ETIT  = ParagraphStyle("pfETit",  fontSize=11,  fontName="Jost-Bold",
+                              textColor=DARK,  spaceAfter=1, leading=14)
+    S_EDATE = ParagraphStyle("pfEDt",   fontSize=8.5, fontName="Jost",
+                              textColor=MUTED, alignment=2, leading=14)
+    S_ESUB  = ParagraphStyle("pfESub",  fontSize=9,   fontName="Jost-Italic",
+                              textColor=MID,   spaceAfter=5, leading=13)
+    S_BUL   = ParagraphStyle("pfBul",   fontSize=9.5, fontName="Jost",
+                              textColor=MID,   spaceAfter=4, leading=15,
+                              leftIndent=13, firstLineIndent=-11)
+    S_ADDL  = ParagraphStyle("pfAddl",  fontSize=9.5, fontName="Jost",
+                              textColor=MID,   spaceAfter=0, leading=16)
 
+    # ── Helpers ───────────────────────────────────────────────────────────────
     def _sb_rule():
-        return HRFlowable(width=side_w, thickness=0.75, color=RULE, spaceAfter=7, spaceBefore=0)
+        return HRFlowable(width=side_w, thickness=0.5, color=RULE, spaceAfter=7, spaceBefore=0)
 
     def _main_rule():
-        return HRFlowable(width=main_w, thickness=0.75, color=RULE, spaceAfter=8, spaceBefore=0)
+        return HRFlowable(width=main_w, thickness=0.5, color=RULE, spaceAfter=8, spaceBefore=0)
 
     def _sb_label(text, first=False):
         s = S_SLBL_F if first else S_SLBL
@@ -276,12 +352,12 @@ def _pdf_classic(data: dict, resume: dict) -> io.BytesIO:
         out = []
         for e in (entries or []):
             if isinstance(e, str):
-                out.append(Paragraph(f"\u00b7\u2002{e}", S_BUL))
+                out.append(Paragraph(f"\u2013\u2002{e}", S_BUL))
                 continue
             meta  = e.get("meta", "")
             parts = meta.split(" | ") if meta else []
             dur   = parts[-1].strip() if parts else ""
-            sub   = " · ".join(p.strip() for p in parts[:-1]) if len(parts) > 1 else ""
+            sub   = " \u00b7 ".join(p.strip() for p in parts[:-1]) if len(parts) > 1 else ""
             title_w = main_w - DATE_COL
             if dur:
                 row = Table([[Paragraph(e.get("title", ""), S_ETIT), Paragraph(dur, S_EDATE)]],
@@ -299,11 +375,11 @@ def _pdf_classic(data: dict, resume: dict) -> io.BytesIO:
             if sub:
                 out.append(Paragraph(sub, S_ESUB))
             for b in e.get("bullets", []):
-                out.append(Paragraph(f"\u00b7\u2002{b}", S_BUL))
+                out.append(Paragraph(f"\u2013\u2002{b}", S_BUL))
             out.append(Spacer(1, 10))
         return out
 
-    # ── Sidebar ──
+    # ── Sidebar ───────────────────────────────────────────────────────────────
     side = []
     side += _sb_label("Contact", first=True)
     if data.get("email"):
@@ -312,7 +388,7 @@ def _pdf_classic(data: dict, resume: dict) -> io.BytesIO:
         side.append(Paragraph(_fmt_phone(data["phone"]), S_CITEM))
     side += _sb_label("Education")
     side.append(Paragraph(data.get("school", ""), S_ESCH))
-    side.append(Paragraph(f"Grade {data.get('grade', '')}  ·  Current", S_EGRD))
+    side.append(Paragraph(f"Grade {data.get('grade', '')}  \u00b7  Current", S_EGRD))
     if data.get("gpa"):
         side.append(Paragraph(f"GPA: {data['gpa']}", S_EGPA))
     skills = _normalize_skills(resume.get("skills", {}))
@@ -323,15 +399,8 @@ def _pdf_classic(data: dict, resume: dict) -> io.BytesIO:
             for item in (items or []):
                 side.append(Paragraph(item, S_SGITM))
 
-    # ── Main ──
+    # ── Main sections (name drawn on canvas) ──────────────────────────────────
     main = []
-    main.append(Paragraph(data.get("name", ""), S_NAME))
-    tagline = f"{data.get('school', '').upper()}   ·   GRADE {data.get('grade', '')}"
-    main.append(Paragraph(tagline, S_TAGL))
-    if data.get("applying_for"):
-        main.append(Paragraph(data["applying_for"].upper(), S_TAGL))
-    main.append(HRFlowable(width=main_w, thickness=1.5, color=BLACK, spaceAfter=14, spaceBefore=6))
-
     first_sec = True
     if resume.get("objective"):
         main += _main_label("Summary", first=first_sec); first_sec = False
@@ -346,20 +415,52 @@ def _pdf_classic(data: dict, resume: dict) -> io.BytesIO:
         main += _main_label("Additional Information", first=first_sec)
         main.append(Paragraph(data["extra"], S_ADDL))
 
+    # ── Canvas: sidebar bg + name header + full-width rule ────────────────────
+    name_x   = LM + side_w + 18          # aligned with main content left edge
+    name_y   = PAGE_H - 0.60 * inch      # name baseline
+    tagl_y   = name_y - 0.40 * inch      # tagline below name
+    appl_y   = tagl_y - 0.18 * inch      # applying-for (optional)
+    hr_y     = PAGE_H - HDR_H + 0.10 * inch
+
+    def draw_page(canvas, doc):
+        canvas.saveState()
+        # Sidebar warm background, flush to left edge
+        canvas.setFillColor(SBARBG)
+        canvas.rect(0, 0, LM + side_w, PAGE_H, fill=1, stroke=0)
+        # Sidebar right border
+        canvas.setStrokeColor(SBAREDGE)
+        canvas.setLineWidth(0.75)
+        canvas.line(LM + side_w, 0, LM + side_w, PAGE_H)
+        # Name
+        canvas.setFillColor(BLACK)
+        canvas.setFont("CormorantGaramond-Bold", 30)
+        canvas.drawString(name_x, name_y, data.get("name", ""))
+        # Tagline
+        canvas.setFont("Jost", 7.5)
+        canvas.setFillColor(MUTED)
+        tagline = f"{data.get('school', '').upper()}   \u00b7   GRADE {data.get('grade', '')}"
+        canvas.drawString(name_x, tagl_y, tagline)
+        if applying:
+            canvas.drawString(name_x, appl_y, applying.upper())
+        # Full-width rule (left margin to right margin)
+        canvas.setStrokeColor(BLACK)
+        canvas.setLineWidth(1.2)
+        canvas.line(LM, hr_y, PAGE_W - RM, hr_y)
+        canvas.restoreState()
+
+    # ── Assemble ──────────────────────────────────────────────────────────────
     body = Table([[side, main]], colWidths=[side_w, main_w])
     body.setStyle(TableStyle([
         ("VALIGN",        (0, 0), (-1, -1), "TOP"),
         ("LEFTPADDING",   (0, 0), (0, -1),  0),
-        ("RIGHTPADDING",  (0, 0), (0, -1),  14),
-        ("LEFTPADDING",   (1, 0), (1, -1),  16),
+        ("RIGHTPADDING",  (0, 0), (0, -1),  16),
+        ("LEFTPADDING",   (1, 0), (1, -1),  18),
         ("RIGHTPADDING",  (1, 0), (-1, -1), 0),
         ("TOPPADDING",    (0, 0), (-1, -1), 0),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
-        ("BACKGROUND",    (0, 0), (0, -1),  SBARBG),
-        ("LINEBEFORE",    (1, 0), (1, -1),  0.5, RULE_L),
     ]))
 
-    doc.build([body])
+    doc.build([body], onFirstPage=draw_page, onLaterPages=draw_page)
     buffer.seek(0)
     return buffer
 
@@ -399,10 +500,10 @@ def _pdf_modern(data: dict, resume: dict) -> io.BytesIO:
         canvas.setFillColor(NAVY)
         canvas.rect(0, PAGE_H - HEADER_H, PAGE_W, HEADER_H, fill=1, stroke=0)
         canvas.setFillColor(colors.white)
-        canvas.setFont("Helvetica-Bold", 24)
+        canvas.setFont("Inter-Bold", 24)
         canvas.drawCentredString(PAGE_W / 2, PAGE_H - 0.46 * inch, name_text)
         canvas.setFillColor(LGRAY)
-        canvas.setFont("Helvetica", 9)
+        canvas.setFont("OpenSans", 9)
         canvas.drawCentredString(PAGE_W / 2, PAGE_H - 0.72 * inch, contact_text)
         if contact2_text:
             canvas.drawCentredString(PAGE_W / 2, PAGE_H - 0.91 * inch, contact2_text)
@@ -414,19 +515,19 @@ def _pdf_modern(data: dict, resume: dict) -> io.BytesIO:
         topMargin=HEADER_H + 0.20 * inch, bottomMargin=0.68 * inch
     )
 
-    S_ETIT  = ParagraphStyle("mETit",  fontSize=11,   fontName="Helvetica-Bold", textColor=NAVY,
+    S_ETIT  = ParagraphStyle("mETit",  fontSize=11,   fontName="Inter-Bold",  textColor=NAVY,
                               spaceAfter=2,  leading=14)
-    S_EDATE = ParagraphStyle("mEDate", fontSize=9,    fontName="Helvetica",      textColor=GRAY,
+    S_EDATE = ParagraphStyle("mEDate", fontSize=9,    fontName="OpenSans",    textColor=GRAY,
                               alignment=2,  leading=14)   # TA_RIGHT = 2
-    S_EMETA = ParagraphStyle("mEMeta", fontSize=9.5,  fontName="Helvetica",      textColor=GRAY,
+    S_EMETA = ParagraphStyle("mEMeta", fontSize=9.5,  fontName="OpenSans",    textColor=GRAY,
                               spaceAfter=4, leading=13)
-    S_BUL   = ParagraphStyle("mBul",   fontSize=10,   fontName="Helvetica",      textColor=DARK,
+    S_BUL   = ParagraphStyle("mBul",   fontSize=10,   fontName="OpenSans",    textColor=DARK,
                               spaceAfter=5, leading=15, leftIndent=13, firstLineIndent=-9)
-    S_OBJ   = ParagraphStyle("mObj",   fontSize=10,   fontName="Helvetica",      textColor=DARK,
+    S_OBJ   = ParagraphStyle("mObj",   fontSize=10,   fontName="OpenSans",    textColor=DARK,
                               spaceAfter=8, leading=16)
-    S_SCAT  = ParagraphStyle("mScat",  fontSize=9.5,  fontName="Helvetica-Bold", textColor=DARK,
+    S_SCAT  = ParagraphStyle("mScat",  fontSize=9.5,  fontName="Inter-Bold",  textColor=DARK,
                               spaceAfter=3, spaceBefore=10, leading=13)
-    S_SITEM = ParagraphStyle("mSitem", fontSize=9.5,  fontName="Helvetica",      textColor=DARK,
+    S_SITEM = ParagraphStyle("mSitem", fontSize=9.5,  fontName="OpenSans",    textColor=DARK,
                               spaceAfter=3, leading=13)
 
     class AccentTitle(_Flowable):
@@ -447,7 +548,7 @@ def _pdf_modern(data: dict, resume: dict) -> io.BytesIO:
             c.translate(0, self._pad)
             c.setFillColor(NAVY)
             c.rect(0, 3, 3, 13, fill=1, stroke=0)
-            c.setFont("Helvetica-Bold", 9)
+            c.setFont("Inter-Bold", 9)
             c.drawString(10, 5, self.title)
             c.restoreState()
 
@@ -564,25 +665,25 @@ def _pdf_executive(data: dict, resume: dict) -> io.BytesIO:
         topMargin=0.8 * inch, bottomMargin=0.8 * inch
     )
 
-    S_NAME  = ParagraphStyle("eName",  fontSize=22, fontName="Helvetica-Bold", textColor=DARK,
+    S_NAME  = ParagraphStyle("eName",  fontSize=22, fontName="Inter-Bold", textColor=DARK,
                               alignment=TA_CENTER, spaceAfter=4, leading=26)
-    S_CON1  = ParagraphStyle("eCon1",  fontSize=10, fontName="Helvetica", textColor=GRAY,
+    S_CON1  = ParagraphStyle("eCon1",  fontSize=10, fontName="OpenSans", textColor=GRAY,
                               alignment=TA_CENTER, spaceAfter=3, leading=13)
-    S_CON2  = ParagraphStyle("eCon2",  fontSize=9,  fontName="Helvetica", textColor=LGRAY,
+    S_CON2  = ParagraphStyle("eCon2",  fontSize=9,  fontName="OpenSans", textColor=LGRAY,
                               alignment=TA_CENTER, spaceAfter=12, leading=13)
-    S_SEC   = ParagraphStyle("eSec",   fontSize=10.5, fontName="Helvetica-Bold", textColor=SECT,
+    S_SEC   = ParagraphStyle("eSec",   fontSize=10.5, fontName="Inter-Bold", textColor=SECT,
                               spaceBefore=18, spaceAfter=7, leading=13)
-    S_ETIT  = ParagraphStyle("eETit",  fontSize=11, fontName="Helvetica-Bold", textColor=DARK,
+    S_ETIT  = ParagraphStyle("eETit",  fontSize=11, fontName="Inter-Bold", textColor=DARK,
                               spaceAfter=3, leading=14)
-    S_EMETA = ParagraphStyle("eEMeta", fontSize=9.5, fontName="Helvetica", textColor=GRAY,
+    S_EMETA = ParagraphStyle("eEMeta", fontSize=9.5, fontName="OpenSans", textColor=GRAY,
                               spaceAfter=4, leading=13)
-    S_BUL   = ParagraphStyle("eBul",   fontSize=9.5, fontName="Helvetica", textColor=DARK,
+    S_BUL   = ParagraphStyle("eBul",   fontSize=9.5, fontName="OpenSans", textColor=DARK,
                               spaceAfter=4, leading=13, leftIndent=14, firstLineIndent=-10)
-    S_OBJ   = ParagraphStyle("eObj",   fontSize=9.5, fontName="Helvetica", textColor=GRAY,
+    S_OBJ   = ParagraphStyle("eObj",   fontSize=9.5, fontName="OpenSans", textColor=GRAY,
                               spaceAfter=6, leading=15)
-    S_SCAT  = ParagraphStyle("eScat",  fontSize=10, fontName="Helvetica-Bold", textColor=DARK,
+    S_SCAT  = ParagraphStyle("eScat",  fontSize=10, fontName="Inter-Bold", textColor=DARK,
                               spaceAfter=3, spaceBefore=8, leading=13)
-    S_SITEM = ParagraphStyle("eSitem", fontSize=9.5, fontName="Helvetica", textColor=DARK,
+    S_SITEM = ParagraphStyle("eSitem", fontSize=9.5, fontName="OpenSans", textColor=DARK,
                               spaceAfter=2, leading=13)
 
     def sec(title):
@@ -655,32 +756,32 @@ def _pdf_lateral(data: dict, resume: dict) -> io.BytesIO:
         topMargin=0.65 * inch, bottomMargin=0.65 * inch
     )
 
-    S_NAME  = ParagraphStyle("ltName", fontSize=20, fontName="Helvetica-Bold",
+    S_NAME  = ParagraphStyle("ltName", fontSize=20, fontName="Inter-Bold",
                               textColor=DARK, spaceAfter=3, leading=24)
-    S_SUB   = ParagraphStyle("ltSub",  fontSize=10, fontName="Helvetica",
+    S_SUB   = ParagraphStyle("ltSub",  fontSize=10, fontName="OpenSans",
                               textColor=GRAY, spaceAfter=16, leading=14)
-    S_SEC   = ParagraphStyle("ltSec",  fontSize=9,  fontName="Helvetica-Bold",
+    S_SEC   = ParagraphStyle("ltSec",  fontSize=9,  fontName="Inter-Bold",
                               textColor=MED, spaceAfter=6, spaceBefore=14, leading=13,
                               borderPadding=(0, 0, 3, 0))
-    S_ETIT  = ParagraphStyle("ltETit", fontSize=10.5, fontName="Helvetica-Bold",
+    S_ETIT  = ParagraphStyle("ltETit", fontSize=10.5, fontName="Inter-Bold",
                               textColor=DARK, spaceAfter=1, leading=14)
-    S_META  = ParagraphStyle("ltMeta", fontSize=9,  fontName="Helvetica",
+    S_META  = ParagraphStyle("ltMeta", fontSize=9,  fontName="OpenSans",
                               textColor=GRAY, spaceAfter=3, leading=13)
-    S_DATE  = ParagraphStyle("ltDate", fontSize=8.5, fontName="Helvetica",
+    S_DATE  = ParagraphStyle("ltDate", fontSize=8.5, fontName="OpenSans",
                               textColor=LGRAY, spaceAfter=0, leading=12)
-    S_BUL   = ParagraphStyle("ltBul",  fontSize=9.5, fontName="Helvetica",
+    S_BUL   = ParagraphStyle("ltBul",  fontSize=9.5, fontName="OpenSans",
                               textColor=DARK, spaceAfter=3, leading=14,
                               leftIndent=10, firstLineIndent=-7)
-    S_OBJ   = ParagraphStyle("ltObj",  fontSize=9.5, fontName="Helvetica",
+    S_OBJ   = ParagraphStyle("ltObj",  fontSize=9.5, fontName="OpenSans",
                               textColor=DARK, spaceAfter=8, leading=14)
-    S_STIT  = ParagraphStyle("ltSTit", fontSize=9,  fontName="Helvetica-Bold",
+    S_STIT  = ParagraphStyle("ltSTit", fontSize=9,  fontName="Inter-Bold",
                               textColor=SBARTITLE, spaceAfter=6, spaceBefore=14, leading=13)
-    S_SCON  = ParagraphStyle("ltSCon", fontSize=9,  fontName="Helvetica",
+    S_SCON  = ParagraphStyle("ltSCon", fontSize=9,  fontName="OpenSans",
                               textColor=SBARTX, spaceAfter=5, leading=13)
-    S_SCAT  = ParagraphStyle("ltSCat", fontSize=9,  fontName="Helvetica-Bold",
+    S_SCAT  = ParagraphStyle("ltSCat", fontSize=9,  fontName="Inter-Bold",
                               textColor=colors.HexColor("#DDDDDD"), spaceAfter=3,
                               spaceBefore=8, leading=13)
-    S_SITEM = ParagraphStyle("ltSItm", fontSize=9,  fontName="Helvetica",
+    S_SITEM = ParagraphStyle("ltSItm", fontSize=9,  fontName="OpenSans",
                               textColor=SBARTX, spaceAfter=3, leading=13,
                               leftIndent=8, firstLineIndent=-6)
 
@@ -809,15 +910,15 @@ def _pdf_lumina(data: dict, resume: dict) -> io.BytesIO:
         canvas.saveState()
         canvas.setFillColor(NAVY)
         canvas.rect(0, PAGE_H - HEADER_H, PAGE_W, HEADER_H, fill=1, stroke=0)
-        # Name (large, serif-ish → Helvetica-BoldOblique as closest available)
+        # Name (large serif)
         canvas.setFillColor(colors.white)
-        canvas.setFont("Helvetica-Bold", 26)
+        canvas.setFont("EBGaramond-Bold", 26)
         canvas.drawString(LM, PAGE_H - 0.52 * inch, name_text)
         # School + grade on right
-        canvas.setFont("Helvetica-Bold", 11)
+        canvas.setFont("DMSans-Bold", 11)
         canvas.setFillColor(colors.HexColor("#E0E6F0"))
         canvas.drawRightString(PAGE_W - RM, PAGE_H - 0.47 * inch, school_text)
-        canvas.setFont("Helvetica", 10)
+        canvas.setFont("DMSans", 10)
         canvas.setFillColor(colors.HexColor("#94A9C4"))
         canvas.drawRightString(PAGE_W - RM, PAGE_H - 0.63 * inch, meta_right)
         # Applying-for strip
@@ -826,10 +927,10 @@ def _pdf_lumina(data: dict, resume: dict) -> io.BytesIO:
             canvas.setFillColor(colors.HexColor("#263D60"))
             canvas.roundRect(LM, y_after_name - 0.18 * inch, 2.8 * inch, 0.20 * inch, 3, fill=1, stroke=0)
             canvas.setFillColor(colors.HexColor("#94A9C4"))
-            canvas.setFont("Helvetica", 8.5)
+            canvas.setFont("DMSans", 8.5)
             canvas.drawString(LM + 9, y_after_name - 0.13 * inch, "Applying for: ")
             canvas.setFillColor(colors.white)
-            canvas.setFont("Helvetica-Bold", 8.5)
+            canvas.setFont("DMSans-Bold", 8.5)
             canvas.drawString(LM + 72, y_after_name - 0.13 * inch, applying)
             y_after_name -= 0.24 * inch
         # Contact bar separator
@@ -838,13 +939,13 @@ def _pdf_lumina(data: dict, resume: dict) -> io.BytesIO:
         canvas.setLineWidth(0.5)
         canvas.line(LM, sep_y, PAGE_W - RM, sep_y)
         # Email + phone
-        canvas.setFont("Helvetica", 9.5)
+        canvas.setFont("DMSans", 9.5)
         canvas.setFillColor(colors.HexColor("#94A9C4"))
         contact_y = sep_y - 0.20 * inch
         x = LM
         if email_text:
             canvas.drawString(x, contact_y, email_text)
-            x += canvas.stringWidth(email_text, "Helvetica", 9.5) + 24
+            x += canvas.stringWidth(email_text, "DMSans", 9.5) + 24
         if phone_text:
             canvas.drawString(x, contact_y, phone_text)
         canvas.restoreState()
@@ -856,39 +957,39 @@ def _pdf_lumina(data: dict, resume: dict) -> io.BytesIO:
     )
 
     # Styles
-    S_SBLABEL = ParagraphStyle("lmSBLbl", fontSize=8, fontName="Helvetica-Bold",
+    S_SBLABEL = ParagraphStyle("lmSBLbl", fontSize=8, fontName="DMSans-Bold",
                                 textColor=ACCENT, spaceAfter=6, spaceBefore=20,
                                 leading=11, wordWrap='LTR')
-    S_SBLABEL_FIRST = ParagraphStyle("lmSBLbl1", fontSize=8, fontName="Helvetica-Bold",
+    S_SBLABEL_FIRST = ParagraphStyle("lmSBLbl1", fontSize=8, fontName="DMSans-Bold",
                                       textColor=ACCENT, spaceAfter=6,
                                       leading=11, wordWrap='LTR')
-    S_SCHOOL  = ParagraphStyle("lmSch",  fontSize=11, fontName="Helvetica-Bold",
+    S_SCHOOL  = ParagraphStyle("lmSch",  fontSize=11, fontName="DMSans-Bold",
                                 textColor=DARK, spaceAfter=2, leading=14)
-    S_EDUMETA = ParagraphStyle("lmEduM", fontSize=9.5, fontName="Helvetica",
+    S_EDUMETA = ParagraphStyle("lmEduM", fontSize=9.5, fontName="DMSans",
                                 textColor=GRAY, spaceAfter=5, leading=13)
-    S_GPABADGE= ParagraphStyle("lmGPA",  fontSize=9,  fontName="Helvetica-Bold",
+    S_GPABADGE= ParagraphStyle("lmGPA",  fontSize=9,  fontName="DMSans-Bold",
                                 textColor=colors.white, spaceAfter=0, leading=12,
                                 backColor=NAVY, borderPadding=(2, 6, 2, 6))
-    S_SGCAT   = ParagraphStyle("lmSGCat",fontSize=9,  fontName="Helvetica-Bold",
+    S_SGCAT   = ParagraphStyle("lmSGCat",fontSize=9,  fontName="DMSans-Bold",
                                 textColor=DARK, spaceAfter=3, spaceBefore=8, leading=13)
-    S_SGITEM  = ParagraphStyle("lmSGItm",fontSize=9.5, fontName="Helvetica",
+    S_SGITEM  = ParagraphStyle("lmSGItm",fontSize=9.5, fontName="DMSans",
                                 textColor=MEDGRAY, spaceAfter=2, leading=13,
                                 leftIndent=8, firstLineIndent=-6)
-    S_SECTIT  = ParagraphStyle("lmSecT", fontSize=8,  fontName="Helvetica-Bold",
+    S_SECTIT  = ParagraphStyle("lmSecT", fontSize=8,  fontName="DMSans-Bold",
                                 textColor=ACCENT, spaceAfter=8, spaceBefore=20,
                                 leading=11, wordWrap='LTR')
-    S_SECTIT_FIRST = ParagraphStyle("lmSecT1", fontSize=8, fontName="Helvetica-Bold",
+    S_SECTIT_FIRST = ParagraphStyle("lmSecT1", fontSize=8, fontName="DMSans-Bold",
                                      textColor=ACCENT, spaceAfter=8,
                                      leading=11, wordWrap='LTR')
-    S_SUMMARY = ParagraphStyle("lmSum",  fontSize=10.5, fontName="Helvetica",
+    S_SUMMARY = ParagraphStyle("lmSum",  fontSize=10.5, fontName="DMSans",
                                 textColor=MEDGRAY, spaceAfter=0, leading=17)
-    S_ETIT    = ParagraphStyle("lmETit", fontSize=12,  fontName="Helvetica-Bold",
+    S_ETIT    = ParagraphStyle("lmETit", fontSize=12,  fontName="DMSans-Bold",
                                 textColor=DARK, spaceAfter=1, leading=15)
-    S_EDATE   = ParagraphStyle("lmEDt",  fontSize=9.5, fontName="Helvetica",
+    S_EDATE   = ParagraphStyle("lmEDt",  fontSize=9.5, fontName="DMSans",
                                 textColor=GRAY, alignment=2, leading=15)
-    S_ESUB    = ParagraphStyle("lmESub", fontSize=10,  fontName="Helvetica",
+    S_ESUB    = ParagraphStyle("lmESub", fontSize=10,  fontName="DMSans",
                                 textColor=ACCENT, spaceAfter=5, leading=13)
-    S_BUL     = ParagraphStyle("lmBul",  fontSize=10,  fontName="Helvetica",
+    S_BUL     = ParagraphStyle("lmBul",  fontSize=10,  fontName="DMSans",
                                 textColor=MEDGRAY, spaceAfter=3, leading=15,
                                 leftIndent=12, firstLineIndent=-9)
 
@@ -912,7 +1013,7 @@ def _pdf_lumina(data: dict, resume: dict) -> io.BytesIO:
             c.setFillColor(ACCENT)
             c.rect(0, 4, 3, 12, fill=1, stroke=0)
             # Text
-            c.setFont("Helvetica-Bold", 8)
+            c.setFont("DMSans-Bold", 8)
             c.setFillColor(ACCENT)
             c.drawString(10, 7, self.text)
             # Rule below
@@ -1052,7 +1153,11 @@ def build():
             "experience": request.form.get("experience"),
             "extra": request.form.get("extra"),
         }
-        resume = generate_resume(data)
+        try:
+            resume = generate_resume(data)
+        except Exception:
+            return render_template("build.html", prefill=data,
+                error="Something went wrong while generating your resume. Please try again in a moment.")
         return render_template("result.html", data=data, resume=resume)
     return render_template("build.html", prefill=request.args)
 
@@ -1074,13 +1179,46 @@ def download():
         )
     except Exception:
         pass
-    pdf = build_pdf(data, resume, template)
+    try:
+        pdf = build_pdf(data, resume, template)
+    except Exception:
+        return "PDF generation failed. Please go back and try again.", 500
     return send_file(
         pdf,
         mimetype="application/pdf",
         as_attachment=True,
         download_name=f"{data.get('name', 'resume').replace(' ', '_')}_resume.pdf"
     )
+
+
+@app.route("/refine", methods=["POST"])
+def refine():
+    data = json.loads(request.form.get("data"))
+    resume = json.loads(request.form.get("resume"))
+    return render_template("result.html", data=data, resume=resume)
+
+
+@app.route("/cover-letter", methods=["POST"])
+def cover_letter():
+    data = json.loads(request.form.get("data"))
+    resume = json.loads(request.form.get("resume"))
+    try:
+        letter = generate_cover_letter(data, resume)
+    except Exception:
+        letter = None
+    try:
+        http_requests.post(
+            f"{os.getenv('SUPABASE_URL')}/rest/v1/resume-generations",
+            json={"template": "cover-letter"},
+            headers={
+                "apikey": os.getenv("SUPABASE_KEY"),
+                "Authorization": f"Bearer {os.getenv('SUPABASE_KEY')}",
+                "Content-Type": "application/json"
+            }
+        )
+    except Exception:
+        pass
+    return render_template("result.html", data=data, resume=resume, cover_letter=letter)
 
 
 @app.errorhandler(429)

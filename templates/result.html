@@ -365,6 +365,70 @@
     .lm-bullets li { font-size: 12px; color: #4a4a4a; line-height: 1.65; padding-left: 13px; position: relative; font-weight: 300; }
     .lm-bullets li::before { content: '•'; position: absolute; left: 0; color: #2E5FA3; font-size: 10px; top: 3px; }
     .lm-additional { font-size: 12px; color: #4a4a4a; line-height: 1.75; font-weight: 300; }
+
+    /* ── Edit Panel ── */
+    .edit-panel-overlay {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85); z-index: 1000; overflow-y: auto; padding: 40px 24px;
+    }
+    .edit-panel-inner {
+      max-width: 600px; margin: 0 auto; background: #1a1a24;
+      border-radius: 16px; padding: 32px; border: 1px solid #2d2d3d; margin-bottom: 40px;
+    }
+    .edit-panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .edit-panel-title { font-size: 18px; font-weight: 700; color: #fff; }
+    .edit-close-btn { background: none; border: none; color: #9ca3af; font-size: 24px; cursor: pointer; line-height: 1; padding: 4px; }
+    .edit-close-btn:hover { color: #e5e7eb; }
+    .edit-section { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #2d2d3d; }
+    .edit-section:last-of-type { border-bottom: none; margin-bottom: 0; }
+    .edit-section-title { font-size: 11px; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+    .edit-entry { background: #111118; border-radius: 8px; padding: 14px; margin-bottom: 10px; border: 1px solid #2d2d3d; }
+    .edit-entry:last-child { margin-bottom: 0; }
+    .edit-field-label { font-size: 11px; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; margin-top: 10px; }
+    .edit-field-label:first-child { margin-top: 0; }
+    .edit-input, .edit-textarea {
+      width: 100%; background: #0f0f13; border: 1px solid #2d2d3d; border-radius: 7px;
+      color: #e5e7eb; font-size: 13px; font-family: inherit; padding: 9px 12px; line-height: 1.5; box-sizing: border-box;
+    }
+    .edit-input:focus, .edit-textarea:focus { outline: none; border-color: #6366f1; }
+    .edit-textarea { resize: vertical; }
+    .edit-entry-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+
+    /* ── Secondary & Edit Buttons ── */
+    .secondary-btn {
+      background: transparent; color: #9ca3af; font-size: 14px; font-weight: 600;
+      padding: 10px 16px; border-radius: 10px; border: 1px solid #2d2d3d;
+      cursor: pointer; font-family: inherit; transition: border-color 0.2s, color 0.2s;
+    }
+    .secondary-btn:hover { border-color: #6366f1; color: #e5e7eb; }
+    .secondary-btn:disabled { opacity: 0.5; cursor: default; }
+    .edit-content-btn {
+      background: none; border: 1px solid #2d2d3d; color: #9ca3af; font-size: 14px;
+      font-weight: 600; padding: 8px 14px; border-radius: 8px; cursor: pointer;
+      font-family: inherit; transition: border-color 0.2s, color 0.2s;
+    }
+    .edit-content-btn:hover { border-color: #6366f1; color: #e5e7eb; }
+
+    /* ── Cover Letter Section ── */
+    .cover-letter-section { background: #1a1a24; border-radius: 12px; border: 1px solid #2d2d3d; margin-top: 28px; overflow: hidden; }
+    .cl-section-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #2d2d3d; flex-wrap: wrap; gap: 8px; }
+    .cl-section-title { font-size: 16px; font-weight: 700; color: #fff; }
+    .cl-section-sub { font-size: 13px; color: #6b7280; }
+    .cl-paper { background: white; margin: 24px; border-radius: 4px; padding: 52px 56px; color: #111; font-family: 'Open Sans', sans-serif; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+    .cl-sender { margin-bottom: 32px; }
+    .cl-sender-name { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 3px; }
+    .cl-sender-contact { font-size: 12px; color: #666; line-height: 1.8; }
+    .cl-body p { font-size: 13px; line-height: 1.9; color: #333; margin-bottom: 18px; }
+    .cl-body p:last-child { margin-bottom: 0; }
+    .cl-sign-off { margin-top: 28px; font-size: 13px; color: #333; }
+    .cl-sign-name { margin-top: 32px; font-size: 14px; font-weight: 700; color: #111; }
+    .cl-generate-wrap { padding: 28px 24px; }
+    .cl-generate-desc { font-size: 14px; color: #9ca3af; margin-bottom: 16px; line-height: 1.6; }
+
+    /* ── Meridian skills: plain list instead of pills ── */
+    .mn-skills-wrap { display: flex; flex-direction: column; gap: 3px; margin-top: 6px; margin-bottom: 4px; }
+    .mn-skill-pill { font-family: 'Open Sans', sans-serif; font-size: 11px; color: #555; padding-left: 12px; position: relative; line-height: 1.6; }
+    .mn-skill-pill::before { content: '–'; position: absolute; left: 0; color: #1B2A4A; }
   </style>
 </head>
 <body>
@@ -372,26 +436,36 @@
 
     <!-- Top Bar -->
     <div class="top-bar">
-      <form method="GET" action="/build" style="display:inline;">
-        <input type="hidden" name="name"         value="{{ data.name }}"/>
-        <input type="hidden" name="email"        value="{{ data.email }}"/>
-        <input type="hidden" name="phone"        value="{{ data.phone }}"/>
-        <input type="hidden" name="school"       value="{{ data.school }}"/>
-        <input type="hidden" name="grade"        value="{{ data.grade }}"/>
-        <input type="hidden" name="gpa"          value="{{ data.gpa }}"/>
-        <input type="hidden" name="applying_for" value="{{ data.applying_for }}"/>
-        <input type="hidden" name="activities"   value="{{ data.activities }}"/>
-        <input type="hidden" name="skills"       value="{{ data.skills }}"/>
-        <input type="hidden" name="experience"   value="{{ data.experience }}"/>
-        <input type="hidden" name="extra"        value="{{ data.extra }}"/>
-        <button type="submit" class="back" style="background:none;border:none;cursor:pointer;padding:0;font-family:inherit;">&#8592; Edit Info</button>
-      </form>
-      <form method="POST" action="/download" id="downloadForm">
-        <input type="hidden" name="data"     value='{{ data | tojson }}'/>
-        <input type="hidden" name="resume"   value='{{ resume | tojson }}'/>
-        <input type="hidden" name="template" id="templateInput" value="executive"/>
-        <button type="submit" class="download-btn">&#8595; Download PDF</button>
-      </form>
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <form method="GET" action="/build" style="display:inline;">
+          <input type="hidden" name="name"         value="{{ data.name }}"/>
+          <input type="hidden" name="email"        value="{{ data.email }}"/>
+          <input type="hidden" name="phone"        value="{{ data.phone }}"/>
+          <input type="hidden" name="school"       value="{{ data.school }}"/>
+          <input type="hidden" name="grade"        value="{{ data.grade }}"/>
+          <input type="hidden" name="gpa"          value="{{ data.gpa }}"/>
+          <input type="hidden" name="applying_for" value="{{ data.applying_for }}"/>
+          <input type="hidden" name="activities"   value="{{ data.activities }}"/>
+          <input type="hidden" name="skills"       value="{{ data.skills }}"/>
+          <input type="hidden" name="experience"   value="{{ data.experience }}"/>
+          <input type="hidden" name="extra"        value="{{ data.extra }}"/>
+          <button type="submit" class="back" style="background:none;border:none;cursor:pointer;padding:0;font-family:inherit;">&#8592; Edit Info</button>
+        </form>
+        <button type="button" class="edit-content-btn" onclick="openEditPanel()">&#9998; Edit Content</button>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <form method="POST" action="/cover-letter" id="coverLetterForm" onsubmit="handleCoverLetterSubmit()">
+          <input type="hidden" name="data"   value='{{ data | tojson }}'/>
+          <input type="hidden" name="resume" id="clResumeInput" value='{{ resume | tojson }}'/>
+          <button type="submit" id="coverLetterBtn" class="secondary-btn">Cover Letter</button>
+        </form>
+        <form method="POST" action="/download" id="downloadForm">
+          <input type="hidden" name="data"     value='{{ data | tojson }}'/>
+          <input type="hidden" name="resume"   id="dlResumeInput" value='{{ resume | tojson }}'/>
+          <input type="hidden" name="template" id="templateInput" value="executive"/>
+          <button type="submit" class="download-btn">&#8595; Download PDF</button>
+        </form>
+      </div>
     </div>
 
     <!-- Template Picker -->
@@ -527,6 +601,101 @@
           <div class="tmpl-card-desc">Serif name, navy header, sidebar</div>
         </div>
 
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         EDIT CONTENT PANEL
+    ══════════════════════════════════════ -->
+    <div class="edit-panel-overlay" id="editPanel">
+      <div class="edit-panel-inner">
+        <div class="edit-panel-header">
+          <div class="edit-panel-title">Edit Resume Content</div>
+          <button class="edit-close-btn" onclick="closeEditPanel()">&#215;</button>
+        </div>
+
+        <form id="refineForm" method="POST" action="/refine">
+          <input type="hidden" name="data"   value='{{ data | tojson }}'/>
+          <input type="hidden" name="resume" id="refineResumeInput" value='{{ resume | tojson }}'/>
+
+          <!-- Summary -->
+          <div class="edit-section">
+            <div class="edit-section-title">Summary</div>
+            <textarea class="edit-textarea" id="edit-objective" rows="3">{{ resume.objective }}</textarea>
+          </div>
+
+          <!-- Activities -->
+          {% if resume.activities %}
+          <div class="edit-section">
+            <div class="edit-section-title">Activities &amp; Involvement</div>
+            {% for entry in resume.activities %}{% if entry is mapping %}
+            <div class="edit-entry" data-section="activities" data-idx="{{ loop.index0 }}">
+              <div class="edit-entry-grid">
+                <div>
+                  <div class="edit-field-label">Title</div>
+                  <input class="edit-input entry-title" type="text" value="{{ entry.title }}"/>
+                </div>
+                <div>
+                  <div class="edit-field-label">Role / Date</div>
+                  <input class="edit-input entry-meta" type="text" value="{{ entry.meta }}"/>
+                </div>
+              </div>
+              {% for bullet in entry.bullets %}
+              <div class="edit-field-label">Bullet {{ loop.index }}</div>
+              <input class="edit-input entry-bullet" type="text" value="{{ bullet }}"/>
+              {% endfor %}
+            </div>
+            {% endif %}{% endfor %}
+          </div>
+          {% endif %}
+
+          <!-- Experience -->
+          {% if resume.experience %}
+          <div class="edit-section">
+            <div class="edit-section-title">Work &amp; Volunteer Experience</div>
+            {% for entry in resume.experience %}{% if entry is mapping %}
+            <div class="edit-entry" data-section="experience" data-idx="{{ loop.index0 }}">
+              <div class="edit-entry-grid">
+                <div>
+                  <div class="edit-field-label">Title</div>
+                  <input class="edit-input entry-title" type="text" value="{{ entry.title }}"/>
+                </div>
+                <div>
+                  <div class="edit-field-label">Role / Date</div>
+                  <input class="edit-input entry-meta" type="text" value="{{ entry.meta }}"/>
+                </div>
+              </div>
+              {% for bullet in entry.bullets %}
+              <div class="edit-field-label">Bullet {{ loop.index }}</div>
+              <input class="edit-input entry-bullet" type="text" value="{{ bullet }}"/>
+              {% endfor %}
+            </div>
+            {% endif %}{% endfor %}
+          </div>
+          {% endif %}
+
+          <!-- Skills -->
+          {% if resume.skills %}
+          <div class="edit-section">
+            <div class="edit-section-title">Skills</div>
+            {% if resume.skills is mapping %}
+              {% for cat_name, cat_skills in resume.skills.items() %}
+              <div class="edit-entry edit-skill-cat">
+                <div class="edit-field-label">Category</div>
+                <input class="edit-input skill-cat-name" type="text" value="{{ cat_name }}"/>
+                <div class="edit-field-label">Skills (comma separated)</div>
+                <input class="edit-input skill-cat-values" type="text" value="{{ cat_skills | join(', ') }}"/>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="edit-field-label">Skills (comma separated)</div>
+              <input class="edit-input" id="edit-skills-list" type="text" value="{{ resume.skills | join(', ') }}"/>
+            {% endif %}
+          </div>
+          {% endif %}
+
+          <button type="button" onclick="submitEdits()" class="download-btn" style="width:100%; margin-top:4px; font-size:15px; padding:14px;">Apply Changes</button>
+        </form>
       </div>
     </div>
 
@@ -1079,6 +1248,45 @@
 
     </div> <!-- /resume-area -->
 
+    <!-- Cover Letter Section -->
+    {% if cover_letter %}
+    <div class="cover-letter-section" id="coverLetterSection">
+      <div class="cl-section-header">
+        <div class="cl-section-title">Cover Letter</div>
+        <div class="cl-section-sub">For: {{ data.applying_for }}</div>
+      </div>
+      <div class="cl-paper">
+        <div class="cl-sender">
+          <div class="cl-sender-name">{{ data.name }}</div>
+          <div class="cl-sender-contact">
+            {% if data.email %}{{ data.email }}{% endif %}
+            {% if data.email and data.phone %}<br>{% endif %}
+            {% if data.phone %}{{ data.phone | fmt_phone }}{% endif %}
+          </div>
+        </div>
+        <div class="cl-body">
+          {% for paragraph in cover_letter.split('\n\n') %}{% if paragraph.strip() %}<p>{{ paragraph.strip() }}</p>{% endif %}{% endfor %}
+        </div>
+        <div class="cl-sign-off">Sincerely,</div>
+        <div class="cl-sign-name">{{ data.name }}</div>
+      </div>
+    </div>
+    {% else %}
+    <div class="cover-letter-section" id="coverLetterSection">
+      <div class="cl-section-header">
+        <div class="cl-section-title">Cover Letter</div>
+      </div>
+      <div class="cl-generate-wrap">
+        <div class="cl-generate-desc">Generate a tailored cover letter for <strong style="color:#e5e7eb;">{{ data.applying_for }}</strong> using your resume content. Takes about 10 seconds.</div>
+        <form method="POST" action="/cover-letter" onsubmit="handleCoverLetterSubmit()">
+          <input type="hidden" name="data"   value='{{ data | tojson }}'/>
+          <input type="hidden" name="resume" value='{{ resume | tojson }}'/>
+          <button type="submit" id="coverLetterBtnBottom" class="secondary-btn">Generate Cover Letter</button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+
   </div>
   <script>
     function selectTemplate(name) {
@@ -1088,6 +1296,76 @@
       document.querySelectorAll('.resume').forEach(r => r.style.display = 'none');
       document.getElementById('preview-' + name).style.display = 'block';
     }
+
+    function openEditPanel() {
+      document.getElementById('editPanel').style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeEditPanel() {
+      document.getElementById('editPanel').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function submitEdits() {
+      const resume = JSON.parse(document.getElementById('refineResumeInput').value);
+
+      // Update objective
+      resume.objective = document.getElementById('edit-objective').value.trim();
+
+      // Update activities
+      document.querySelectorAll('[data-section="activities"]').forEach((entry, i) => {
+        if (resume.activities[i] && typeof resume.activities[i] === 'object') {
+          resume.activities[i].title   = entry.querySelector('.entry-title').value;
+          resume.activities[i].meta    = entry.querySelector('.entry-meta').value;
+          resume.activities[i].bullets = Array.from(entry.querySelectorAll('.entry-bullet'))
+            .map(b => b.value.trim()).filter(Boolean);
+        }
+      });
+
+      // Update experience
+      document.querySelectorAll('[data-section="experience"]').forEach((entry, i) => {
+        if (resume.experience[i] && typeof resume.experience[i] === 'object') {
+          resume.experience[i].title   = entry.querySelector('.entry-title').value;
+          resume.experience[i].meta    = entry.querySelector('.entry-meta').value;
+          resume.experience[i].bullets = Array.from(entry.querySelectorAll('.entry-bullet'))
+            .map(b => b.value.trim()).filter(Boolean);
+        }
+      });
+
+      // Update skills
+      if (resume.skills && !Array.isArray(resume.skills) && typeof resume.skills === 'object') {
+        const newSkills = {};
+        document.querySelectorAll('.edit-skill-cat').forEach(cat => {
+          const name = cat.querySelector('.skill-cat-name').value.trim();
+          const vals = cat.querySelector('.skill-cat-values').value
+            .split(',').map(s => s.trim()).filter(Boolean);
+          if (name) newSkills[name] = vals;
+        });
+        resume.skills = newSkills;
+      } else if (Array.isArray(resume.skills)) {
+        const el = document.getElementById('edit-skills-list');
+        if (el) resume.skills = el.value.split(',').map(s => s.trim()).filter(Boolean);
+      }
+
+      document.getElementById('refineResumeInput').value = JSON.stringify(resume);
+      document.getElementById('refineForm').submit();
+    }
+
+    function handleCoverLetterSubmit() {
+      const btns = ['coverLetterBtn', 'coverLetterBtnBottom'];
+      btns.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) { btn.disabled = true; btn.textContent = 'Generating...'; }
+      });
+    }
+
+    // Auto-scroll to cover letter if it was just generated
+    {% if cover_letter %}
+    window.addEventListener('load', function() {
+      document.getElementById('coverLetterSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    {% endif %}
   </script>
 </body>
 </html>

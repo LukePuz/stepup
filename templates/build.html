@@ -33,6 +33,11 @@
       color: #6366f1;
       margin-bottom: 20px;
     }
+    .error-banner {
+      background: #2d1515; border: 1px solid #7f1d1d; color: #fca5a5;
+      border-radius: 10px; padding: 14px 18px; margin-bottom: 24px;
+      font-size: 14px; line-height: 1.5;
+    }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .field { margin-bottom: 16px; }
     .field label {
@@ -81,6 +86,10 @@
     <a href="/" class="back">&#8592; Back</a>
     <h1>Build Your Resume</h1>
     <p class="subtitle">Fill in your info below — StepUp handles the rest.</p>
+
+    {% if error %}
+    <div class="error-banner">&#9888; {{ error }}</div>
+    {% endif %}
 
     <form method="POST" action="/build" onsubmit="handleSubmit(this)">
 

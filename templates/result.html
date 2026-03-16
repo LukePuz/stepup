@@ -396,8 +396,9 @@
 
     /* ── Secondary & Edit Buttons ── */
     .secondary-btn {
-      background: transparent; color: #9ca3af; font-size: 14px; font-weight: 600;
-      padding: 10px 16px; border-radius: 10px; border: 1px solid #2d2d3d;
+      display: inline-block; background: transparent; color: #9ca3af;
+      font-size: 14px; font-weight: 700; line-height: 1.5;
+      padding: 12px 24px; border-radius: 10px; border: 1px solid #2d2d3d;
       cursor: pointer; font-family: inherit; transition: border-color 0.2s, color 0.2s;
     }
     .secondary-btn:hover { border-color: #6366f1; color: #e5e7eb; }
@@ -418,8 +419,11 @@
     .cl-sender { margin-bottom: 32px; }
     .cl-sender-name { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 3px; }
     .cl-sender-contact { font-size: 12px; color: #666; line-height: 1.8; }
-    .cl-body p { font-size: 13px; line-height: 1.9; color: #333; margin-bottom: 18px; }
+    .cl-body p { font-size: 13px; line-height: 1.9; color: #333; margin-bottom: 18px; border-radius: 3px; padding: 4px 6px; margin-left: -6px; outline: none; transition: background 0.15s; }
     .cl-body p:last-child { margin-bottom: 0; }
+    .cl-body p[contenteditable]:hover { background: #f0f4ff; }
+    .cl-body p[contenteditable]:focus { background: #e8effe; }
+    .cl-ai-note { font-size: 11.5px; color: #6b7280; margin-top: 4px; }
     .cl-sign-off { margin-top: 28px; font-size: 13px; color: #333; }
     .cl-sign-name { margin-top: 32px; font-size: 14px; font-weight: 700; color: #111; }
     .cl-generate-wrap { padding: 28px 24px; }
@@ -454,11 +458,7 @@
         <button type="button" class="edit-content-btn" onclick="openEditPanel()">&#9998; Edit Content</button>
       </div>
       <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-        <form method="POST" action="/cover-letter" id="coverLetterForm" onsubmit="handleCoverLetterSubmit()">
-          <input type="hidden" name="data"   value='{{ data | tojson }}'/>
-          <input type="hidden" name="resume" id="clResumeInput" value='{{ resume | tojson }}'/>
-          <button type="submit" id="coverLetterBtn" class="secondary-btn">Cover Letter</button>
-        </form>
+        <button type="button" class="secondary-btn" onclick="document.getElementById('coverLetterSection').scrollIntoView({behavior:'smooth'})">Cover Letter</button>
         <form method="POST" action="/download" id="downloadForm">
           <input type="hidden" name="data"     value='{{ data | tojson }}'/>
           <input type="hidden" name="resume"   id="dlResumeInput" value='{{ resume | tojson }}'/>
@@ -1252,7 +1252,10 @@
     {% if cover_letter %}
     <div class="cover-letter-section" id="coverLetterSection">
       <div class="cl-section-header">
-        <div class="cl-section-title">Cover Letter</div>
+        <div>
+          <div class="cl-section-title">Cover Letter</div>
+          <div class="cl-ai-note">AI-drafted — read it over and adjust anything that doesn't sound like you.</div>
+        </div>
         <div class="cl-section-sub">For: {{ data.applying_for }}</div>
       </div>
       <div class="cl-paper">
@@ -1265,7 +1268,7 @@
           </div>
         </div>
         <div class="cl-body">
-          {% for paragraph in cover_letter.split('\n\n') %}{% if paragraph.strip() %}<p>{{ paragraph.strip() }}</p>{% endif %}{% endfor %}
+          {% for paragraph in cover_letter.split('\n\n') %}{% if paragraph.strip() %}<p contenteditable="true" spellcheck="true">{{ paragraph.strip() }}</p>{% endif %}{% endfor %}
         </div>
         <div class="cl-sign-off">Sincerely,</div>
         <div class="cl-sign-name">{{ data.name }}</div>

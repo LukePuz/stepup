@@ -163,33 +163,44 @@ def generate_cover_letter(data: dict, resume: dict) -> str:
             bullets = "; ".join(e.get("bullets", []))
             experience_text += f"- {e.get('title', '')} ({e.get('meta', '')}): {bullets}\n"
 
-    prompt = f"""Write a concise, professional cover letter for a high school student.
+    prompt = f"""Write a cover letter body for a high school student applying for: {data.get('applying_for')}.
 
-Student:
+Student details:
 - Name: {data.get('name')}
 - School: {data.get('school')}, Grade {data.get('grade')}
-- Applying for: {data.get('applying_for')}
-- Summary: {resume.get('objective', '')}
 - Activities:
 {activities_text or 'None'}
 - Experience:
 {experience_text or 'None'}
 
-Write exactly 3 short paragraphs (~200 words total):
-1. Opening: State what they are applying for and why they are interested
-2. Body: Highlight 2 specific activities or experiences with concrete details
-3. Closing: Thank the reader and express enthusiasm
+Requirements:
+- Exactly 3 paragraphs, ~180 words total
+- Paragraph 1: Jump straight into why this specific opportunity interests them — no hollow openers like "I am writing to express my interest"
+- Paragraph 2: Reference 2 things from their background using only details explicitly listed above — titles, roles, and bullets as written. Do not add outcomes, statistics, or stories that are not in the provided data.
+- Paragraph 3: One confident closing sentence, then a brief thank-you
 
-Use professional but warm language suitable for a high schooler.
-Do not include a date, address block, salutation, or sign-off — return only the 3 paragraph body."""
+Fabrication rules — this is the most important section:
+- Do NOT invent any detail that is not explicitly stated in the student's activities or experience above
+- Do NOT add scores, rankings, outcomes, or results (e.g. "went from last place to the playoffs") unless they appear word-for-word in the bullets
+- Do NOT add context about the organization (e.g. "I've followed NASA's missions closely") unless the student mentioned it
+- If the provided bullets are sparse, write shorter, vaguer sentences — do not fill the gap with invented specifics
+- Every factual claim must be traceable to the data above
+
+Tone rules:
+- Use short, direct sentences. Vary the length.
+- No buzzwords: do not use "passionate", "leverage", "eager to contribute", "hard-working", "dedicated", "honed my skills", "I would be a great fit", "I am confident that"
+- No filler transitions like "Furthermore," or "In conclusion,"
+- Professional but natural — the way a smart student actually talks, not corporate-speak
+
+Do not include a date, address, salutation, or sign-off. Return only the 3 paragraph body."""
 
     response = openai_client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "You are an expert cover letter writer for high school students. Return only the letter body paragraphs."},
+            {"role": "system", "content": "You write cover letters that sound like real, articulate high school students — professional but natural, specific not generic. Return only the letter body."},
             {"role": "user", "content": prompt}
         ],
-        temperature=0.5
+        temperature=0.7
     )
     return response.choices[0].message.content.strip()
 

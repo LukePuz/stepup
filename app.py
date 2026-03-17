@@ -144,7 +144,8 @@ Rules:
             {"role": "user", "content": prompt}
         ],
         temperature=0.4,
-        response_format={"type": "json_object"}
+        response_format={"type": "json_object"},
+        timeout=90
     )
 
     return json.loads(response.choices[0].message.content)

@@ -242,7 +242,7 @@
     <div class="error-banner">&#9888; {{ error }}</div>
     {% endif %}
 
-    <form id="resumeForm" method="POST" action="/build">
+    <form id="resumeForm" method="POST" action="/build" onsubmit="serializeBeforeSubmit(); showLoadingOverlay();">
       <!-- Dynamically serialized before submit -->
       <input type="hidden" name="activities" id="hiddenActivities"/>
       <input type="hidden" name="skills"     id="hiddenSkills"/>
@@ -284,7 +284,7 @@
         <div class="row">
           <div class="field">
             <label>Email <span style="color:#4b5563;font-weight:400">(optional)</span></label>
-            <input type="email" id="f-email" name="email" placeholder="jane@email.com" value="{{ prefill.get('email', '') }}"/>
+            <input type="text" id="f-email" name="email" placeholder="jane@email.com" value="{{ prefill.get('email', '') }}"/>
           </div>
           <div class="field">
             <label>Phone <span style="color:#4b5563;font-weight:400">(optional)</span></label>
@@ -770,11 +770,6 @@
       initChips();
       initPrefill();
       showStep(1);
-
-      document.getElementById('resumeForm').addEventListener('submit', function() {
-        serializeBeforeSubmit();
-        showLoadingOverlay();
-      });
 
       // Clear invalid state on input
       document.getElementById('f-name').addEventListener('input', function() { setInvalid('f-name', false); });

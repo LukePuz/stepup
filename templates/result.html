@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>StepUp — Your Resume</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;1,400&family=EB+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     /* ── App Shell ── */
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -67,74 +67,123 @@
     .entry:last-child { margin-bottom: 0; }
 
     /* ══════════════════════════════════════
-       PROFESSIONAL (classic) — scoped to #preview-classic
+       CLASSIC — scoped to #preview-classic
     ══════════════════════════════════════ */
+    #preview-classic {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 10.5pt;
+      color: #1a1a1a;
+      background: #fff;
+      line-height: 1.45;
+    }
     #preview-classic .page {
-      font-family: 'Jost', sans-serif;
-      display: grid;
-      grid-template-columns: 230px 1fr;
+      width: 8.5in;
+      min-height: 11in;
+      margin: 0 auto;
+      padding: 0.65in 0.75in;
+      background: #fff;
     }
-    #preview-classic .sidebar {
-      background: #F7F7F7;
-      padding: 48px 24px 48px 28px;
-      border-right: 1px solid #E8E8E8;
+    #preview-classic .header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    #preview-classic .header .name {
+      font-size: 24pt;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #111;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    #preview-classic .header .contact-line {
+      font-size: 9.5pt;
+      color: #555;
+      letter-spacing: 0.02em;
+      line-height: 1.7;
+    }
+    #preview-classic .header .contact-line a {
+      color: #1a4a8a;
+      text-decoration: none;
+    }
+    #preview-classic .header-rule {
+      border: none;
+      border-top: 1px solid #bbb;
+      margin: 12px 0 28px 0;
+    }
+    #preview-classic .summary {
+      font-size: 10pt;
+      color: #222;
+      line-height: 1.55;
+      margin-bottom: 24px;
+    }
+    #preview-classic .section {
+      margin-bottom: 22px;
+    }
+    #preview-classic .section-title {
+      font-size: 10pt;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #111;
+      border-bottom: 1.5px solid #111;
+      padding-bottom: 3px;
+      margin-bottom: 12px;
+    }
+    #preview-classic .entry {
+      margin-bottom: 18px;
+    }
+    #preview-classic .entry-year {
+      font-size: 8.5pt;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1px;
+    }
+    #preview-classic .entry-title-row {
       display: flex;
-      flex-direction: column;
-      gap: 32px;
-      min-height: 820px;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 3px;
     }
-    #preview-classic .s-label {
-      font-size: 9px; font-weight: 600; letter-spacing: 2.5px;
-      text-transform: uppercase; color: #111;
-      margin-bottom: 12px; padding-bottom: 7px; border-bottom: 1px solid #CCC;
+    #preview-classic .entry-title {
+      font-weight: 700;
+      font-size: 10pt;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #1a4a8a;
     }
-    #preview-classic .sidebar-section { display: flex; flex-direction: column; }
-    #preview-classic .sidebar-section.hidden { display: none; }
-    #preview-classic .contact-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
-    #preview-classic .contact-list li { font-size: 11.5px; color: #555; font-weight: 300; line-height: 1.5; display: flex; align-items: center; gap: 7px; }
-    #preview-classic .contact-list li svg { flex-shrink: 0; opacity: 0.5; }
-    #preview-classic .contact-list li.hidden { display: none; }
-    #preview-classic .edu-school { font-size: 12.5px; font-weight: 600; color: #222; margin-bottom: 2px; }
-    #preview-classic .edu-grade { font-size: 11px; color: #555; font-weight: 300; margin-bottom: 5px; }
-    #preview-classic .edu-gpa { font-size: 11px; font-weight: 500; color: #222; letter-spacing: 0.3px; }
-    #preview-classic .edu-gpa.hidden { display: none; }
-    #preview-classic .skill-group { margin-bottom: 13px; }
-    #preview-classic .skill-group:last-child { margin-bottom: 0; }
-    #preview-classic .skill-group-name { font-size: 10.5px; font-weight: 600; color: #222; margin-bottom: 5px; letter-spacing: 0.3px; }
-    #preview-classic .skill-list { list-style: none; display: flex; flex-direction: column; gap: 3px; }
-    #preview-classic .skill-list li { font-size: 11.5px; color: #555; font-weight: 300; line-height: 1.5; }
-    #preview-classic .main {
-      padding: 48px 44px 48px 40px;
-      display: flex; flex-direction: column; gap: 30px;
+    #preview-classic .entry-company {
+      font-weight: 400;
+      color: #1a1a1a;
+      text-transform: none;
+      letter-spacing: 0;
     }
-    #preview-classic .main-name { padding-bottom: 22px; border-bottom: 2px solid #111; }
-    #preview-classic .main-name h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 52px; font-weight: 600; color: #111;
-      line-height: 1; letter-spacing: -1px; margin-bottom: 6px;
+    #preview-classic .entry-body {
+      font-size: 9.5pt;
+      color: #222;
+      line-height: 1.5;
     }
-    #preview-classic .tagline { font-size: 10px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: #888; }
-    #preview-classic .tagline.hidden { display: none; }
-    #preview-classic .section { display: flex; flex-direction: column; }
-    #preview-classic .section.hidden { display: none; }
-    #preview-classic .m-label {
-      font-size: 9px; font-weight: 600; letter-spacing: 2.5px;
-      text-transform: uppercase; color: #111;
-      margin-bottom: 14px; padding-bottom: 7px; border-bottom: 1px solid #CCC;
+    #preview-classic .skills-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px 16px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
     }
-    #preview-classic .summary-text { font-size: 12.5px; color: #555; line-height: 1.8; font-weight: 300; }
-    #preview-classic .entry { margin-bottom: 18px; }
-    #preview-classic .entry:last-child { margin-bottom: 0; }
-    #preview-classic .entry-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1px; }
-    #preview-classic .entry-title { font-size: 13.5px; font-weight: 600; color: #222; letter-spacing: 0.1px; }
-    #preview-classic .entry-duration { font-size: 11px; color: #888; font-weight: 300; white-space: nowrap; margin-left: 12px; }
-    #preview-classic .entry-duration.hidden { display: none; }
-    #preview-classic .entry-subtitle { font-size: 11.5px; color: #555; font-weight: 300; font-style: italic; margin-bottom: 8px; }
-    #preview-classic .entry-subtitle.hidden { display: none; }
-    #preview-classic .entry-bullets { list-style: none; display: flex; flex-direction: column; gap: 5px; }
-    #preview-classic .entry-bullets li { font-size: 12px; color: #555; line-height: 1.65; padding-left: 14px; position: relative; font-weight: 300; }
-    #preview-classic .entry-bullets li::before { content: '·'; position: absolute; left: 2px; color: #888; font-size: 16px; line-height: 1.2; }
-    #preview-classic .additional-text { font-size: 12px; color: #555; line-height: 1.75; font-weight: 300; }
+    #preview-classic .skills-list li {
+      font-size: 9.5pt;
+      color: #222;
+      padding-left: 1.2em;
+      text-indent: -1.2em;
+    }
+    #preview-classic .skills-list li::before {
+      content: "● ";
+      font-size: 6.5pt;
+      color: #333;
+      vertical-align: middle;
+    }
 
     /* ══════════════════════════════════════
        MERIDIAN (modern)
@@ -199,11 +248,13 @@
     }
     .mn-entry { margin-bottom: 22px; }
     .mn-entry:last-child { margin-bottom: 0; }
-    .mn-skills-wrap { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 6px; }
+    .mn-skills-wrap { display: flex; flex-direction: column; gap: 3px; margin-top: 6px; margin-bottom: 4px; }
     .mn-skill-pill {
-      font-family: 'Open Sans', sans-serif; font-size: 10.5px; color: #2D2D2D;
-      background: #E2E5EC; border-radius: 4px; padding: 5px 11px;
+      font-family: 'Open Sans', sans-serif; font-size: 11px; color: #555;
+      background: none; border-radius: 0; padding: 0 0 0 12px;
+      position: relative; line-height: 1.6;
     }
+    .mn-skill-pill::before { content: '–'; position: absolute; left: 0; color: #1B2A4A; }
     .mn-skill-cat {
       font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700;
       color: #2D2D2D; margin-top: 16px; margin-bottom: 6px;
@@ -269,9 +320,9 @@
     /* ══════════════════════════════════════
        CHRONICLE (lateral/timeline)
     ══════════════════════════════════════ */
-    .resume-lateral { display: flex; font-family: 'Open Sans', sans-serif; color: #333; min-height: 820px; }
-    .lt-main { flex: 1; padding: 32px 26px 44px; background: #fff; }
-    .lt-sidebar { width: 200px; background: #444; padding: 28px 16px 44px; flex-shrink: 0; }
+    .resume-lateral { display: grid; grid-template-columns: 200px 1fr; grid-template-areas: "sidebar main"; font-family: 'Open Sans', sans-serif; color: #333; min-height: 820px; }
+    .lt-main { grid-area: main; padding: 32px 26px 44px; background: #fff; }
+    .lt-sidebar { grid-area: sidebar; background: #444; padding: 28px 16px 44px; }
     .lt-name { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 800; color: #111; margin-bottom: 3px; }
     .lt-subtitle { font-size: 11.5px; color: #777; margin-bottom: 26px; }
     .lt-section { margin-bottom: 20px; }
@@ -429,10 +480,55 @@
     .cl-generate-wrap { padding: 28px 24px; }
     .cl-generate-desc { font-size: 14px; color: #9ca3af; margin-bottom: 16px; line-height: 1.6; }
 
-    /* ── Meridian skills: plain list instead of pills ── */
-    .mn-skills-wrap { display: flex; flex-direction: column; gap: 3px; margin-top: 6px; margin-bottom: 4px; }
-    .mn-skill-pill { font-family: 'Open Sans', sans-serif; font-size: 11px; color: #555; padding-left: 12px; position: relative; line-height: 1.6; }
-    .mn-skill-pill::before { content: '–'; position: absolute; left: 0; color: #1B2A4A; }
+
+    /* ── Print styles ── */
+    @media print {
+      body { background: white !important; padding: 0 !important; margin: 0 !important; }
+      .top-bar, .tmpl-section, .edit-panel-overlay, .cover-letter-section { display: none !important; }
+      .resume-area { background: white !important; padding: 0 !important; margin: 0 !important; }
+      .container { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+      @page { margin: 0; }
+      /* Preserve all background colors (sidebar fills, navy headers, etc.) */
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      /* Chronicle: ensure sidebar grid layout holds in print */
+      .resume-lateral { display: grid !important; grid-template-columns: 200px 1fr !important; grid-template-areas: "sidebar main" !important; }
+      .lt-sidebar { grid-area: sidebar !important; background: #444 !important; }
+      .lt-main { grid-area: main !important; }
+      /* Meridian: ensure navy header background prints */
+      .mn-header { background: #1B2A4A !important; }
+      .mn-sidebar { background: #F4F5F7 !important; }
+      /* Classic: single-column, page fits paper width */
+      #preview-classic .page { width: 100% !important; margin: 0 !important; padding: 0.65in 0.75in !important; box-shadow: none !important; }
+      #preview-classic .entry, #preview-classic .section { page-break-inside: avoid; }
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 600px) {
+      body { padding: 16px 12px 40px; }
+      .container { padding: 0; }
+
+      /* Top bar: stack vertically, full-width buttons */
+      .top-bar { flex-direction: column; align-items: stretch; gap: 8px; }
+      .top-bar > div { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+      .top-bar > div:first-child { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+      .download-btn { width: 100%; text-align: center; display: block; box-sizing: border-box; }
+      .secondary-btn { width: 100%; text-align: center; box-sizing: border-box; }
+      #downloadForm { width: 100%; }
+      #regenerateForm { width: 100%; }
+      #regenerateForm button { width: 100%; }
+
+      /* Template picker: 2-column grid */
+      .tmpl-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+      .tmpl-card { min-width: 0; max-width: none; flex: none; }
+
+      /* Resume preview area: no extra padding, let JS scale handle sizing */
+      .resume-area { padding: 12px 0 0; margin-top: 0; }
+
+      /* Cover letter */
+      .cover-letter-section { margin-top: 16px; }
+      .cl-paper { padding: 28px 20px; margin: 12px; }
+      .cl-generate-wrap { padding: 20px 16px; }
+    }
   </style>
 </head>
 <body>
@@ -510,26 +606,18 @@
         </div>
 
         <div class="tmpl-card" data-tmpl="classic" onclick="selectTemplate('classic')">
-          <div class="mock" style="padding:0;overflow:hidden;display:flex;">
-            <div style="width:32%;background:#F7F7F7;padding:5px 4px 0;border-right:1px solid #E8E8E8;">
-              <div style="height:1.5px;background:#CCC;margin-bottom:4px;width:60%;"></div>
-              <div style="height:2px;background:#ddd;margin-bottom:2px;"></div>
-              <div style="height:2px;width:70%;background:#ddd;margin-bottom:6px;"></div>
-              <div style="height:1.5px;background:#CCC;margin-bottom:4px;width:55%;"></div>
-              <div style="height:2px;background:#ddd;margin-bottom:2px;"></div>
-              <div style="height:2px;width:80%;background:#ddd;"></div>
-            </div>
-            <div style="flex:1;padding:5px 5px 0;">
-              <div style="height:7px;width:68%;background:#111;border-radius:1px;margin-bottom:3px;"></div>
-              <div style="height:1.5px;width:45%;background:#bbb;margin-bottom:3px;"></div>
-              <div style="height:1.5px;background:#111;width:100%;margin-bottom:6px;"></div>
-              <div style="height:1.5px;width:40%;background:#CCC;margin-bottom:4px;"></div>
-              <div style="height:2px;background:#e5e7eb;margin-bottom:2px;"></div>
-              <div style="height:2px;width:80%;background:#e5e7eb;"></div>
-            </div>
+          <div class="mock" style="padding:8px 10px;">
+            <div style="height:6px;width:58%;background:#111;border-radius:1px;margin:0 auto 4px;"></div>
+            <div style="height:1px;width:82%;background:#bbb;margin:0 auto 6px;"></div>
+            <div style="height:1.5px;width:38%;background:#333;border-radius:1px;margin-bottom:4px;border-bottom:1px solid #333;"></div>
+            <div style="height:2px;background:#e5e7eb;margin-bottom:2px;"></div>
+            <div style="height:2px;width:75%;background:#e5e7eb;margin-bottom:5px;"></div>
+            <div style="height:1.5px;width:32%;background:#333;border-radius:1px;margin-bottom:4px;"></div>
+            <div style="height:2px;background:#e5e7eb;margin-bottom:2px;"></div>
+            <div style="height:2px;width:85%;background:#e5e7eb;"></div>
           </div>
-          <div class="tmpl-card-name">Professional</div>
-          <div class="tmpl-card-desc">Serif name, minimal gray</div>
+          <div class="tmpl-card-name">Classic</div>
+          <div class="tmpl-card-desc">Traditional serif, single column.</div>
         </div>
 
         <div class="tmpl-card" data-tmpl="modern" onclick="selectTemplate('modern')">
@@ -716,105 +804,90 @@
     <div class="resume-area">
 
     <!-- ══════════════════════════════════════
-         PROFESSIONAL PREVIEW
+         CLASSIC PREVIEW
     ══════════════════════════════════════ -->
     <div id="preview-classic" class="resume" style="display:none;">
     <div class="page">
 
-      <aside class="sidebar">
-
-        <div class="sidebar-section">
-          <div class="s-label">Contact</div>
-          <ul class="contact-list">
-            <li>
-              <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
-              {{ data.email }}
-            </li>
-            <li class="{% if not data.phone %}hidden{% endif %}">
-              <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 013.09 4.18 2 2 0 015.07 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L9.09 9.91a16 16 0 006.99 6.99l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-              {{ data.phone | fmt_phone }}
-            </li>
-          </ul>
+      <div class="header">
+        <div class="name">{{ data.name }}</div>
+        <div class="contact-line">
+          {{ data.school }}{% if data.phone %} &middot; {{ data.phone | fmt_phone }}{% endif %}<br>
+          {% if data.email %}<a href="mailto:{{ data.email }}">{{ data.email }}</a>{% endif %}
         </div>
+      </div>
+      <hr class="header-rule"/>
 
-        <div class="sidebar-section">
-          <div class="s-label">Education</div>
-          <div class="edu-school">{{ data.school }}</div>
-          <div class="edu-grade">Grade {{ data.grade }} &nbsp;·&nbsp; Current</div>
-          <div class="edu-gpa{% if not data.gpa %} hidden{% endif %}">GPA: {{ data.gpa }}</div>
+      {% if resume.objective %}
+      <div class="summary">{{ resume.objective }}</div>
+      {% endif %}
+
+      {% if resume.experience %}
+      <div class="section">
+        <div class="section-title">Experience</div>
+        {% for entry in resume.experience %}{% if entry is mapping %}
+        {% set mparts = entry.meta.split(' | ') if entry.meta else [] %}
+        {% set years = mparts[-1] if mparts|length > 0 else '' %}
+        {% set company = mparts[:-1]|join(', ') if mparts|length > 1 else '' %}
+        <div class="entry">
+          {% if years %}<div class="entry-year">{{ years }}</div>{% endif %}
+          <div class="entry-title-row">
+            <div class="entry-title">{{ entry.title }}{% if company %}<span class="entry-company">, {{ company }}</span>{% endif %}</div>
+          </div>
+          {% if entry.bullets %}<div class="entry-body">{{ entry.bullets | join_sentences }}</div>{% endif %}
         </div>
+        {% endif %}{% endfor %}
+      </div>
+      {% endif %}
 
-        <div class="sidebar-section{% if not resume.skills %} hidden{% endif %}">
-          <div class="s-label">Skills</div>
+      {% if resume.activities %}
+      <div class="section">
+        <div class="section-title">Activities &amp; Leadership</div>
+        {% for entry in resume.activities %}{% if entry is mapping %}
+        {% set mparts = entry.meta.split(' | ') if entry.meta else [] %}
+        {% set years = mparts[-1] if mparts|length > 0 else '' %}
+        {% set company = mparts[:-1]|join(', ') if mparts|length > 1 else '' %}
+        <div class="entry">
+          {% if years %}<div class="entry-year">{{ years }}</div>{% endif %}
+          <div class="entry-title-row">
+            <div class="entry-title">{{ entry.title }}{% if company %}<span class="entry-company">, {{ company }}</span>{% endif %}</div>
+          </div>
+          {% if entry.bullets %}<div class="entry-body">{{ entry.bullets | join_sentences }}</div>{% endif %}
+        </div>
+        {% endif %}{% endfor %}
+      </div>
+      {% endif %}
+
+      {% if resume.education %}
+      <div class="section">
+        <div class="section-title">Education &amp; Achievements</div>
+        {% for entry in resume.education %}{% if entry is mapping %}
+        {% set mparts = entry.meta.split(' | ') if entry.meta else [] %}
+        {% set years = mparts[-1] if mparts|length > 0 else '' %}
+        {% set institution = mparts[:-1]|join(', ') if mparts|length > 1 else '' %}
+        <div class="entry">
+          <div class="entry-title-row">
+            <div class="entry-title">{{ entry.title }}{% if institution %}<span class="entry-company">, {{ institution }}{% if years %} {{ years }}{% endif %}</span>{% elif years %}<span class="entry-company"> {{ years }}</span>{% endif %}</div>
+          </div>
+          {% if entry.bullets %}<div class="entry-body">{{ entry.bullets | join_sentences }}</div>{% endif %}
+        </div>
+        {% endif %}{% endfor %}
+      </div>
+      {% endif %}
+
+      {% if resume.skills %}
+      <div class="section">
+        <div class="section-title">Skills</div>
+        <ul class="skills-list">
           {% if resume.skills is mapping %}
-            {% for cat_name, cat_skills in resume.skills.items() %}
-            <div class="skill-group">
-              <div class="skill-group-name">{{ cat_name }}</div>
-              <ul class="skill-list">{% for s in cat_skills %}<li>{{ s }}</li>{% endfor %}</ul>
-            </div>
-            {% endfor %}
+            {% for cat, items in resume.skills.items() %}{% for s in items %}<li>{{ s }}</li>{% endfor %}{% endfor %}
           {% else %}
-            <div class="skill-group">
-              <ul class="skill-list">{% for s in resume.skills %}<li>{{ s }}</li>{% endfor %}</ul>
-            </div>
+            {% for s in resume.skills %}<li>{{ s }}</li>{% endfor %}
           {% endif %}
-        </div>
+        </ul>
+      </div>
+      {% endif %}
 
-      </aside>
-
-      <main class="main">
-
-        <div class="main-name">
-          <h1>{{ data.name }}</h1>
-          <div class="tagline">{{ data.school }} &nbsp;·&nbsp; Grade {{ data.grade }}</div>
-          <div class="tagline{% if not data.applying_for %} hidden{% endif %}" style="margin-top:4px; opacity:0.6;">{{ data.applying_for }}</div>
-        </div>
-
-        <div class="section">
-          <div class="m-label">Summary</div>
-          <p class="summary-text">{{ resume.objective }}</p>
-        </div>
-
-        <div class="section{% if not resume.activities %} hidden{% endif %}">
-          <div class="m-label">Activities &amp; Involvement</div>
-          {% for entry in resume.activities or [] %}{% if entry is mapping %}
-            {% set mparts = entry.meta.split(' | ') if entry.meta else [] %}
-            {% set duration = mparts[-1] if mparts|length > 0 else '' %}
-            {% set subtitle_parts = mparts[:-1] if mparts|length > 1 else [] %}
-          <div class="entry">
-            <div class="entry-header">
-              <div class="entry-title">{{ entry.title }}</div>
-              <div class="entry-duration{% if not duration %} hidden{% endif %}">{{ duration }}</div>
-            </div>
-            <div class="entry-subtitle{% if not subtitle_parts %} hidden{% endif %}">{{ subtitle_parts | join(' &nbsp;·&nbsp; ') }}</div>
-            {% if entry.bullets %}<ul class="entry-bullets">{% for b in entry.bullets %}<li>{{ b }}</li>{% endfor %}</ul>{% endif %}
-          </div>
-          {% endif %}{% endfor %}
-        </div>
-
-        <div class="section{% if not resume.experience %} hidden{% endif %}">
-          <div class="m-label">Work &amp; Volunteer Experience</div>
-          {% for entry in resume.experience or [] %}{% if entry is mapping %}
-            {% set mparts = entry.meta.split(' | ') if entry.meta else [] %}
-            {% set duration = mparts[-1] if mparts|length > 0 else '' %}
-            {% set subtitle_parts = mparts[:-1] if mparts|length > 1 else [] %}
-          <div class="entry">
-            <div class="entry-header">
-              <div class="entry-title">{{ entry.title }}</div>
-              <div class="entry-duration{% if not duration %} hidden{% endif %}">{{ duration }}</div>
-            </div>
-            <div class="entry-subtitle{% if not subtitle_parts %} hidden{% endif %}">{{ subtitle_parts | join(' &nbsp;·&nbsp; ') }}</div>
-            {% if entry.bullets %}<ul class="entry-bullets">{% for b in entry.bullets %}<li>{{ b }}</li>{% endfor %}</ul>{% endif %}
-          </div>
-          {% endif %}{% endfor %}
-        </div>
-
-        <div class="section{% if not data.extra %} hidden{% endif %}">
-          <div class="m-label">Additional Information</div>
-          <p class="additional-text">{{ data.extra }}</p>
-        </div>
-
-      </main>
     </div> <!-- /.page -->
     </div> <!-- /#preview-classic -->
 
@@ -1306,13 +1379,70 @@
 
   </div>
   <script>
+    function applyClassicScale() {
+      var resumeArea = document.querySelector('.resume-area');
+      var preview = document.getElementById('preview-classic');
+      var page = preview.querySelector('.page');
+      if (!page) return;
+      var availWidth = resumeArea.getBoundingClientRect().width - (window.innerWidth <= 600 ? 0 : 56);
+      var scale = availWidth / 816; // 816px = 8.5in at 96dpi
+      page.style.transform = 'scale(' + scale + ')';
+      page.style.transformOrigin = 'top left';
+      preview.style.height = Math.ceil(page.offsetHeight * scale) + 'px';
+      preview.style.overflow = 'hidden';
+    }
+
+    function applyMobilePreviewScale(name) {
+      if (name === 'classic') { applyClassicScale(); return; }
+      var preview = document.getElementById('preview-' + name);
+      if (!preview) return;
+      if (window.innerWidth > 600) {
+        // Reset any mobile transform when returning to desktop
+        preview.style.transform = '';
+        preview.style.height = '';
+        preview.style.overflow = '';
+        return;
+      }
+      var resumeArea = document.querySelector('.resume-area');
+      var availWidth = resumeArea ? resumeArea.getBoundingClientRect().width : window.innerWidth;
+      var scale = Math.min(1, availWidth / 760);
+      var naturalH = preview.scrollHeight;
+      preview.style.transform = 'scale(' + scale + ')';
+      preview.style.transformOrigin = 'top left';
+      preview.style.overflow = 'hidden';
+      preview.style.height = Math.ceil(naturalH * scale) + 'px';
+    }
+
     function selectTemplate(name) {
       document.getElementById('templateInput').value = name;
       document.querySelectorAll('.tmpl-card').forEach(c => c.classList.remove('selected'));
       document.querySelector('[data-tmpl="' + name + '"]').classList.add('selected');
       document.querySelectorAll('.resume').forEach(r => r.style.display = 'none');
+      // Reset Classic scaling when switching away from it
+      var classicPreview = document.getElementById('preview-classic');
+      var classicPage = classicPreview.querySelector('.page');
+      classicPage.style.transform = '';
+      classicPreview.style.height = '';
+      classicPreview.style.overflow = '';
       document.getElementById('preview-' + name).style.display = 'block';
+      var dlBtn = document.querySelector('#downloadForm button[type="submit"]');
+      if (name === 'classic') {
+        dlBtn.onclick = function(e) { e.preventDefault(); window.print(); };
+      } else {
+        dlBtn.onclick = null;
+      }
+      applyMobilePreviewScale(name);
     }
+
+    window.addEventListener('resize', function() {
+      var current = document.getElementById('templateInput').value;
+      if (current) applyMobilePreviewScale(current);
+    });
+
+    window.addEventListener('load', function() {
+      var current = document.getElementById('templateInput').value;
+      if (current) applyMobilePreviewScale(current);
+    });
 
     function openEditPanel() {
       document.getElementById('editPanel').style.display = 'block';

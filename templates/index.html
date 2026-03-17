@@ -36,6 +36,9 @@
       border-radius: 10px;
       text-decoration: none;
       transition: opacity 0.2s;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
     }
     .nav-cta:hover { opacity: 0.9; }
 
@@ -60,7 +63,7 @@
       margin-bottom: 24px;
     }
     h1 {
-      font-size: 56px;
+      font-size: clamp(28px, 7vw, 56px);
       font-weight: 800;
       line-height: 1.1;
       margin-bottom: 20px;
@@ -194,10 +197,18 @@
     }
 
     @media (max-width: 640px) {
-      h1 { font-size: 36px; }
-      nav { padding: 16px 20px; }
+      nav { padding: 14px 20px; }
+      .nav-cta { font-size: 13px; padding: 10px 16px; }
       .steps, .for-grid { grid-template-columns: 1fr; }
-      .section { padding: 60px 20px; }
+      .section { padding: 52px 20px; }
+      .section-title { font-size: 24px; }
+      .hero { padding: 52px 20px 44px; }
+      .subtitle { font-size: 16px; }
+      .hero-cta { width: 100%; text-align: center; box-sizing: border-box; }
+      .bottom-cta { padding: 60px 20px; }
+      .bottom-cta h2 { font-size: 28px; }
+      .for-section { padding: 52px 20px; }
+      footer { padding: 20px; }
     }
   </style>
 </head>

@@ -83,6 +83,24 @@ def _fmt_phone(phone: str) -> str:
 app.jinja_env.filters['fmt_phone'] = _fmt_phone
 
 
+def _join_sentences(bullets: list) -> str:
+    """Join bullet points as properly punctuated prose sentences."""
+    if not bullets:
+        return ''
+    terminal = {'.', '!', '?', ';', ':'}
+    parts = []
+    for b in bullets:
+        b = b.strip()
+        if not b:
+            continue
+        if b[-1] not in terminal:
+            b = b + '.'
+        parts.append(b)
+    return ' '.join(parts)
+
+app.jinja_env.filters['join_sentences'] = _join_sentences
+
+
 def generate_resume(data: dict) -> dict:
     prompt = f"""You are an expert resume writer for high school students with little or no work experience.
 Transform the student's raw input into a polished, professional resume.
@@ -104,7 +122,7 @@ Return a JSON object with EXACTLY this structure — do not add extra keys:
   "education": [
     {{
       "title": "School name",
-      "meta": "Grade level | GPA if provided",
+      "meta": "Grade level | GPA: X.X (include GPA ONLY if the student actually provided a number; omit entirely if blank — do NOT write 'not provided', 'N/A', or any placeholder)",
       "bullets": ["Relevant academic detail or achievement (1-2 max)"]
     }}
   ],
@@ -148,7 +166,19 @@ Rules:
         timeout=90
     )
 
-    return json.loads(response.choices[0].message.content)
+    result = json.loads(response.choices[0].message.content)
+
+    # Clean education entries: strip any "GPA not provided" / "N/A" segments the AI
+    # may hallucinate into the meta field when GPA was left blank.
+    _gpa_junk = {"not provided", "n/a", "none", "gpa: none", "gpa: 0", "gpa: n/a"}
+    for entry in result.get("education", []):
+        if isinstance(entry, dict) and entry.get("meta"):
+            parts = [p.strip() for p in entry["meta"].split("|")]
+            parts = [p for p in parts
+                     if not any(junk in p.lower() for junk in _gpa_junk)]
+            entry["meta"] = " | ".join(parts)
+
+    return result
 
 
 def generate_cover_letter(data: dict, resume: dict) -> str:
@@ -869,8 +899,8 @@ def _pdf_lateral(data: dict, resume: dict) -> io.BytesIO:
                 side.append(Paragraph(f"\u2013\u2002{item}", S_SITEM))
 
     body = Table(
-        [[main, side]],
-        colWidths=[main_w, side_w]
+        [[side, main]],
+        colWidths=[side_w, main_w]
     )
     body.setStyle(TableStyle([
         ("VALIGN",        (0, 0), (-1, -1), "TOP"),
@@ -880,7 +910,7 @@ def _pdf_lateral(data: dict, resume: dict) -> io.BytesIO:
         ("RIGHTPADDING",  (1, 0), (-1, -1), 0),
         ("TOPPADDING",    (0, 0), (-1, -1), 12),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 12),
-        ("BACKGROUND",    (1, 0), (1, -1),  SBARBG),
+        ("BACKGROUND",    (0, 0), (0, -1),  SBARBG),
     ]))
 
     doc.build([body])

@@ -1170,6 +1170,18 @@ def build():
         except Exception:
             return render_template("build.html", prefill=data,
                 error="Something went wrong while generating your resume. Please try again in a moment.")
+        try:
+            http_requests.post(
+                f"{os.getenv('SUPABASE_URL')}/rest/v1/resume-generations",
+                json={"template": "generate"},
+                headers={
+                    "apikey": os.getenv("SUPABASE_KEY"),
+                    "Authorization": f"Bearer {os.getenv('SUPABASE_KEY')}",
+                    "Content-Type": "application/json"
+                }
+            )
+        except Exception:
+            pass
         return render_template("result.html", data=data, resume=resume)
     return render_template("build.html", prefill=request.args)
 

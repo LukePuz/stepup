@@ -504,30 +504,49 @@
 
     /* ── Mobile ── */
     @media (max-width: 600px) {
-      body { padding: 16px 12px 40px; }
+      body { padding: 16px 12px 80px; } /* bottom padding for sticky download bar */
       .container { padding: 0; }
 
-      /* Top bar: stack vertically, full-width buttons */
+      /* Top bar: stack vertically, collapse non-download buttons */
       .top-bar { flex-direction: column; align-items: stretch; gap: 8px; }
-      .top-bar > div { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
-      .top-bar > div:first-child { flex-direction: row; flex-wrap: wrap; gap: 8px; }
-      .download-btn { width: 100%; text-align: center; display: block; box-sizing: border-box; }
-      .secondary-btn { width: 100%; text-align: center; box-sizing: border-box; }
-      #downloadForm { width: 100%; }
-      #regenerateForm { width: 100%; }
+      .top-bar > div { display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+      .secondary-btn { flex: 1; text-align: center; box-sizing: border-box; font-size: 13px; padding: 10px 12px; }
+      #regenerateForm { flex: 1; }
       #regenerateForm button { width: 100%; }
 
+      /* Sticky download bar pinned to bottom */
+      #downloadForm {
+        position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+        padding: 10px 16px; background: #0f0f13;
+        border-top: 1px solid #2d2d3d; box-sizing: border-box;
+      }
+      .download-btn { width: 100%; text-align: center; display: block; box-sizing: border-box; }
+
       /* Template picker: 2-column grid */
+      .tmpl-section { margin-bottom: 16px; }
       .tmpl-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
       .tmpl-card { min-width: 0; max-width: none; flex: none; }
 
-      /* Resume preview area: no extra padding, let JS scale handle sizing */
-      .resume-area { padding: 12px 0 0; margin-top: 0; }
+      /* Resume preview area: no padding, clip overflow from scaled previews */
+      .resume-area { padding: 0; margin-top: 4px; overflow: hidden; }
+
+      /* Non-Classic previews are forced to 760px wide by JS before scaling.
+         Ensure min-height doesn't create dead space after collapse. */
+      #preview-executive, #preview-modern, #preview-lateral, #preview-lumina {
+        min-height: unset;
+      }
+      /* Chronicle sidebar: ensure grid holds at 760px */
+      .resume-lateral { grid-template-columns: 200px 1fr; }
 
       /* Cover letter */
       .cover-letter-section { margin-top: 16px; }
       .cl-paper { padding: 28px 20px; margin: 12px; }
       .cl-generate-wrap { padding: 20px 16px; }
+    }
+
+    /* Hide sticky download bar when printing */
+    @media print {
+      #downloadForm { display: none !important; }
     }
   </style>
 </head>
@@ -1397,31 +1416,45 @@
       var preview = document.getElementById('preview-' + name);
       if (!preview) return;
       if (window.innerWidth > 600) {
-        // Reset any mobile transform when returning to desktop
+        // Reset all mobile overrides when returning to desktop
         preview.style.transform = '';
-        preview.style.height = '';
-        preview.style.overflow = '';
+        preview.style.marginBottom = '';
+        preview.style.width = '';
         return;
       }
+      // Force element to its natural 760px design width BEFORE measuring.
+      // Without this, it shrinks to the container (~366px) and the scale
+      // would be applied to an already-shrunk element (double-scaling → half size).
+      preview.style.width = '760px';
       var resumeArea = document.querySelector('.resume-area');
       var availWidth = resumeArea ? resumeArea.getBoundingClientRect().width : window.innerWidth;
-      var scale = Math.min(1, availWidth / 760);
+      var scale = availWidth / 760;
+      // Measure the full unscaled height now that width is locked at 760px
       var naturalH = preview.scrollHeight;
       preview.style.transform = 'scale(' + scale + ')';
       preview.style.transformOrigin = 'top left';
-      preview.style.overflow = 'hidden';
-      preview.style.height = Math.ceil(naturalH * scale) + 'px';
+      // Collapse the unused layout height so the gray area below the scaled
+      // resume disappears. transform: scale doesn't affect layout, so without
+      // this correction the element still occupies naturalH px of vertical space
+      // while only appearing (naturalH * scale) px tall.
+      preview.style.marginBottom = '-' + Math.floor(naturalH * (1 - scale)) + 'px';
     }
 
     function selectTemplate(name) {
       document.getElementById('templateInput').value = name;
       document.querySelectorAll('.tmpl-card').forEach(c => c.classList.remove('selected'));
       document.querySelector('[data-tmpl="' + name + '"]').classList.add('selected');
-      document.querySelectorAll('.resume').forEach(r => r.style.display = 'none');
-      // Reset Classic scaling when switching away from it
+      // Reset all previews' mobile overrides before hiding them
+      document.querySelectorAll('.resume').forEach(function(r) {
+        r.style.display = 'none';
+        r.style.transform = '';
+        r.style.marginBottom = '';
+        r.style.width = '';
+      });
+      // Reset Classic inner page scaling
+      var classicPage = document.querySelector('#preview-classic .page');
+      if (classicPage) { classicPage.style.transform = ''; }
       var classicPreview = document.getElementById('preview-classic');
-      var classicPage = classicPreview.querySelector('.page');
-      classicPage.style.transform = '';
       classicPreview.style.height = '';
       classicPreview.style.overflow = '';
       document.getElementById('preview-' + name).style.display = 'block';

@@ -6,79 +6,131 @@
   <title>StepUp — Build Your Resume</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Page fade-in */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: #0f0f13;
       color: #fff;
       min-height: 100vh;
-      padding: 40px 24px 80px;
+      padding: 44px 24px 88px;
+      overflow-x: hidden;
+      animation: fadeIn 0.4s ease both;
     }
     .container { max-width: 680px; margin: 0 auto; }
-    .back { color: #6b7280; font-size: 14px; text-decoration: none; display: inline-block; margin-bottom: 28px; transition: color 0.15s; }
-    .back:hover { color: #9ca3af; }
+    .back {
+      color: #6b7280; font-size: 14px; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 4px;
+      min-height: 44px; margin-bottom: 32px;
+      transition: color 0.2s ease; cursor: pointer;
+    }
+    .back:hover { color: #c4b5fd; }
 
     /* ── Progress ── */
-    .progress-wrap { margin-bottom: 32px; }
-    .progress-track { height: 4px; background: #2d2d3d; border-radius: 2px; margin-bottom: 14px; }
+    .progress-wrap { margin-bottom: 36px; }
+    .progress-track {
+      height: 5px; background: #1e1e2e; border-radius: 3px;
+      margin-bottom: 16px; overflow: hidden;
+    }
     .progress-fill {
       height: 100%;
       background: linear-gradient(90deg, #6366f1, #a78bfa);
-      border-radius: 2px;
-      transition: width 0.35s ease;
+      border-radius: 3px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .step-dots { display: flex; justify-content: space-between; }
-    .step-dot { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+    .step-dot { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
     .dot-circle {
-      width: 28px; height: 28px; border-radius: 50%;
+      width: 30px; height: 30px; border-radius: 50%;
       border: 2px solid #2d2d3d; background: #0f0f13;
       display: flex; align-items: center; justify-content: center;
       font-size: 11px; font-weight: 700; color: #4b5563;
-      transition: all 0.25s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .step-dot.active .dot-circle { border-color: #6366f1; background: #6366f1; color: #fff; }
-    .step-dot.done .dot-circle { border-color: #6366f1; background: rgba(99,102,241,0.15); color: #6366f1; }
-    .dot-label { font-size: 11px; color: #6b7280; font-weight: 500; }
-    .step-dot.active .dot-label { color: #9ca3af; }
+    .step-dot.active .dot-circle {
+      border-color: #6366f1; background: #6366f1; color: #fff;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.18);
+    }
+    .step-dot.done .dot-circle {
+      border-color: #6366f1; background: rgba(99, 102, 241, 0.12); color: #818cf8;
+    }
+    /* Checkmark for completed steps */
+    .step-dot.done .dot-circle::before { content: '✓'; font-size: 12px; font-weight: 800; }
+    .step-dot.done .dot-circle-num { display: none; }
+    .dot-label { font-size: 11px; color: #4b5563; font-weight: 500; letter-spacing: 0.02em; }
+    .step-dot.active .dot-label { color: #a5b4fc; font-weight: 600; }
     .step-dot.done .dot-label { color: #6b7280; }
 
     /* ── Card / Step ── */
     .step-card {
       display: none;
-      background: #1a1a24; border: 1px solid #2d2d3d;
-      border-radius: 16px; padding: 32px; margin-bottom: 20px;
+      background: #16161f; border: 1px solid #252535;
+      border-radius: 18px; padding: 36px; margin-bottom: 20px;
     }
     .step-card.active { display: block; }
-    .step-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #6b7280; margin-bottom: 4px; }
-    .step-title { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 0; }
-    .step-header { margin-bottom: 24px; }
+    .step-eyebrow {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.12em; color: #6366f1; margin-bottom: 6px;
+    }
+    .step-title { font-size: 23px; font-weight: 800; color: #f1f1f5; margin-bottom: 0; line-height: 1.25; }
+    .step-header { margin-bottom: 28px; }
 
     /* ── Fields ── */
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .field { margin-bottom: 16px; }
-    .field label { display: block; font-size: 13px; font-weight: 600; color: #d1d5db; margin-bottom: 6px; }
-    .field input, .field select, .field textarea {
-      width: 100%; background: #0f0f13; border: 1.5px solid #2d2d3d;
-      border-radius: 8px; padding: 10px 12px; color: #fff;
-      font-size: 16px; font-family: inherit; outline: none;
-      transition: border-color 0.2s; min-height: 44px;
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block; font-size: 12px; font-weight: 600;
+      color: #9ca3af; margin-bottom: 7px; letter-spacing: 0.01em;
     }
-    .field input:focus, .field textarea:focus { border-color: #6366f1; }
-    .field select:focus { border-color: #6366f1; }
-    .field input.invalid, .field textarea.invalid, .field select.invalid { border-color: #ef4444; }
-    .field textarea { height: 90px; resize: vertical; min-height: 90px; }
-    .field .hint { font-size: 12px; color: #6b7280; margin-top: 4px; }
+    .field input, .field select, .field textarea {
+      width: 100%; background: #0f0f13; border: 1.5px solid #252535;
+      border-radius: 9px; padding: 11px 14px; color: #f1f1f5;
+      font-size: 15px; font-family: inherit; outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      min-height: 46px;
+    }
+    .field input::placeholder, .field textarea::placeholder { color: #3d3d55; }
+    .field input:focus, .field textarea:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.22);
+    }
+    .field select:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.22);
+    }
+    .field input.invalid, .field textarea.invalid, .field select.invalid {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+    }
+    .field textarea { height: 124px; resize: vertical; min-height: 124px; line-height: 1.55; }
+    .field .hint { font-size: 12px; color: #4b5563; margin-top: 5px; line-height: 1.4; }
+    .lbl-opt { color: #4b5563; font-weight: 400; }
     select option { background: #1a1a24; }
+
+    /* ── Step description ── */
+    .step-desc { color: #9ca3af; font-size: 14px; margin-bottom: 22px; line-height: 1.65; }
+
+    /* ── Skills section label ── */
+    .skills-section { margin-bottom: 4px; }
+    .skills-section-label {
+      font-size: 13px; font-weight: 700; color: #9ca3af; margin-bottom: 16px;
+    }
 
     /* ── Tip Box ── */
     .tip-box {
-      background: rgba(99,102,241,0.07); border-left: 3px solid #6366f1;
-      border-radius: 0 8px 8px 0; padding: 10px 14px;
-      font-size: 13px; color: #9ca3af; margin-bottom: 20px; line-height: 1.55;
+      background: rgba(99, 102, 241, 0.07); border-left: 3px solid #6366f1;
+      border-radius: 0 10px 10px 0; padding: 12px 16px;
+      font-size: 13px; color: #9ca3af; margin-bottom: 22px; line-height: 1.6;
     }
     .tip-box strong { color: #a5b4fc; }
 
     /* ── Privacy Note ── */
-    .privacy-note { display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 12px; margin-top: 8px; }
+    .privacy-note {
+      display: flex; align-items: center; gap: 8px;
+      color: #4b5563; font-size: 12px; margin-top: 10px; line-height: 1.4;
+    }
     .privacy-note svg { flex-shrink: 0; }
 
     /* ── Error Banner ── */
@@ -89,104 +141,142 @@
     }
 
     /* ── Chips ── */
-    .chips-label { font-size: 12px; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-    .chip {
-      background: #0f0f13; border: 1.5px solid #2d2d3d; border-radius: 20px;
-      padding: 7px 14px; font-size: 13px; color: #9ca3af;
-      cursor: pointer; transition: all 0.18s; font-family: inherit; min-height: 36px;
+    .chips-label {
+      font-size: 11px; color: #6b7280; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 12px;
     }
-    .chip:hover { border-color: #6366f1; color: #c7d2fe; }
-    .chip.selected { border-color: #6366f1; background: rgba(99,102,241,0.12); color: #a5b4fc; font-weight: 600; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .chip {
+      background: #0f0f13; border: 1.5px solid #252535; border-radius: 20px;
+      padding: 8px 16px; font-size: 13px; color: #9ca3af;
+      cursor: pointer; transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+      font-family: inherit; min-height: 38px; line-height: 1;
+    }
+    .chip:hover { border-color: #6366f1; color: #c7d2fe; background: rgba(99, 102, 241, 0.07); }
+    .chip.selected {
+      border-color: #6366f1; background: rgba(99, 102, 241, 0.14);
+      color: #a5b4fc; font-weight: 600;
+      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.35);
+    }
 
     /* ── Activity Cards ── */
     .activity-list { margin-bottom: 12px; }
     .activity-card {
-      background: #111118; border: 1px solid #2d2d3d;
-      border-radius: 10px; padding: 18px 18px 14px; margin-bottom: 12px; position: relative;
+      background: #12121b; border: 1px solid #252535;
+      border-radius: 12px; padding: 20px 20px 16px; margin-bottom: 12px; position: relative;
     }
-    .activity-card .card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .activity-card .field { margin-bottom: 10px; }
+    .activity-card .card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .activity-card .field { margin-bottom: 12px; }
     .activity-card .field:last-child { margin-bottom: 0; }
     .activity-card .remove-btn {
-      position: absolute; top: 10px; right: 12px;
-      background: none; border: none; color: #4b5563;
-      font-size: 13px; cursor: pointer; font-family: inherit;
-      padding: 6px 8px; border-radius: 4px; transition: color 0.15s; min-height: 36px; min-width: 36px;
+      position: absolute; top: 12px; right: 14px;
+      background: none; border: none; color: #374151;
+      font-size: 15px; cursor: pointer; font-family: inherit;
+      padding: 6px; border-radius: 6px;
+      transition: color 0.15s ease, background 0.15s ease;
+      min-height: 36px; min-width: 36px;
       display: flex; align-items: center; justify-content: center;
     }
-    .activity-card .remove-btn:hover { color: #ef4444; }
+    .activity-card .remove-btn:hover { color: #ef4444; background: rgba(239, 68, 68, 0.08); }
     .add-activity-btn {
-      background: none; border: 1.5px dashed #2d2d3d; border-radius: 10px;
-      padding: 12px; color: #6b7280; font-size: 14px; font-family: inherit;
-      cursor: pointer; width: 100%; transition: all 0.18s; min-height: 44px;
+      background: none; border: 1.5px dashed #252535; border-radius: 10px;
+      padding: 13px; color: #6b7280; font-size: 14px; font-family: inherit;
+      cursor: pointer; width: 100%;
+      transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+      min-height: 46px;
     }
-    .add-activity-btn:hover { border-color: #6366f1; color: #a5b4fc; }
+    .add-activity-btn:hover { border-color: #6366f1; color: #a5b4fc; background: rgba(99, 102, 241, 0.05); }
 
     /* ── Review Step ── */
-    .review-section { margin-bottom: 22px; }
+    .review-section { margin-bottom: 24px; }
     .review-section-title {
       font-size: 11px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.08em; color: #6366f1; margin-bottom: 10px;
+      letter-spacing: 0.09em; color: #6366f1; margin-bottom: 12px;
+      padding-bottom: 8px; border-bottom: 1px solid #1e1e2e;
       display: flex; align-items: center; justify-content: space-between;
     }
     .review-edit-link {
-      color: #6366f1; font-size: 12px; font-weight: 500; cursor: pointer;
+      color: #6b7280; font-size: 12px; font-weight: 500; cursor: pointer;
       text-transform: none; letter-spacing: 0; background: none; border: none;
-      font-family: inherit; padding: 0;
+      font-family: inherit; padding: 2px 6px; border-radius: 4px;
+      transition: color 0.15s ease;
     }
     .review-edit-link:hover { color: #a5b4fc; }
-    .review-grid { display: grid; grid-template-columns: 110px 1fr; gap: 5px 12px; }
+    .review-grid { display: grid; grid-template-columns: 110px 1fr; gap: 6px 14px; }
     .review-key { font-size: 13px; color: #6b7280; }
     .review-val { font-size: 13px; color: #d1d5db; }
-    .review-activity { font-size: 13px; color: #d1d5db; margin-bottom: 5px; }
-    .review-activity strong { color: #fff; }
+    .review-activity { font-size: 13px; color: #d1d5db; margin-bottom: 6px; line-height: 1.45; }
+    .review-activity strong { color: #f1f1f5; }
 
     /* ── Nav Buttons ── */
-    .step-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; gap: 12px; }
+    .step-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; gap: 12px; }
     .next-btn {
-      padding: 13px 28px; background: linear-gradient(135deg, #6366f1, #a78bfa);
-      color: white; font-size: 15px; font-weight: 700; border: none;
-      border-radius: 10px; cursor: pointer; transition: opacity 0.2s;
-      font-family: inherit; min-height: 44px;
-    }
-    .next-btn:hover { opacity: 0.9; }
-    .back-btn {
-      padding: 13px 24px; background: none; border: 1.5px solid #2d2d3d;
-      border-radius: 10px; color: #9ca3af; font-size: 15px; font-weight: 600;
-      cursor: pointer; font-family: inherit; transition: border-color 0.18s; min-height: 44px;
-    }
-    .back-btn:hover { border-color: #6b7280; }
-    .submit-btn {
-      width: 100%; padding: 16px;
+      padding: 13px 30px;
       background: linear-gradient(135deg, #6366f1, #a78bfa);
-      color: white; font-size: 16px; font-weight: 700;
-      border: none; border-radius: 12px; cursor: pointer;
-      transition: opacity 0.2s; margin-top: 16px; min-height: 52px; font-family: inherit;
+      color: white; font-size: 15px; font-weight: 700; border: none;
+      border-radius: 10px; cursor: pointer;
+      transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      font-family: inherit; min-height: 46px;
     }
-    .submit-btn:hover { opacity: 0.9; }
-    .validation-msg { color: #fca5a5; font-size: 13px; margin-top: 10px; display: none; }
+    .next-btn:hover {
+      opacity: 0.92; transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+    }
+    .next-btn:active { transform: translateY(0); }
+    .back-btn {
+      padding: 13px 24px; background: none; border: 1.5px solid #252535;
+      border-radius: 10px; color: #9ca3af; font-size: 15px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      transition: border-color 0.2s ease, color 0.2s ease;
+      min-height: 46px;
+    }
+    .back-btn:hover { border-color: #6b7280; color: #e5e7eb; }
+    .submit-btn {
+      width: 100%; padding: 17px;
+      background: linear-gradient(135deg, #6366f1, #a78bfa);
+      color: white; font-size: 17px; font-weight: 700; letter-spacing: 0.01em;
+      border: none; border-radius: 13px; cursor: pointer;
+      transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      margin-top: 32px; min-height: 58px; font-family: inherit;
+    }
+    .submit-btn:hover {
+      opacity: 0.9; transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(99, 102, 241, 0.45);
+    }
+    .submit-btn:active { transform: translateY(0); box-shadow: none; }
+    .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+    .validation-msg { color: #fca5a5; font-size: 13px; margin-top: 12px; display: none; line-height: 1.4; }
 
     /* ── Loading Overlay ── */
+    @keyframes fadeOverlay { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
     .loading-overlay {
-      display: none; position: fixed; inset: 0; background: #0f0f13;
+      display: none; position: fixed; inset: 0;
+      background: rgba(15, 15, 19, 0.97);
       z-index: 9999; flex-direction: column; align-items: center;
-      justify-content: center; gap: 20px;
+      justify-content: center; gap: 22px;
+      animation: fadeOverlay 0.3s ease both;
     }
     .loading-overlay.active { display: flex; }
     .loading-spinner {
-      width: 48px; height: 48px; border-radius: 50%;
-      border: 3px solid #2d2d3d; border-top-color: #6366f1;
-      animation: spin 0.8s linear infinite;
+      width: 54px; height: 54px; border-radius: 50%;
+      border: 3px solid #1e1e2e; border-top-color: #818cf8;
+      animation: spin 0.75s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-headline { font-size: 22px; font-weight: 800; color: #fff; }
-    .loading-status { font-size: 15px; color: #6b7280; min-height: 24px; transition: opacity 0.3s; }
+    .loading-headline {
+      font-size: 23px; font-weight: 800; color: #f1f1f5;
+      animation: pulseText 2.5s ease infinite;
+    }
+    .loading-status {
+      font-size: 15px; color: #9ca3af; min-height: 24px;
+      transition: opacity 0.35s ease;
+    }
 
     /* ── Mobile ── */
     @media (max-width: 500px) {
-      body { padding: 20px 16px 60px; }
-      .step-card { padding: 22px 16px; }
+      body { padding: 20px 16px 64px; }
+      .step-card { padding: 22px 18px; border-radius: 14px; }
       .row { grid-template-columns: 1fr; }
       .activity-card .card-row { grid-template-columns: 1fr; }
       .review-grid { grid-template-columns: 80px 1fr; }
@@ -194,11 +284,12 @@
       .back-btn { flex: 1; min-width: 0; }
       .step-nav { flex-wrap: wrap; }
       .dot-label { display: none; }
-      .back { padding: 8px 0; display: inline-block; }
+      .back { padding: 8px 0; }
       .submit-btn { margin-top: 20px; }
+      .step-title { font-size: 20px; }
     }
     @media (max-width: 380px) {
-      .dot-circle { width: 24px; height: 24px; font-size: 10px; }
+      .dot-circle { width: 26px; height: 26px; font-size: 10px; }
     }
   </style>
 </head>
@@ -221,23 +312,23 @@
       </div>
       <div class="step-dots">
         <div class="step-dot active" id="dot-1">
-          <div class="dot-circle">1</div>
+          <div class="dot-circle"><span class="dot-circle-num">1</span></div>
           <div class="dot-label">Info</div>
         </div>
         <div class="step-dot" id="dot-2">
-          <div class="dot-circle">2</div>
+          <div class="dot-circle"><span class="dot-circle-num">2</span></div>
           <div class="dot-label">Goal</div>
         </div>
         <div class="step-dot" id="dot-3">
-          <div class="dot-circle">3</div>
+          <div class="dot-circle"><span class="dot-circle-num">3</span></div>
           <div class="dot-label">Activities</div>
         </div>
         <div class="step-dot" id="dot-4">
-          <div class="dot-circle">4</div>
+          <div class="dot-circle"><span class="dot-circle-num">4</span></div>
           <div class="dot-label">Skills</div>
         </div>
         <div class="step-dot" id="dot-5">
-          <div class="dot-circle">5</div>
+          <div class="dot-circle"><span class="dot-circle-num">5</span></div>
           <div class="dot-label">Review</div>
         </div>
       </div>
@@ -281,18 +372,18 @@
             </select>
           </div>
           <div class="field">
-            <label>GPA <span style="color:#4b5563;font-weight:400">(optional)</span></label>
+            <label>GPA <span class="lbl-opt">(optional)</span></label>
             <input type="text" id="f-gpa" name="gpa" placeholder="3.8 / 4.0" value="{{ prefill.get('gpa', '') }}"/>
             <div class="hint">Only include if 3.5 or above — otherwise leave blank.</div>
           </div>
         </div>
         <div class="row">
           <div class="field">
-            <label>Email <span style="color:#4b5563;font-weight:400">(optional)</span></label>
+            <label>Email <span class="lbl-opt">(optional)</span></label>
             <input type="text" id="f-email" name="email" placeholder="jane@email.com" value="{{ prefill.get('email', '') }}"/>
           </div>
           <div class="field">
-            <label>Phone <span style="color:#4b5563;font-weight:400">(optional)</span></label>
+            <label>Phone <span class="lbl-opt">(optional)</span></label>
             <input type="tel" id="f-phone" name="phone" placeholder="(555) 555-5555" value="{{ prefill.get('phone', '') }}"/>
           </div>
         </div>
@@ -319,7 +410,7 @@
           <div class="step-title">What Are You Applying For?</div>
         </div>
 
-        <p style="color:#9ca3af;font-size:14px;margin-bottom:20px;line-height:1.6;">
+        <p class="step-desc">
           This drives everything — the AI uses your goal to write your summary, tailor your bullets, and set the right tone.
         </p>
 
@@ -335,7 +426,7 @@
 
         <div class="field">
           <label>Or describe it in your own words:</label>
-          <input type="text" id="f-applying" name="applying_for" placeholder="e.g. Part-time barista job at a local coffee shop" value="{{ prefill.get('applying_for', '') }}"/>
+          <input type="text" id="f-applying" name="applying_for" placeholder="e.g. Summer internship at a tech company, Duke University, local scholarship" value="{{ prefill.get('applying_for', '') }}"/>
         </div>
 
         <div class="tip-box">
@@ -377,9 +468,9 @@
           <div class="step-title">Skills & Experience</div>
         </div>
 
-        <div style="margin-bottom:4px;">
-          <div style="font-size:13px;font-weight:700;color:#9ca3af;margin-bottom:14px;">
-            Skills <span style="font-weight:400;color:#4b5563">(fill in what applies — all optional)</span>
+        <div class="skills-section">
+          <div class="skills-section-label">
+            Skills <span class="lbl-opt">(fill in what applies — all optional)</span>
           </div>
           <div class="row">
             <div class="field">
@@ -405,11 +496,11 @@
         </div>
 
         <div class="field">
-          <label>Work or Volunteer Experience <span style="color:#4b5563;font-weight:400">(optional)</span></label>
+          <label>Work or Volunteer Experience <span class="lbl-opt">(optional)</span></label>
           <textarea name="experience" id="f-experience" placeholder="Mowed lawns for neighbors ($200/month), babysat for 3 families, helped coach youth soccer...">{{ prefill.get('experience', '') }}</textarea>
         </div>
         <div class="field">
-          <label>Anything else to include? <span style="color:#4b5563;font-weight:400">(optional)</span></label>
+          <label>Anything else to include? <span class="lbl-opt">(optional)</span></label>
           <textarea name="extra" id="f-extra" placeholder="Awards, honors, projects, languages spoken, certifications...">{{ prefill.get('extra', '') }}</textarea>
         </div>
 
@@ -426,7 +517,7 @@
           <div class="step-title">Review & Generate</div>
         </div>
 
-        <p style="color:#9ca3af;font-size:14px;margin-bottom:24px;line-height:1.6;">
+        <p class="step-desc">
           Double-check everything looks right — then hit Generate.
         </p>
 
@@ -579,16 +670,16 @@
             '<input type="text" class="act-name" placeholder="Robotics Club" value="' + escAttr(prefill.name || '') + '"/>' +
           '</div>' +
           '<div class="field">' +
-            '<label>Role / Position <span style="color:#4b5563;font-weight:400">(optional)</span></label>' +
+            '<label>Role / Position <span class="lbl-opt">(optional)</span></label>' +
             '<input type="text" class="act-role" placeholder="Lead Engineer" value="' + escAttr(prefill.role || '') + '"/>' +
           '</div>' +
         '</div>' +
         '<div class="field">' +
-          '<label>What did you do? <span style="color:#4b5563;font-weight:400">(optional)</span></label>' +
+          '<label>What did you do? <span class="lbl-opt">(optional)</span></label>' +
           '<textarea class="act-desc" placeholder="Built an autonomous navigation robot; led team of 5 members to regional finals">' + escText(prefill.desc || '') + '</textarea>' +
         '</div>' +
         '<div class="field" style="max-width:180px;">' +
-          '<label>Year(s) <span style="color:#4b5563;font-weight:400">(optional)</span></label>' +
+          '<label>Year(s) <span class="lbl-opt">(optional)</span></label>' +
           '<input type="text" class="act-year" placeholder="2023-2024" value="' + escAttr(prefill.year || '') + '"/>' +
         '</div>';
       document.getElementById('activityList').appendChild(card);
@@ -709,6 +800,8 @@
 
     function showLoadingOverlay() {
       document.getElementById('loadingOverlay').classList.add('active');
+      var btn = document.getElementById('submitBtn');
+      if (btn) { btn.disabled = true; }
       setInterval(function() {
         var el = document.getElementById('loadingStatus');
         el.style.opacity = '0';

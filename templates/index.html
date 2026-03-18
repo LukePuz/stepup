@@ -10,37 +10,50 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: #0f0f13;
       color: #fff;
+      overflow-x: hidden;
     }
+
+    /* Page fade-in */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+    body { animation: fadeIn 0.4s ease both; }
 
     /* NAV */
     nav {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px 40px;
+      padding: 22px 48px;
       border-bottom: 1px solid #1e1e2e;
     }
     .nav-logo {
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 800;
+      letter-spacing: -0.01em;
       background: linear-gradient(135deg, #6366f1, #a78bfa);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+    .nav-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
     .nav-cta {
       background: linear-gradient(135deg, #6366f1, #a78bfa);
       color: white;
       font-size: 14px;
       font-weight: 700;
+      letter-spacing: 0.01em;
       padding: 10px 22px;
       border-radius: 10px;
       text-decoration: none;
-      transition: opacity 0.2s;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
       min-height: 44px;
       display: inline-flex;
       align-items: center;
+      box-shadow: 0 2px 12px rgba(99,102,241,0.3);
     }
-    .nav-cta:hover { opacity: 0.9; }
+    .nav-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(99,102,241,0.5);
+    }
+    .nav-free-label { font-size: 11px; color: #6b7280; letter-spacing: 0.01em; }
 
     /* HERO */
     .hero {
@@ -48,26 +61,15 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      padding: 80px 24px 60px;
-    }
-    .badge {
-      background: rgba(99,102,241,0.15);
-      color: #818cf8;
-      border: 1px solid rgba(99,102,241,0.3);
-      border-radius: 20px;
-      padding: 5px 14px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 24px;
+      padding: 96px 24px 72px;
     }
     h1 {
-      font-size: clamp(28px, 7vw, 56px);
+      font-size: clamp(36px, 6.5vw, 64px);
       font-weight: 800;
-      line-height: 1.1;
-      margin-bottom: 20px;
-      max-width: 700px;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      max-width: 740px;
     }
     h1 span {
       background: linear-gradient(135deg, #6366f1, #a78bfa);
@@ -77,9 +79,10 @@
     .subtitle {
       font-size: 18px;
       color: #9ca3af;
-      max-width: 520px;
-      line-height: 1.7;
-      margin-bottom: 40px;
+      max-width: 500px;
+      line-height: 1.75;
+      margin-bottom: 44px;
+      font-weight: 400;
     }
     .hero-cta {
       display: inline-block;
@@ -87,128 +90,233 @@
       color: white;
       font-size: 16px;
       font-weight: 700;
-      padding: 16px 40px;
+      letter-spacing: 0.01em;
+      padding: 17px 44px;
       border-radius: 12px;
       text-decoration: none;
-      transition: opacity 0.2s, transform 0.2s;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
       box-shadow: 0 4px 32px rgba(99,102,241,0.45);
     }
-    .hero-cta:hover { opacity: 0.9; transform: translateY(-2px); }
-    .hero-note { font-size: 13px; color: #6b7280; margin-top: 14px; }
+    .hero-cta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 48px rgba(99,102,241,0.65);
+    }
+    .hero-note {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 16px;
+      letter-spacing: 0.02em;
+    }
+
+    /* SOCIAL PROOF */
+    .stats-section {
+      border-top: 1px solid #1e1e2e;
+      border-bottom: 1px solid #1e1e2e;
+      background: #12121a;
+      padding: 52px 24px;
+    }
+    .stats-grid {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 56px;
+      max-width: 680px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+    .stat-item { text-align: center; }
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #6366f1, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.1;
+      display: block;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-top: 8px;
+      letter-spacing: 0.01em;
+    }
+    .stats-divider { width: 1px; height: 44px; background: #2a2a3d; flex-shrink: 0; }
 
     /* HOW IT WORKS */
     .section {
-      padding: 80px 24px;
-      max-width: 900px;
+      padding: 96px 24px;
+      max-width: 960px;
       margin: 0 auto;
     }
     .section-label {
       text-align: center;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #6366f1;
-      margin-bottom: 12px;
+      letter-spacing: 0.14em;
+      background: linear-gradient(135deg, #6366f1, #a78bfa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 14px;
     }
     .section-title {
       text-align: center;
-      font-size: 32px;
+      font-size: clamp(26px, 3.5vw, 34px);
       font-weight: 800;
-      margin-bottom: 48px;
+      letter-spacing: -0.02em;
+      margin-bottom: 56px;
       color: #f9fafb;
     }
     .steps {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
+      gap: 20px;
     }
     .step {
-      background: #1a1a24;
-      border: 1px solid #2d2d3d;
+      background: #16161f;
+      border: 1px solid #252535;
       border-radius: 16px;
-      padding: 28px;
+      padding: 32px 28px;
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .step-number {
-      font-size: 13px;
-      font-weight: 800;
-      color: #6366f1;
-      margin-bottom: 14px;
+    .step:hover {
+      border-color: #4a4a7a;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    }
+    .step-num {
+      font-size: 3.75rem;
+      font-weight: 300;
+      background: linear-gradient(135deg, #6366f1, #a78bfa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+      margin-bottom: 16px;
+      letter-spacing: -0.03em;
+      display: block;
     }
     .step-title {
       font-size: 16px;
       font-weight: 700;
-      color: #f9fafb;
-      margin-bottom: 8px;
+      color: #f1f5f9;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
     }
     .step-desc {
       font-size: 14px;
       color: #6b7280;
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
     /* WHO IT'S FOR */
     .for-section {
-      background: #13131a;
+      background: #12121a;
       border-top: 1px solid #1e1e2e;
       border-bottom: 1px solid #1e1e2e;
-      padding: 80px 24px;
+      padding: 96px 24px;
     }
     .for-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
-      max-width: 860px;
+      max-width: 900px;
       margin: 0 auto;
     }
     .for-card {
-      background: #1a1a24;
-      border: 1px solid #2d2d3d;
-      border-radius: 14px;
-      padding: 24px;
+      background: #16161f;
+      border: 1px solid #252535;
+      border-radius: 16px;
+      padding: 28px;
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: default;
     }
-    .for-icon { font-size: 26px; margin-bottom: 12px; }
-    .for-title { font-size: 15px; font-weight: 700; color: #e5e7eb; margin-bottom: 6px; }
-    .for-desc { font-size: 13px; color: #6b7280; line-height: 1.6; }
+    .for-card:hover {
+      border-color: #4a4a7a;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    }
+    .for-icon { font-size: 28px; margin-bottom: 14px; display: block; }
+    .for-title { font-size: 15px; font-weight: 700; color: #e5e7eb; margin-bottom: 8px; letter-spacing: -0.01em; }
+    .for-desc { font-size: 13px; color: #6b7280; line-height: 1.65; }
 
     /* BOTTOM CTA */
     .bottom-cta {
       text-align: center;
-      padding: 80px 24px;
+      padding: 100px 24px;
+      background: linear-gradient(160deg, #100d22 0%, #170f2e 50%, #1a1035 100%);
+      border-top: 1px solid #2a1f4a;
     }
     .bottom-cta h2 {
-      font-size: 36px;
+      font-size: clamp(30px, 4.5vw, 44px);
       font-weight: 800;
+      letter-spacing: -0.02em;
       margin-bottom: 16px;
+      color: #fff;
     }
     .bottom-cta p {
       font-size: 16px;
-      color: #9ca3af;
-      margin-bottom: 36px;
+      color: #94a3b8;
+      margin-bottom: 44px;
+      line-height: 1.6;
+    }
+    .bottom-cta-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #6366f1, #a78bfa);
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      padding: 20px 60px;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+      box-shadow: 0 4px 40px rgba(99,102,241,0.5);
+    }
+    .bottom-cta-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 56px rgba(99,102,241,0.7);
     }
 
     /* FOOTER */
     footer {
       border-top: 1px solid #1e1e2e;
-      padding: 24px 40px;
+      padding: 48px 40px;
       text-align: center;
       font-size: 13px;
-      color: #6b7280;
+      color: #4b5563;
+      letter-spacing: 0.02em;
+      line-height: 1.6;
     }
 
     @media (max-width: 640px) {
       nav { padding: 14px 20px; }
       .nav-cta { font-size: 13px; padding: 10px 16px; }
+      .nav-free-label { display: none; }
       .steps, .for-grid { grid-template-columns: 1fr; }
-      .section { padding: 52px 20px; }
-      .section-title { font-size: 24px; }
-      .hero { padding: 52px 20px 44px; }
+      .step {
+        border-left: 3px solid #6366f1;
+        border-radius: 0 12px 12px 0;
+        border-top: none; border-right: none; border-bottom: none;
+        padding: 24px 24px;
+      }
+      .step:hover { transform: none; box-shadow: none; }
+      .step-num { font-size: 2.75rem; margin-bottom: 12px; }
+      .section { padding: 60px 20px; }
+      .section-title { margin-bottom: 40px; }
+      .hero { padding: 60px 20px 52px; }
       .subtitle { font-size: 16px; }
       .hero-cta { width: 100%; text-align: center; box-sizing: border-box; }
-      .bottom-cta { padding: 60px 20px; }
-      .bottom-cta h2 { font-size: 28px; }
-      .for-section { padding: 52px 20px; }
-      footer { padding: 20px; }
+      .bottom-cta { padding: 72px 20px; }
+      .bottom-cta-btn { width: 100%; box-sizing: border-box; font-size: 16px; padding: 18px 32px; }
+      .for-section { padding: 60px 20px; }
+      .for-card { padding: 22px; }
+      footer { padding: 40px 20px; }
+      .stats-section { padding: 40px 20px; }
+      .stats-grid { gap: 32px; }
+      .stats-divider { display: none; }
     }
   </style>
 </head>
@@ -216,11 +324,13 @@
 
   <nav>
     <div class="nav-logo">StepUp</div>
-    <a href="/build" class="nav-cta">Get Started Free</a>
+    <div class="nav-right">
+      <a href="/build" class="nav-cta">Get Started Free</a>
+      <div class="nav-free-label">&#10003; Free for high schoolers</div>
+    </div>
   </nav>
 
   <div class="hero">
-    <div class="badge">Free for high schoolers</div>
     <h1>Your first resume,<br>built by <span>StepUp.</span></h1>
     <p class="subtitle">StepUp turns your activities, clubs, and skills into a polished, professional resume — even if you have zero work experience.</p>
     <a href="/build" class="hero-cta">Build My Resume</a>
@@ -228,9 +338,23 @@
   </div>
 
   {% if count > 0 %}
-  <div style="text-align:center; padding: 40px 24px; border-top: 1px solid #1e1e2e; border-bottom: 1px solid #1e1e2e; background:#13131a;">
-    <div style="font-size: 48px; font-weight: 800; background: linear-gradient(135deg, #6366f1, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">{{ count }}</div>
-    <div style="font-size: 16px; color: #9ca3af; margin-top: 6px;">resumes built with StepUp</div>
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-number">{{ count }}</span>
+        <div class="stat-label">resumes built with StepUp</div>
+      </div>
+      <div class="stats-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number">Free</span>
+        <div class="stat-label">forever, no sign-up</div>
+      </div>
+      <div class="stats-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number">&lt;60s</span>
+        <div class="stat-label">from start to download</div>
+      </div>
+    </div>
   </div>
   {% endif %}
 
@@ -239,17 +363,17 @@
     <div class="section-title">Three steps to a professional resume</div>
     <div class="steps">
       <div class="step">
-        <div class="step-number">Step 01</div>
+        <span class="step-num">01</span>
         <div class="step-title">Fill in your info</div>
         <div class="step-desc">Tell us your school, grade, activities, and what you're applying for. No template required.</div>
       </div>
       <div class="step">
-        <div class="step-number">Step 02</div>
+        <span class="step-num">02</span>
         <div class="step-title">StepUp builds your resume</div>
         <div class="step-desc">StepUp transforms your raw input into strong, action-oriented bullet points that sound professional.</div>
       </div>
       <div class="step">
-        <div class="step-number">Step 03</div>
+        <span class="step-num">03</span>
         <div class="step-title">Download your PDF</div>
         <div class="step-desc">Get a clean, ready-to-send PDF resume in one click. No formatting headaches.</div>
       </div>
@@ -261,18 +385,18 @@
     <div class="section-title">Built for every high schooler</div>
     <div class="for-grid">
       <div class="for-card">
-        <div class="for-icon">&#127947;</div>
+        <span class="for-icon">&#128188;</span>
         <div class="for-title">First job or internship</div>
         <div class="for-desc">Stand out when applying for part-time jobs, summer internships, or volunteer positions.</div>
       </div>
       <div class="for-card">
-        <div class="for-icon">&#127979;</div>
+        <span class="for-icon">&#127891;</span>
         <div class="for-title">College applications</div>
         <div class="for-desc">Show admissions officers what you've done outside the classroom in a clean, organized format.</div>
       </div>
       <div class="for-card">
-        <div class="for-icon">&#127942;</div>
-        <div class="for-title">Scholarships & programs</div>
+        <span class="for-icon">&#127942;</span>
+        <div class="for-title">Scholarships &amp; programs</div>
         <div class="for-desc">Many scholarships and competitive programs ask for a resume. Now you'll have one ready.</div>
       </div>
     </div>
@@ -281,7 +405,7 @@
   <div class="bottom-cta">
     <h2>Ready to stand out?</h2>
     <p>It's free. It takes a minute. Your resume will thank you.</p>
-    <a href="/build" class="hero-cta">Build My Resume</a>
+    <a href="/build" class="bottom-cta-btn">Build My Resume</a>
   </div>
 
   <footer>

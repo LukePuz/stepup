@@ -702,7 +702,7 @@
         <form method="POST" action="/download" id="downloadForm">
           <input type="hidden" name="data"     value='{{ data | tojson }}'/>
           <input type="hidden" name="resume"   id="dlResumeInput" value='{{ resume | tojson }}'/>
-          <input type="hidden" name="template" id="templateInput" value="executive"/>
+          <input type="hidden" name="template" id="templateInput" value="classic"/>
           <button type="submit" class="download-btn">&#8595; Download PDF</button>
         </form>
       </div>
@@ -713,7 +713,22 @@
       <div class="tmpl-label">Choose Template</div>
       <div class="tmpl-cards">
 
-        <div class="tmpl-card selected" data-tmpl="executive" onclick="selectTemplate('executive')">
+        <div class="tmpl-card selected" data-tmpl="classic" onclick="selectTemplate('classic')">
+          <div class="mock" style="padding:8px 10px;">
+            <div style="height:6px;width:58%;background:#111;border-radius:1px;margin:0 auto 4px;"></div>
+            <div style="height:1px;width:82%;background:#bbb;margin:0 auto 6px;"></div>
+            <div style="height:1.5px;width:38%;background:#333;border-radius:1px;margin-bottom:4px;border-bottom:1px solid #333;"></div>
+            <div style="height:2px;background:#e5e7eb;margin-bottom:2px;"></div>
+            <div style="height:2px;width:75%;background:#e5e7eb;margin-bottom:5px;"></div>
+            <div style="height:1.5px;width:32%;background:#333;border-radius:1px;margin-bottom:4px;"></div>
+            <div style="height:2px;background:#e5e7eb;margin-bottom:2px;"></div>
+            <div style="height:2px;width:85%;background:#e5e7eb;"></div>
+          </div>
+          <div class="tmpl-card-name">Classic</div>
+          <div class="tmpl-card-desc">Traditional serif, single column.</div>
+        </div>
+
+        <div class="tmpl-card" data-tmpl="executive" onclick="selectTemplate('executive')">
           <div class="mock" style="padding:8px;">
             <div class="mock-line center short" style="background:#1a1a1a;height:5px;margin-bottom:3px;"></div>
             <div class="mock-line center" style="width:50%;background:#9ca3af;margin-bottom:8px;"></div>
@@ -733,21 +748,6 @@
           </div>
           <div class="tmpl-card-name">Elegant</div>
           <div class="tmpl-card-desc">Centered, decorative headers</div>
-        </div>
-
-        <div class="tmpl-card" data-tmpl="classic" onclick="selectTemplate('classic')">
-          <div class="mock" style="padding:8px 10px;">
-            <div style="height:6px;width:58%;background:#111;border-radius:1px;margin:0 auto 4px;"></div>
-            <div style="height:1px;width:82%;background:#bbb;margin:0 auto 6px;"></div>
-            <div style="height:1.5px;width:38%;background:#333;border-radius:1px;margin-bottom:4px;border-bottom:1px solid #333;"></div>
-            <div style="height:2px;background:#e5e7eb;margin-bottom:2px;"></div>
-            <div style="height:2px;width:75%;background:#e5e7eb;margin-bottom:5px;"></div>
-            <div style="height:1.5px;width:32%;background:#333;border-radius:1px;margin-bottom:4px;"></div>
-            <div style="height:2px;background:#e5e7eb;margin-bottom:2px;"></div>
-            <div style="height:2px;width:85%;background:#e5e7eb;"></div>
-          </div>
-          <div class="tmpl-card-name">Classic</div>
-          <div class="tmpl-card-desc">Traditional serif, single column.</div>
         </div>
 
         <div class="tmpl-card" data-tmpl="modern" onclick="selectTemplate('modern')">
@@ -936,7 +936,7 @@
     <!-- ══════════════════════════════════════
          CLASSIC PREVIEW
     ══════════════════════════════════════ -->
-    <div id="preview-classic" class="resume" style="display:none;">
+    <div id="preview-classic" class="resume">
     <div class="page">
 
       <div class="header">
@@ -1149,7 +1149,7 @@
     <!-- ══════════════════════════════════════
          ELEGANT PREVIEW
     ══════════════════════════════════════ -->
-    <div id="preview-executive" class="resume resume-executive">
+    <div id="preview-executive" class="resume resume-executive" style="display:none;">
       <div class="ex-name">{{ data.name }}</div>
       <div class="ex-contact-1">{{ data.school }} &nbsp;&nbsp;|&nbsp;&nbsp; Grade {{ data.grade }}{% if data.gpa %} &nbsp;&nbsp;|&nbsp;&nbsp; GPA: {{ data.gpa }}{% endif %}</div>
       {% if data.email or data.phone %}
@@ -1590,7 +1590,14 @@
 
     window.addEventListener('load', function() {
       var current = document.getElementById('templateInput').value;
-      if (current) applyMobilePreviewScale(current);
+      if (current) {
+        applyMobilePreviewScale(current);
+        // Apply print override for classic on initial load
+        if (current === 'classic') {
+          var dlBtn = document.querySelector('#downloadForm button[type="submit"]');
+          if (dlBtn) dlBtn.onclick = function(e) { e.preventDefault(); window.print(); };
+        }
+      }
     });
 
     function openEditPanel() {

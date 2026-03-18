@@ -14,7 +14,7 @@
       padding: 40px 24px 80px;
     }
     .container { max-width: 680px; margin: 0 auto; }
-    .back { color: #6b7280; font-size: 14px; text-decoration: none; display: inline-block; margin-bottom: 28px; }
+    .back { color: #6b7280; font-size: 14px; text-decoration: none; display: inline-block; margin-bottom: 28px; transition: color 0.15s; }
     .back:hover { color: #9ca3af; }
 
     /* ── Progress ── */
@@ -37,7 +37,7 @@
     }
     .step-dot.active .dot-circle { border-color: #6366f1; background: #6366f1; color: #fff; }
     .step-dot.done .dot-circle { border-color: #6366f1; background: rgba(99,102,241,0.15); color: #6366f1; }
-    .dot-label { font-size: 11px; color: #4b5563; font-weight: 500; }
+    .dot-label { font-size: 11px; color: #6b7280; font-weight: 500; }
     .step-dot.active .dot-label { color: #9ca3af; }
     .step-dot.done .dot-label { color: #6b7280; }
 
@@ -48,7 +48,7 @@
       border-radius: 16px; padding: 32px; margin-bottom: 20px;
     }
     .step-card.active { display: block; }
-    .step-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #4b5563; margin-bottom: 4px; }
+    .step-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #6b7280; margin-bottom: 4px; }
     .step-title { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 0; }
     .step-header { margin-bottom: 24px; }
 
@@ -66,7 +66,7 @@
     .field select:focus { border-color: #6366f1; }
     .field input.invalid, .field textarea.invalid, .field select.invalid { border-color: #ef4444; }
     .field textarea { height: 90px; resize: vertical; min-height: 90px; }
-    .field .hint { font-size: 12px; color: #4b5563; margin-top: 4px; }
+    .field .hint { font-size: 12px; color: #6b7280; margin-top: 4px; }
     select option { background: #1a1a24; }
 
     /* ── Tip Box ── */
@@ -78,7 +78,7 @@
     .tip-box strong { color: #a5b4fc; }
 
     /* ── Privacy Note ── */
-    .privacy-note { display: flex; align-items: center; gap: 8px; color: #4b5563; font-size: 12px; margin-top: 8px; }
+    .privacy-note { display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 12px; margin-top: 8px; }
     .privacy-note svg { flex-shrink: 0; }
 
     /* ── Error Banner ── */
@@ -109,10 +109,11 @@
     .activity-card .field { margin-bottom: 10px; }
     .activity-card .field:last-child { margin-bottom: 0; }
     .activity-card .remove-btn {
-      position: absolute; top: 12px; right: 14px;
+      position: absolute; top: 10px; right: 12px;
       background: none; border: none; color: #4b5563;
       font-size: 13px; cursor: pointer; font-family: inherit;
-      padding: 2px 6px; border-radius: 4px; transition: color 0.15s; min-height: 24px;
+      padding: 6px 8px; border-radius: 4px; transition: color 0.15s; min-height: 36px; min-width: 36px;
+      display: flex; align-items: center; justify-content: center;
     }
     .activity-card .remove-btn:hover { color: #ef4444; }
     .add-activity-btn {
@@ -155,7 +156,7 @@
       border-radius: 10px; color: #9ca3af; font-size: 15px; font-weight: 600;
       cursor: pointer; font-family: inherit; transition: border-color 0.18s; min-height: 44px;
     }
-    .back-btn:hover { border-color: #4b5563; }
+    .back-btn:hover { border-color: #6b7280; }
     .submit-btn {
       width: 100%; padding: 16px;
       background: linear-gradient(135deg, #6366f1, #a78bfa);
@@ -180,7 +181,7 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     .loading-headline { font-size: 22px; font-weight: 800; color: #fff; }
-    .loading-status { font-size: 15px; color: #6b7280; min-height: 24px; }
+    .loading-status { font-size: 15px; color: #6b7280; min-height: 24px; transition: opacity 0.3s; }
 
     /* ── Mobile ── */
     @media (max-width: 500px) {
@@ -709,8 +710,13 @@
     function showLoadingOverlay() {
       document.getElementById('loadingOverlay').classList.add('active');
       setInterval(function() {
-        msgIdx = (msgIdx + 1) % LOADING_MSGS.length;
-        document.getElementById('loadingStatus').textContent = LOADING_MSGS[msgIdx];
+        var el = document.getElementById('loadingStatus');
+        el.style.opacity = '0';
+        setTimeout(function() {
+          msgIdx = (msgIdx + 1) % LOADING_MSGS.length;
+          el.textContent = LOADING_MSGS[msgIdx];
+          el.style.opacity = '1';
+        }, 300);
       }, 2500);
     }
 

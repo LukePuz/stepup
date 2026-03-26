@@ -357,18 +357,27 @@
           </div>
           <div class="field">
             <label>School Name</label>
-            <input type="text" id="f-school" name="school" placeholder="Lincoln High School" value="{{ prefill.get('school', '') }}"/>
+            <input type="text" id="f-school" name="school" placeholder="e.g. Lincoln High School or State University" value="{{ prefill.get('school', '') }}"/>
           </div>
         </div>
         <div class="row">
           <div class="field">
-            <label>Grade</label>
+            <label>Year / Grade</label>
             <select id="f-grade" name="grade">
               {% set g = prefill.get('grade', '9th') %}
-              <option {% if g == '9th' %}selected{% endif %}>9th</option>
-              <option {% if g == '10th' %}selected{% endif %}>10th</option>
-              <option {% if g == '11th' %}selected{% endif %}>11th</option>
-              <option {% if g == '12th' %}selected{% endif %}>12th</option>
+              <optgroup label="High School">
+                <option {% if g == '9th' %}selected{% endif %}>9th</option>
+                <option {% if g == '10th' %}selected{% endif %}>10th</option>
+                <option {% if g == '11th' %}selected{% endif %}>11th</option>
+                <option {% if g == '12th' %}selected{% endif %}>12th</option>
+              </optgroup>
+              <optgroup label="College / University">
+                <option {% if g == '1st Year' %}selected{% endif %}>1st Year</option>
+                <option {% if g == '2nd Year' %}selected{% endif %}>2nd Year</option>
+                <option {% if g == '3rd Year' %}selected{% endif %}>3rd Year</option>
+                <option {% if g == '4th Year' %}selected{% endif %}>4th Year</option>
+                <option {% if g == 'Graduate' %}selected{% endif %}>Graduate</option>
+              </optgroup>
             </select>
           </div>
           <div class="field">
@@ -529,7 +538,7 @@
           <div class="review-grid">
             <span class="review-key">Name</span><span class="review-val" id="rv-name"></span>
             <span class="review-key">School</span><span class="review-val" id="rv-school"></span>
-            <span class="review-key">Grade</span><span class="review-val" id="rv-grade"></span>
+            <span class="review-key">Year / Grade</span><span class="review-val" id="rv-grade"></span>
             <span class="review-key">GPA</span><span class="review-val" id="rv-gpa"></span>
             <span class="review-key">Email</span><span class="review-val" id="rv-email"></span>
             <span class="review-key">Phone</span><span class="review-val" id="rv-phone"></span>

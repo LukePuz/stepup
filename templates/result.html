@@ -323,58 +323,6 @@
     .mn-entry-meta-gap { margin-top: 6px; }
 
     /* ══════════════════════════════════════
-       ELEGANT (executive)
-    ══════════════════════════════════════ */
-    .resume-executive { padding: 36px 52px 44px; }
-    .ex-name {
-      font-family: 'Inter', sans-serif; font-size: 32px; font-weight: 700;
-      color: #1A1A1A; text-align: center;
-      letter-spacing: 0.01em; margin-bottom: 5px;
-    }
-    .ex-contact-1 {
-      font-family: 'Open Sans', sans-serif; font-size: 13px; color: #6B7280;
-      text-align: center; margin-bottom: 3px;
-    }
-    .ex-contact-2 {
-      font-family: 'Open Sans', sans-serif; font-size: 12px; color: #9CA3AF;
-      text-align: center; margin-bottom: 0;
-    }
-    .ex-divider { border: none; border-top: 1px solid #E5E7EB; margin: 18px 0 0; }
-    .ex-sec-title {
-      font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.05em; color: #374151;
-      margin-top: 24px; margin-bottom: 10px;
-    }
-    .ex-obj {
-      font-family: 'Open Sans', sans-serif; font-size: 11px; color: #6B7280;
-      line-height: 1.6;
-    }
-    .ex-entry-title {
-      font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700;
-      color: #1A1A1A; margin-bottom: 4px;
-    }
-    .ex-entry-meta {
-      font-family: 'Open Sans', sans-serif; font-size: 11px;
-      color: #6B7280; margin-bottom: 6px;
-    }
-    .ex-bullet {
-      font-family: 'Open Sans', sans-serif; font-size: 11px; color: #1A1A1A;
-      line-height: 1.4; margin-bottom: 6px; padding-left: 16px; position: relative;
-    }
-    .ex-bullet::before { content: "•"; position: absolute; left: 0; color: #9CA3AF; }
-    .ex-entry { margin-bottom: 14px; }
-    .ex-entry:last-child { margin-bottom: 0; }
-    .ex-skill-cat {
-      font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700;
-      color: #1A1A1A; margin-top: 10px; margin-bottom: 4px;
-    }
-    .ex-skill-cat:first-child { margin-top: 0; }
-    .ex-skill-item {
-      font-family: 'Open Sans', sans-serif; font-size: 11px;
-      color: #374151; line-height: 1.5; margin-bottom: 3px;
-    }
-
-    /* ══════════════════════════════════════
        CHRONICLE (lateral/timeline)
     ══════════════════════════════════════ */
     .resume-lateral { display: grid; grid-template-columns: 200px 1fr; grid-template-areas: "sidebar main"; font-family: 'Open Sans', sans-serif; color: #333; min-height: 820px; }
@@ -669,7 +617,7 @@
       font-size: 9.5pt;
       color: #1a1a1a;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 5px;
     }
     #preview-exec .skill-item::before {
@@ -677,7 +625,6 @@
       font-size: 8pt;
       color: #1a1a1a;
       flex-shrink: 0;
-      margin-top: 1px;
     }
     #preview-exec .highlight-item {
       margin-bottom: 5px;
@@ -793,7 +740,7 @@
 
       /* Non-Classic previews are forced to 760px wide by JS before scaling.
          Ensure min-height doesn't create dead space after collapse. */
-      #preview-executive, #preview-modern, #preview-lateral, #preview-lumina, #preview-exec {
+      #preview-modern, #preview-lateral, #preview-lumina, #preview-exec {
         min-height: unset;
       }
       /* Chronicle sidebar: ensure grid holds at 760px */
@@ -878,26 +825,26 @@
           <div class="tmpl-card-desc">Traditional serif, single column.</div>
         </div>
 
-        <div class="tmpl-card" data-tmpl="executive" onclick="selectTemplate('executive')">
-          <div class="mock" style="padding:8px;">
-            <div class="mock-line center short" style="background:#1a1a1a;height:5px;margin-bottom:3px;"></div>
-            <div class="mock-line center" style="width:50%;background:#9ca3af;margin-bottom:8px;"></div>
-            <div style="display:flex;align-items:center;gap:4px;margin-bottom:6px;">
-              <div style="flex:1;height:0.75px;background:#4A4A4A;"></div>
-              <div style="width:28%;height:3px;background:#4A4A4A;border-radius:2px;"></div>
-              <div style="flex:1;height:0.75px;background:#4A4A4A;"></div>
+        <div class="tmpl-card" data-tmpl="exec" onclick="selectTemplate('exec')">
+          <div class="mock" style="padding:6px 8px;background:#fff;">
+            <div style="text-align:center;margin-bottom:3px;">
+              <div style="height:4px;width:62%;background:#1a1a1a;border-radius:1px;margin:0 auto 3px;"></div>
+              <div style="height:2px;width:80%;background:#ccc;border-radius:1px;margin:0 auto;"></div>
             </div>
-            <div class="mock-line full"></div>
-            <div class="mock-line med"></div>
-            <div style="display:flex;align-items:center;gap:4px;margin-top:7px;margin-bottom:4px;">
-              <div style="flex:1;height:0.75px;background:#4A4A4A;"></div>
-              <div style="width:22%;height:3px;background:#4A4A4A;border-radius:2px;"></div>
-              <div style="flex:1;height:0.75px;background:#4A4A4A;"></div>
+            <div style="background:#d4e4f0;height:4px;margin:4px 0;border-radius:1px;"></div>
+            <div style="background:#d4e4f0;height:3px;margin:4px 0 3px;border-radius:1px;"></div>
+            <div style="height:2px;background:#e5e7eb;margin-bottom:2px;"></div>
+            <div style="height:2px;width:80%;background:#e5e7eb;margin-bottom:4px;"></div>
+            <div style="background:#d4e4f0;height:3px;margin:4px 0 3px;border-radius:1px;"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;">
+              <div style="height:2px;background:#e5e7eb;"></div>
+              <div style="height:2px;background:#e5e7eb;"></div>
+              <div style="height:2px;width:80%;background:#e5e7eb;"></div>
+              <div style="height:2px;width:70%;background:#e5e7eb;"></div>
             </div>
-            <div class="mock-line full"></div>
           </div>
-          <div class="tmpl-card-name">Elegant</div>
-          <div class="tmpl-card-desc">Centered, decorative headers</div>
+          <div class="tmpl-card-name">Executive</div>
+          <div class="tmpl-card-desc">Formal serif, blue accents</div>
         </div>
 
         <div class="tmpl-card" data-tmpl="modern" onclick="selectTemplate('modern')">
@@ -981,28 +928,6 @@
           </div>
           <div class="tmpl-card-name">Lumina</div>
           <div class="tmpl-card-desc">Serif name, navy header, sidebar</div>
-        </div>
-
-        <div class="tmpl-card" data-tmpl="exec" onclick="selectTemplate('exec')">
-          <div class="mock" style="padding:6px 8px;background:#fff;">
-            <div style="text-align:center;margin-bottom:3px;">
-              <div style="height:4px;width:62%;background:#1a1a1a;border-radius:1px;margin:0 auto 3px;"></div>
-              <div style="height:2px;width:80%;background:#ccc;border-radius:1px;margin:0 auto;"></div>
-            </div>
-            <div style="background:#d4e4f0;height:4px;margin:4px 0;border-radius:1px;"></div>
-            <div style="background:#d4e4f0;height:3px;margin:4px 0 3px;border-radius:1px;"></div>
-            <div style="height:2px;background:#e5e7eb;margin-bottom:2px;"></div>
-            <div style="height:2px;width:80%;background:#e5e7eb;margin-bottom:4px;"></div>
-            <div style="background:#d4e4f0;height:3px;margin:4px 0 3px;border-radius:1px;"></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;">
-              <div style="height:2px;background:#e5e7eb;"></div>
-              <div style="height:2px;background:#e5e7eb;"></div>
-              <div style="height:2px;width:80%;background:#e5e7eb;"></div>
-              <div style="height:2px;width:70%;background:#e5e7eb;"></div>
-            </div>
-          </div>
-          <div class="tmpl-card-name">Executive</div>
-          <div class="tmpl-card-desc">Formal serif, blue accents</div>
         </div>
 
       </div>
@@ -1316,78 +1241,6 @@
         </div>
 
       </div>
-    </div>
-
-    <!-- ══════════════════════════════════════
-         ELEGANT PREVIEW
-    ══════════════════════════════════════ -->
-    <div id="preview-executive" class="resume resume-executive" style="display:none;">
-      <div class="ex-name">{{ data.name }}</div>
-      <div class="ex-contact-1">{{ data.school }} &nbsp;&nbsp;|&nbsp;&nbsp; Grade {{ data.grade }}{% if data.gpa %} &nbsp;&nbsp;|&nbsp;&nbsp; GPA: {{ data.gpa }}{% endif %}</div>
-      {% if data.email or data.phone %}
-      <div class="ex-contact-2">{% if data.email %}{{ data.email }}{% endif %}{% if data.email and data.phone %} &nbsp;&nbsp;|&nbsp;&nbsp; {% endif %}{% if data.phone %}{{ data.phone | fmt_phone }}{% endif %}</div>
-      {% endif %}
-      <hr class="ex-divider"/>
-
-      {% if resume.objective %}
-      <div class="ex-sec-title">Summary</div>
-      <p class="ex-obj">{{ resume.objective }}</p>
-      {% endif %}
-
-      {% if resume.skills %}
-      <div class="ex-sec-title">Skills</div>
-      {% if resume.skills is mapping %}
-        {% for cat_name, cat_skills in resume.skills.items() %}
-        <div class="ex-skill-cat">{{ cat_name }}</div>
-        {% for skill in cat_skills %}<div class="ex-skill-item">{{ skill }}</div>{% endfor %}
-        {% endfor %}
-      {% else %}
-        {% for s in resume.skills %}<div class="ex-skill-item">{{ s }}</div>{% endfor %}
-      {% endif %}
-      {% endif %}
-
-      {% if resume.experience %}
-      <div class="ex-sec-title">Experience</div>
-      {% for entry in resume.experience %}
-      <div class="ex-entry">
-        {% if entry is mapping %}
-          <div class="ex-entry-title">{{ entry.title }}</div>
-          {% if entry.meta %}<div class="ex-entry-meta">{{ entry.meta }}</div>{% endif %}
-          {% for b in entry.bullets %}<div class="ex-bullet">{{ b }}</div>{% endfor %}
-        {% else %}
-          <div class="ex-bullet">{{ entry }}</div>
-        {% endif %}
-      </div>
-      {% endfor %}
-      {% endif %}
-
-      <div class="ex-sec-title">Education</div>
-      {% for entry in resume.education %}
-      <div class="ex-entry">
-        {% if entry is mapping %}
-          <div class="ex-entry-title">{{ entry.title }}</div>
-          {% if entry.meta %}<div class="ex-entry-meta">{{ entry.meta }}</div>{% endif %}
-          {% for b in entry.bullets %}<div class="ex-bullet">{{ b }}</div>{% endfor %}
-        {% else %}
-          <div class="ex-bullet">{{ entry }}</div>
-        {% endif %}
-      </div>
-      {% endfor %}
-
-      {% if resume.activities %}
-      <div class="ex-sec-title">Activities &amp; Leadership</div>
-      {% for entry in resume.activities %}
-      <div class="ex-entry">
-        {% if entry is mapping %}
-          <div class="ex-entry-title">{{ entry.title }}</div>
-          {% if entry.meta %}<div class="ex-entry-meta">{{ entry.meta }}</div>{% endif %}
-          {% for b in entry.bullets %}<div class="ex-bullet">{{ b }}</div>{% endfor %}
-        {% else %}
-          <div class="ex-bullet">{{ entry }}</div>
-        {% endif %}
-      </div>
-      {% endfor %}
-      {% endif %}
     </div>
 
     <!-- ══════════════════════════════════════

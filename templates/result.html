@@ -588,6 +588,156 @@
     .cl-generate-desc { font-size: 13.5px; color: #8b92a5; margin-bottom: 18px; line-height: 1.65; }
 
 
+    /* ══════════════════════════════════════
+       EXECUTIVE (exec)
+    ══════════════════════════════════════ */
+    #preview-exec {
+      font-family: 'EB Garamond', Georgia, serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      font-size: 10.5pt;
+      line-height: 1.45;
+    }
+    #preview-exec .page {
+      width: 816px;
+      min-height: 1056px;
+      margin: 0 auto;
+      padding: 52px 64px 52px 64px;
+      background: #ffffff;
+    }
+    #preview-exec .header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    #preview-exec .header h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 32pt;
+      font-weight: 300;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+    }
+    #preview-exec .header .contact-line {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 9pt;
+      letter-spacing: 0.08em;
+      color: #444;
+      text-transform: uppercase;
+    }
+    #preview-exec .header .contact-line span {
+      margin: 0 6px;
+      color: #aaa;
+    }
+    #preview-exec .title-banner {
+      background-color: #d4e4f0;
+      text-align: center;
+      padding: 5px 0;
+      margin: 10px 0 0 0;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 10pt;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+    }
+    #preview-exec .section-header {
+      background-color: #d4e4f0;
+      text-align: center;
+      padding: 4px 0;
+      margin: 14px 0 8px 0;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 9.5pt;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+    }
+    #preview-exec .summary-text {
+      font-size: 10pt;
+      line-height: 1.6;
+      color: #1a1a1a;
+      text-align: justify;
+    }
+    #preview-exec .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3px 12px;
+      padding: 2px 0;
+    }
+    #preview-exec .skill-item {
+      font-size: 9.5pt;
+      color: #1a1a1a;
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+    }
+    #preview-exec .skill-item::before {
+      content: '✓';
+      font-size: 8pt;
+      color: #1a1a1a;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    #preview-exec .highlight-item {
+      margin-bottom: 5px;
+      font-size: 10pt;
+      line-height: 1.55;
+      text-align: justify;
+    }
+    #preview-exec .highlight-item strong {
+      font-weight: 600;
+    }
+    #preview-exec .job {
+      margin-bottom: 12px;
+    }
+    #preview-exec .job-header {
+      margin-bottom: 2px;
+    }
+    #preview-exec .job-title-line {
+      font-size: 10.5pt;
+      color: #1a1a1a;
+    }
+    #preview-exec .job-title-line strong {
+      font-weight: 700;
+    }
+    #preview-exec .job-meta {
+      font-size: 9.5pt;
+      color: #1a1a1a;
+      font-style: italic;
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+    #preview-exec .job-bullets {
+      list-style: none;
+      padding: 0;
+    }
+    #preview-exec .job-bullets li {
+      font-size: 10pt;
+      line-height: 1.55;
+      margin-bottom: 3px;
+      padding-left: 16px;
+      position: relative;
+      text-align: justify;
+    }
+    #preview-exec .job-bullets li::before {
+      content: '•';
+      position: absolute;
+      left: 4px;
+      color: #1a1a1a;
+    }
+    #preview-exec .job-bullets li strong {
+      font-weight: 600;
+    }
+    #preview-exec .edu-item {
+      font-size: 10pt;
+      line-height: 1.5;
+      margin-bottom: 2px;
+    }
+    #preview-exec .edu-item strong {
+      font-weight: 600;
+    }
+
     /* ── Print styles ── */
     @media print {
       body { background: white !important; padding: 0 !important; margin: 0 !important; }
@@ -643,7 +793,7 @@
 
       /* Non-Classic previews are forced to 760px wide by JS before scaling.
          Ensure min-height doesn't create dead space after collapse. */
-      #preview-executive, #preview-modern, #preview-lateral, #preview-lumina {
+      #preview-executive, #preview-modern, #preview-lateral, #preview-lumina, #preview-exec {
         min-height: unset;
       }
       /* Chronicle sidebar: ensure grid holds at 760px */
@@ -831,6 +981,28 @@
           </div>
           <div class="tmpl-card-name">Lumina</div>
           <div class="tmpl-card-desc">Serif name, navy header, sidebar</div>
+        </div>
+
+        <div class="tmpl-card" data-tmpl="exec" onclick="selectTemplate('exec')">
+          <div class="mock" style="padding:6px 8px;background:#fff;">
+            <div style="text-align:center;margin-bottom:3px;">
+              <div style="height:4px;width:62%;background:#1a1a1a;border-radius:1px;margin:0 auto 3px;"></div>
+              <div style="height:2px;width:80%;background:#ccc;border-radius:1px;margin:0 auto;"></div>
+            </div>
+            <div style="background:#d4e4f0;height:4px;margin:4px 0;border-radius:1px;"></div>
+            <div style="background:#d4e4f0;height:3px;margin:4px 0 3px;border-radius:1px;"></div>
+            <div style="height:2px;background:#e5e7eb;margin-bottom:2px;"></div>
+            <div style="height:2px;width:80%;background:#e5e7eb;margin-bottom:4px;"></div>
+            <div style="background:#d4e4f0;height:3px;margin:4px 0 3px;border-radius:1px;"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;">
+              <div style="height:2px;background:#e5e7eb;"></div>
+              <div style="height:2px;background:#e5e7eb;"></div>
+              <div style="height:2px;width:80%;background:#e5e7eb;"></div>
+              <div style="height:2px;width:70%;background:#e5e7eb;"></div>
+            </div>
+          </div>
+          <div class="tmpl-card-name">Executive</div>
+          <div class="tmpl-card-desc">Formal serif, blue accents</div>
         </div>
 
       </div>
@@ -1463,6 +1635,82 @@
       </div>
     </div>
 
+    <!-- ══════════════════════════════════════
+         EXECUTIVE PREVIEW
+    ══════════════════════════════════════ -->
+    <div id="preview-exec" class="resume" style="display:none;">
+    <div class="page">
+
+      <!-- HEADER -->
+      <div class="header">
+        <h1>{{ data.name }}</h1>
+        <div class="contact-line">
+          {{ data.school }}<span>|</span>{% if data.phone %}{{ data.phone | fmt_phone }}{% endif %}<span>|</span>{% if data.email %}{{ data.email }}{% endif %}<span>|</span>{{ data.grade }}{% if data.gpa %} &middot; GPA {{ data.gpa }}{% endif %}
+        </div>
+      </div>
+
+      <!-- TITLE BANNER -->
+      <div class="title-banner">{{ data.applying_for }}</div>
+
+      <!-- PROFESSIONAL SUMMARY -->
+      <div class="section-header">Professional Summary</div>
+      <p class="summary-text">{{ resume.objective }}</p>
+
+      <!-- KEY SKILLS -->
+      <div class="section-header">Key Skills</div>
+      <div class="skills-grid">
+        {% if resume.skills is mapping %}
+          {% for cat_name, cat_skills in resume.skills.items() %}
+            {% for skill in cat_skills %}<div class="skill-item">{{ skill }}</div>{% endfor %}
+          {% endfor %}
+        {% else %}
+          {% for s in resume.skills %}<div class="skill-item">{{ s }}</div>{% endfor %}
+        {% endif %}
+      </div>
+
+      <!-- CAREER HIGHLIGHTS -->
+      <div class="section-header">Career Highlights</div>
+      {% for entry in resume.activities or [] %}
+      {% if entry is mapping %}
+      <div class="highlight-item"><strong>{{ entry.title }}:</strong> {% if entry.bullets %}{{ entry.bullets[0] }}{% endif %}</div>
+      {% endif %}
+      {% endfor %}
+
+      <!-- PROFESSIONAL EXPERIENCE -->
+      {% if resume.experience %}
+      <div class="section-header">Professional Experience</div>
+      {% for entry in resume.experience %}
+      {% if entry is mapping %}
+      <div class="job">
+        <div class="job-header">
+          <div class="job-title-line"><strong>{{ entry.title }}</strong>{% if entry.meta %}, {{ entry.meta }}{% endif %}</div>
+        </div>
+        {% if entry.meta %}
+        <p class="job-meta">{{ entry.meta }}</p>
+        {% endif %}
+        {% if entry.bullets %}
+        <ul class="job-bullets">
+          {% for b in entry.bullets %}<li>{{ b }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endfor %}
+      {% endif %}
+
+      <!-- EDUCATION -->
+      <div class="section-header">Education</div>
+      {% for entry in resume.education %}
+      {% if entry is mapping %}
+      <div class="edu-item"><strong>{{ entry.title }}</strong>{% if entry.meta %}, {{ entry.meta }}{% endif %}</div>
+      {% else %}
+      <div class="edu-item">{{ entry }}</div>
+      {% endif %}
+      {% endfor %}
+
+    </div>
+    </div> <!-- /#preview-exec -->
+
     </div> <!-- /resume-area -->
 
     <!-- Cover Letter Section -->
@@ -1522,8 +1770,22 @@
       preview.style.overflow = 'hidden';
     }
 
+    function applyExecScale() {
+      var resumeArea = document.querySelector('.resume-area');
+      var preview = document.getElementById('preview-exec');
+      var page = preview.querySelector('.page');
+      if (!page) return;
+      var availWidth = resumeArea.getBoundingClientRect().width - (window.innerWidth <= 600 ? 0 : 56);
+      var scale = availWidth / 816;
+      page.style.transform = 'scale(' + scale + ')';
+      page.style.transformOrigin = 'top left';
+      preview.style.height = Math.ceil(page.offsetHeight * scale) + 'px';
+      preview.style.overflow = 'hidden';
+    }
+
     function applyMobilePreviewScale(name) {
       if (name === 'classic') { applyClassicScale(); return; }
+      if (name === 'exec') { applyExecScale(); return; }
       var preview = document.getElementById('preview-' + name);
       if (!preview) return;
       if (window.innerWidth > 600) {

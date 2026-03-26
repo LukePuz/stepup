@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Executive Resume</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'EB Garamond', Georgia, serif;
+    background: #ffffff;
+    color: #1a1a1a;
+    font-size: 10.5pt;
+    line-height: 1.45;
+  }
+
+  .page {
+    width: 816px;
+    min-height: 1056px;
+    margin: 0 auto;
+    padding: 52px 64px 52px 64px;
+    background: #ffffff;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .header h1 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 32pt;
+    font-weight: 300;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #1a1a1a;
+    margin-bottom: 6px;
+  }
+
+  .header .contact-line {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 9pt;
+    letter-spacing: 0.08em;
+    color: #444;
+    text-transform: uppercase;
+  }
+
+  .header .contact-line span {
+    margin: 0 6px;
+    color: #aaa;
+  }
+
+  /* ── TITLE BANNER ── */
+  .title-banner {
+    background-color: #d4e4f0;
+    text-align: center;
+    padding: 5px 0;
+    margin: 10px 0 0 0;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 10pt;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #1a1a1a;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-header {
+    background-color: #d4e4f0;
+    text-align: center;
+    padding: 4px 0;
+    margin: 14px 0 8px 0;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 9.5pt;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #1a1a1a;
+  }
+
+  /* ── PROFESSIONAL SUMMARY ── */
+  .summary-text {
+    font-size: 10pt;
+    line-height: 1.6;
+    color: #1a1a1a;
+    text-align: justify;
+  }
+
+  /* ── KEY SKILLS ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3px 12px;
+    padding: 2px 0;
+  }
+
+  .skill-item {
+    font-size: 9.5pt;
+    color: #1a1a1a;
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .skill-item::before {
+    content: '✓';
+    font-size: 8pt;
+    color: #1a1a1a;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── CAREER HIGHLIGHTS ── */
+  .highlight-item {
+    margin-bottom: 5px;
+    font-size: 10pt;
+    line-height: 1.55;
+    text-align: justify;
+  }
+
+  .highlight-item strong {
+    font-weight: 600;
+  }
+
+  /* ── EXPERIENCE ── */
+  .job {
+    margin-bottom: 12px;
+  }
+
+  .job-header {
+    margin-bottom: 2px;
+  }
+
+  .job-title-line {
+    font-size: 10.5pt;
+    color: #1a1a1a;
+  }
+
+  .job-title-line strong {
+    font-weight: 700;
+  }
+
+  .job-meta {
+    font-size: 9.5pt;
+    color: #1a1a1a;
+    font-style: italic;
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+
+  .job-bullets {
+    list-style: none;
+    padding: 0;
+  }
+
+  .job-bullets li {
+    font-size: 10pt;
+    line-height: 1.55;
+    margin-bottom: 3px;
+    padding-left: 16px;
+    position: relative;
+    text-align: justify;
+  }
+
+  .job-bullets li::before {
+    content: '•';
+    position: absolute;
+    left: 4px;
+    color: #1a1a1a;
+  }
+
+  .job-bullets li strong {
+    font-weight: 600;
+  }
+
+  /* ── EDUCATION ── */
+  .edu-item {
+    font-size: 10pt;
+    line-height: 1.5;
+    margin-bottom: 2px;
+  }
+
+  .edu-item strong {
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>{{ data.name }}</h1>
+    <div class="contact-line">
+      {{ data.school }}<span>|</span>{% if data.phone %}{{ data.phone | fmt_phone }}{% endif %}<span>|</span>{% if data.email %}{{ data.email }}{% endif %}<span>|</span>{{ data.grade }}{% if data.gpa %} &middot; GPA {{ data.gpa }}{% endif %}
+    </div>
+  </div>
+
+  <!-- TITLE BANNER -->
+  <div class="title-banner">{{ data.applying_for }}</div>
+
+  <!-- PROFESSIONAL SUMMARY -->
+  <div class="section-header">Professional Summary</div>
+  <p class="summary-text">{{ resume.objective }}</p>
+
+  <!-- KEY SKILLS -->
+  <div class="section-header">Key Skills</div>
+  <div class="skills-grid">
+    {% if resume.skills is mapping %}
+      {% for cat_name, cat_skills in resume.skills.items() %}
+        {% for skill in cat_skills %}<div class="skill-item">{{ skill }}</div>{% endfor %}
+      {% endfor %}
+    {% else %}
+      {% for s in resume.skills %}<div class="skill-item">{{ s }}</div>{% endfor %}
+    {% endif %}
+  </div>
+
+  <!-- CAREER HIGHLIGHTS -->
+  <div class="section-header">Career Highlights</div>
+  {% for entry in resume.activities or [] %}
+  {% if entry is mapping %}
+  <div class="highlight-item"><strong>{{ entry.title }}:</strong> {% if entry.bullets %}{{ entry.bullets[0] }}{% endif %}</div>
+  {% endif %}
+  {% endfor %}
+
+  <!-- PROFESSIONAL EXPERIENCE -->
+  {% if resume.experience %}
+  <div class="section-header">Professional Experience</div>
+  {% for entry in resume.experience %}
+  {% if entry is mapping %}
+  <div class="job">
+    <div class="job-header">
+      <div class="job-title-line"><strong>{{ entry.title }}</strong>{% if entry.meta %}, {{ entry.meta }}{% endif %}</div>
+    </div>
+    {% if entry.meta %}
+    <p class="job-meta">{{ entry.meta }}</p>
+    {% endif %}
+    {% if entry.bullets %}
+    <ul class="job-bullets">
+      {% for b in entry.bullets %}<li>{{ b }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+
+  <!-- EDUCATION -->
+  <div class="section-header">Education</div>
+  {% for entry in resume.education %}
+  {% if entry is mapping %}
+  <div class="edu-item"><strong>{{ entry.title }}</strong>{% if entry.meta %}, {{ entry.meta }}{% endif %}</div>
+  {% else %}
+  <div class="edu-item">{{ entry }}</div>
+  {% endif %}
+  {% endfor %}
+
+</div>
+</body>
+</html>
